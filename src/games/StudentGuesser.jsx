@@ -89,11 +89,13 @@ export default function StudentGuesser({ soundEnabled }) {
   const [guesses, setGuesses] = useState([])
   const [gameStatus, setGameStatus] = useState('playing') // 'playing', 'won', 'revealed'
   const [loading, setLoading] = useState(true)
+  const [fadeLoading, setFadeLoading] = useState(true) // For smooth fade-out transition
   const [showModal, setShowModal] = useState(true)
 
   // Load students data on mount
   useEffect(() => {
     async function loadData() {
+      const startTime = Date.now()
       try {
         const res = await fetch('/jp_data/students.min.json')
         const data = await res.json()
@@ -160,9 +162,20 @@ export default function StudentGuesser({ soundEnabled }) {
           localStorage.setItem('ba_guess_history_ids', JSON.stringify([]))
           localStorage.setItem('ba_guess_status', 'playing')
         }
-        setLoading(false)
+        
+        // Ensure loader is visible for at least 800ms to allow a smooth animation transition
+        const elapsed = Date.now() - startTime
+        const delay = Math.max(0, 800 - elapsed)
+        
+        setTimeout(() => {
+          setFadeLoading(false)
+          setTimeout(() => {
+            setLoading(false)
+          }, 300) // 300ms matches the fadeOut animation in CSS
+        }, delay)
       } catch (err) {
         console.error('Failed to load student data:', err)
+        setFadeLoading(false)
         setLoading(false)
       }
     }
@@ -425,16 +438,26 @@ export default function StudentGuesser({ soundEnabled }) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <div style={{
-          width: '48px',
-          height: '48px',
-          border: '4px solid #00e5ff',
-          borderTopColor: 'transparent',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite'
-        }}></div>
-        <p style={{ color: '#94a3b8', fontWeight: '600', fontFamily: 'Prompt, sans-serif' }}>กำลังโหลดข้อมูลนักเรียน SCHALE...</p>
+      <div className={`ba-loading-screen ${!fadeLoading ? 'fade-out' : ''}`}>
+        <div className="ba-loading-halo-wrapper">
+          <div className="ba-loading-ring outer"></div>
+          <div className="ba-loading-ring inner"></div>
+          <div className="ba-loading-logo">
+            <img 
+              src="/images/icon/icon_x512.png" 
+              alt="SCHALE Logo" 
+              className="ba-loading-logo-img"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/images/schoolicon/ETC.png';
+              }} 
+            />
+          </div>
+        </div>
+        <p className="ba-loading-text">กำลังโหลดข้อมูลนักเรียน SCHALE...</p>
+        <div className="ba-loading-progress-bar">
+          <div className="ba-loading-progress-fill"></div>
+        </div>
       </div>
     )
   }
