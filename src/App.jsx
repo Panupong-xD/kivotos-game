@@ -1,18 +1,23 @@
 import React, { useState } from 'react'
 import StudentGuesser from './games/StudentGuesser.jsx'
 import SkillGuesser from './games/SkillGuesser.jsx'
+import HaloGuesser from './games/HaloGuesser.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock } from 'lucide-react'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'skill'
+  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'skill'
   const [soundEnabled, setSoundEnabled] = useState(true)
+  const [customBackAction, setCustomBackAction] = useState(null)
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Main Header Bar */}
       <header className="header-container">
         {/* Brand Logo and Title */}
-        <div className="brand-wrapper" onClick={() => setActiveTab('lobby')}>
+        <div className="brand-wrapper" onClick={() => {
+          setCustomBackAction(null)
+          setActiveTab('lobby')
+        }}>
           <div className="brand-icon-box">
             <img src="/images/icon/icon_x512.png" alt="Kivotos Arcade Logo" className="brand-logo-img" />
           </div>
@@ -26,11 +31,17 @@ export default function App() {
         <div className="controls-wrapper">
           {activeTab !== 'lobby' && (
             <button
-              onClick={() => setActiveTab('lobby')}
+              onClick={() => {
+                if (customBackAction) {
+                  customBackAction()
+                } else {
+                  setActiveTab('lobby')
+                }
+              }}
               className="header-back-btn"
             >
               <ArrowLeft className="w-4 h-4 back-icon" />
-              <span>กลับหน้าหลัก</span>
+              <span>{activeTab === 'halo' && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}</span>
             </button>
           )}
 
@@ -88,7 +99,32 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Card 2: Skill Guess (LOCKED) */}
+              {/* Card 2: Halo Guess (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('halo')}
+                className="lobby-card"
+              >
+                {/* Visual collage preview of Halos */}
+                <div className="lobby-card-preview">
+                  <div className="collage-grid">
+                    <img src="/images/halos/Aru_Halo.png" alt="Aru Halo" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/halos/Shiroko_Halo.png" alt="Shiroko Halo" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/halos/Hina_Halo.png" alt="Hina Halo" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/halos/Yuuka_Halo.png" alt="Yuuka Halo" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">ทายฮาโลนักเรียน</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY HALO MODE
+                </button>
+              </div>
+
+              {/* Card 3: Skill Guess (LOCKED) */}
               <div className="lobby-card locked">
                 {/* Blurred Locked preview */}
                 <div className="lobby-card-preview">
@@ -117,6 +153,14 @@ export default function App() {
 
         {activeTab === 'student' && (
           <StudentGuesser soundEnabled={soundEnabled} onBack={() => setActiveTab('lobby')} />
+        )}
+
+        {activeTab === 'halo' && (
+          <HaloGuesser 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+            setCustomBackAction={setCustomBackAction}
+          />
         )}
 
         {activeTab === 'skill' && (

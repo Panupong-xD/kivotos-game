@@ -1,12 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
 import { Search } from 'lucide-react'
 
-export default function Autocomplete({ suggestions, onSelect, guessedIds = [], placeholder = 'ค้นหาชื่อตัวละคร...' }) {
+const Autocomplete = forwardRef(({ suggestions, onSelect, guessedIds = [], placeholder = 'ค้นหาชื่อตัวละคร...' }, ref) => {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [filtered, setFiltered] = useState([])
   const [activeIndex, setActiveIndex] = useState(0)
   const containerRef = useRef(null)
+  const inputRef = useRef(null)
+
+  // Expose focus method to parent
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+      }
+    }
+  }))
 
   // Close suggestions dropdown when clicking outside
   useEffect(() => {
@@ -67,6 +77,10 @@ export default function Autocomplete({ suggestions, onSelect, guessedIds = [], p
     onSelect(item)
     setQuery('')
     setIsOpen(false)
+    // Refocus input field immediately to keep typing smooth
+    if (inputRef.current) {
+      inputRef.current.focus()
+    }
   }
 
   return (
@@ -74,6 +88,7 @@ export default function Autocomplete({ suggestions, onSelect, guessedIds = [], p
       {/* Search Input Box */}
       <div className="autocomplete-input-wrapper">
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => {
@@ -146,4 +161,6 @@ export default function Autocomplete({ suggestions, onSelect, guessedIds = [], p
       )}
     </div>
   )
-}
+})
+
+export default Autocomplete
