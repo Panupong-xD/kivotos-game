@@ -95,7 +95,7 @@ export default function StudentGuesser({ soundEnabled }) {
   useEffect(() => {
     async function loadData() {
       try {
-        const res = await fetch('/jp_data/students.json')
+        const res = await fetch('/jp_data/students.min.json')
         const data = await res.json()
         
         const list = []
