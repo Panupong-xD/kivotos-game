@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Autocomplete from '../components/Autocomplete.jsx'
 import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Eye, Volume2, VolumeX, Sparkles, HelpCircle, RefreshCw, LayoutGrid, Check, X } from 'lucide-react'
+import { db } from '../firebase.js'
+import { collection, doc, setDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp } from 'firebase/firestore'
 
 // Validated list of 183 halo image filenames in public/images/halos
 const HALO_FILES = [
@@ -288,6 +290,16 @@ const getEnglishName = (pathName, devName) => {
   return parts.map(capitalize).join(' ');
 };
 
+// Helper to get or generate persistent player UUID
+const getOrCreatePlayerUuid = () => {
+  let uuid = localStorage.getItem('ba_halo_player_uuid')
+  if (!uuid) {
+    uuid = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
+    localStorage.setItem('ba_halo_player_uuid', uuid)
+  }
+  return uuid
+}
+
 export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction }) {
   // Database States
   const [students, setStudents] = useState([])
@@ -319,6 +331,137 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
   const timerRef = useRef(null)
   const autocompleteRef = useRef(null)
   const nextRoundTimeoutRef = useRef(null)
+
+  // Leaderboard States
+  const [leaderboard, setLeaderboard] = useState([])
+  const [leaderboardLoading, setLeaderboardLoading] = useState(false)
+  const [playerName, setPlayerName] = useState(() => {
+    return localStorage.getItem('ba_halo_player_name') || 'Anonymous Sensei'
+  })
+  const [submittingScore, setSubmittingScore] = useState(false)
+  const [scoreSubmitted, setScoreSubmitted] = useState(false)
+
+  // Fetch top 5 high scores from Firestore
+  const fetchLeaderboard = async () => {
+    if (!db) return
+    setLeaderboardLoading(true)
+    try {
+      const q = query(
+        collection(db, 'halo_leaderboard'),
+        orderBy('score', 'desc'),
+        limit(5)
+      )
+      const querySnapshot = await getDocs(q)
+      const list = []
+      querySnapshot.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() })
+      })
+      setLeaderboard(list)
+    } catch (err) {
+      console.warn("Failed to fetch leaderboard:", err)
+    } finally {
+      setLeaderboardLoading(false)
+    }
+  }
+
+  // Sync player profile & high score from Firestore on mount
+  useEffect(() => {
+    const syncProfileWithDb = async () => {
+      if (!db) return
+      const uuid = getOrCreatePlayerUuid()
+      try {
+        const docRef = doc(db, 'halo_leaderboard', uuid)
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()) {
+          const dbData = docSnap.data()
+          if (dbData.score && dbData.score > highScore) {
+            setHighScore(dbData.score)
+            localStorage.setItem('ba_halo_high_score', dbData.score.toString())
+          }
+          if (dbData.name && !localStorage.getItem('ba_halo_player_name')) {
+            setPlayerName(dbData.name)
+            localStorage.setItem('ba_halo_player_name', dbData.name)
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to sync profile with database:", err)
+      }
+    }
+    syncProfileWithDb()
+  }, [db])
+
+  // Sync name changes to Firestore on input blur
+  const handleNameBlur = async () => {
+    if (!db || highScore <= 0) return
+    try {
+      const uuid = getOrCreatePlayerUuid()
+      const finalName = playerName.trim() ? playerName.trim() : "Anonymous Sensei"
+      await setDoc(doc(db, 'halo_leaderboard', uuid), {
+        name: finalName
+      }, { merge: true })
+      fetchLeaderboard()
+    } catch (err) {
+      console.warn("Failed to update name in database:", err)
+    }
+  }
+
+  // Auto-submit score when gameOver is triggered (only if it's a new personal best or database high)
+  useEffect(() => {
+    if (gameOver && mode === 'time-attack' && score > 0) {
+      const autoSubmitScore = async () => {
+        let isNewHighScore = false
+        if (score > highScore) {
+          setHighScore(score)
+          localStorage.setItem('ba_halo_high_score', score.toString())
+          isNewHighScore = true
+        }
+
+        if (db) {
+          try {
+            const uuid = getOrCreatePlayerUuid()
+            const finalName = playerName.trim() ? playerName.trim() : "Anonymous Sensei"
+            
+            // Check if score is higher than current record in DB
+            const docRef = doc(db, 'halo_leaderboard', uuid)
+            const docSnap = await getDoc(docRef)
+            let shouldWrite = true
+            
+            if (docSnap.exists()) {
+              const currentDbScore = docSnap.data().score || 0
+              if (score <= currentDbScore) {
+                shouldWrite = false
+              }
+            }
+
+            if (shouldWrite) {
+              setSubmittingScore(true)
+              await setDoc(docRef, {
+                name: finalName,
+                score: score,
+                createdAt: serverTimestamp()
+              }, { merge: true })
+              setScoreSubmitted(true)
+              fetchLeaderboard()
+            }
+          } catch (err) {
+            console.error("Error auto-submitting score:", err)
+          } finally {
+            setSubmittingScore(false)
+          }
+        }
+      }
+      autoSubmitScore()
+    }
+  }, [gameOver, score, mode, db])
+
+  // Fetch leaderboard on lobby mount/transition
+  useEffect(() => {
+    if (mode === 'lobby') {
+      fetchLeaderboard()
+    }
+  }, [mode])
+
+
 
   // Audio Context synth helper
   const playBeep = (type) => {
@@ -511,7 +654,9 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
     setGameOver(false)
     setCorrectAnswersList([])
     setPreviousTargets([])
+    setScoreSubmitted(false)
     selectNextTarget(students, [])
+
     setTimerActive(true)
     if (setCustomBackAction) {
       setCustomBackAction(() => exitToLobby)
@@ -681,6 +826,23 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
             </div>
           </div>
 
+          {/* Sensei Profile Setup Box */}
+          <div className="halo-profile-box animate-scaleUp">
+            <span className="profile-label">SENSEI NAME (ชื่อของคุณครู)</span>
+            <input
+              type="text"
+              value={playerName}
+              onChange={(e) => {
+                const val = e.target.value.slice(0, 15)
+                setPlayerName(val)
+                localStorage.setItem('ba_halo_player_name', val)
+              }}
+              onBlur={handleNameBlur}
+              placeholder="กรอกชื่อคุณครู... (เป็น Anonymous หากเว้นว่าง)"
+              className="profile-name-input"
+            />
+          </div>
+
           {/* Selection Cards */}
           <div className="halo-mode-grid">
             
@@ -709,6 +871,49 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
             </div>
 
           </div>
+
+          {/* Global Leaderboard Card */}
+          {db ? (
+            <div className="halo-leaderboard-card animate-scaleUp">
+              <div className="leaderboard-header">
+                <Trophy className="leaderboard-trophy-icon" />
+                <h3 className="leaderboard-title">GLOBAL LEADERBOARD (TOP 5)</h3>
+              </div>
+              {leaderboardLoading ? (
+                <div className="leaderboard-loading">
+                  <div className="skeleton-line"></div>
+                  <div className="skeleton-line"></div>
+                  <div className="skeleton-line"></div>
+                </div>
+              ) : leaderboard.length === 0 ? (
+                <div className="leaderboard-empty">
+                  ยังไม่มีคะแนนบันทึกไว้ในระบบ
+                </div>
+              ) : (
+                <div className="leaderboard-list">
+                  {leaderboard.map((item, index) => (
+                    <div key={item.id} className={`leaderboard-item rank-${index + 1}`}>
+                      <div className="leaderboard-rank-badge">
+                        {index + 1 === 1 ? '🥇' : index + 1 === 2 ? '🥈' : index + 1 === 3 ? '🥉' : `#${index + 1}`}
+                      </div>
+                      <div className="leaderboard-item-name">{item.name}</div>
+                      <div className="leaderboard-item-score">{item.score.toLocaleString()} PTS</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="halo-leaderboard-card offline">
+              <div className="leaderboard-header">
+                <AlertTriangle className="leaderboard-trophy-icon text-amber-500" />
+                <h3 className="leaderboard-title text-amber-500">GLOBAL LEADERBOARD OFFLINE</h3>
+              </div>
+              <p className="leaderboard-empty text-xs">
+                กรุณาตั้งค่า Firebase Environment Variables ใน Vercel หรือ local เพื่อเชื่อมต่อบอร์ดคะแนนระดับโลก
+              </p>
+            </div>
+          )}
 
           <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
             <button onClick={onBack} className="header-back-btn">
@@ -1024,6 +1229,28 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
               </div>
             )}
           </div>
+
+          {/* Leaderboard Auto-Save Notice */}
+          {score > 0 && (
+            <div className="gameover-leaderboard-section">
+              {db ? (
+                scoreSubmitted ? (
+                  <div className="leaderboard-submitted-msg animate-scaleUp">
+                    <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+                    <span>บันทึกสถิติสูงสุดใหม่ของคุณไปยังบอร์ดคะแนนระดับโลกแล้ว! (ครู: {playerName})</span>
+                  </div>
+                ) : (
+                  <div className="leaderboard-submitted-msg info animate-scaleUp">
+                    <span>ทำคะแนนให้มากกว่าสถิติสูงสุดเดิมของคุณครูเพื่ออัปเดตบอร์ดผู้นำรวม!</span>
+                  </div>
+                )
+              ) : (
+                <div className="gameover-leaderboard-offline">
+                  <span>⚠️ Leaderboard ออฟไลน์อยู่ (คะแนนของคุณถูกบันทึกเฉพาะในเบราว์เซอร์นี้)</span>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Buttons to restart or exit */}
           <div className="gameover-actions">

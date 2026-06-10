@@ -2435,3 +2435,305 @@ body {
   border-color: rgba(255, 255, 255, 0.15);
   color: #F5F5F7;
 }
+
+/* ==========================================================================
+   9. GLOBAL LEADERBOARD STYLES (FIREBASE FIRESTORE)
+   ========================================================================== */
+.halo-leaderboard-card {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(135deg, rgba(28, 28, 30, 0.75) 0%, rgba(44, 44, 46, 0.75) 100%);
+  border: 1px solid rgba(76, 154, 224, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.halo-leaderboard-card.offline {
+  border-color: rgba(245, 158, 11, 0.2);
+  background: linear-gradient(135deg, rgba(28, 28, 30, 0.75) 0%, rgba(55, 48, 20, 0.45) 100%);
+}
+
+.leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
+}
+
+.leaderboard-trophy-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-accent);
+}
+
+.leaderboard-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #F5F5F7;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.leaderboard-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.skeleton-line {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-line::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.leaderboard-empty {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 20px 0;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.2s ease;
+}
+
+.leaderboard-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.leaderboard-rank-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  width: 30px;
+}
+
+.leaderboard-item-name {
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #F5F5F7;
+  padding-left: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.leaderboard-item-score {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--color-accent);
+}
+
+/* Rank Specific Styling */
+.leaderboard-item.rank-1 {
+  border-color: rgba(212, 168, 83, 0.25);
+  background: linear-gradient(90deg, rgba(212, 168, 83, 0.08) 0%, rgba(212, 168, 83, 0.02) 100%);
+}
+.leaderboard-item.rank-1 .leaderboard-item-name {
+  color: #D4A853;
+  text-shadow: 0 0 8px rgba(212, 168, 83, 0.2);
+}
+.leaderboard-item.rank-1 .leaderboard-item-score {
+  color: #D4A853;
+}
+
+.leaderboard-item.rank-2 {
+  border-color: rgba(192, 192, 192, 0.2);
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.06) 0%, rgba(192, 192, 192, 0.02) 100%);
+}
+.leaderboard-item.rank-2 .leaderboard-item-name {
+  color: #E5E5EA;
+}
+.leaderboard-item.rank-2 .leaderboard-item-score {
+  color: #E5E5EA;
+}
+
+.leaderboard-item.rank-3 {
+  border-color: rgba(184, 115, 51, 0.2);
+  background: linear-gradient(90deg, rgba(184, 115, 51, 0.06) 0%, rgba(184, 115, 51, 0.02) 100%);
+}
+.leaderboard-item.rank-3 .leaderboard-item-name {
+  color: #CD7F32;
+}
+.leaderboard-item.rank-3 .leaderboard-item-score {
+  color: #CD7F32;
+}
+
+/* Game Over Submission CSS */
+.gameover-leaderboard-section {
+  width: 100%;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  margin-top: 10px;
+}
+
+.leaderboard-submit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.submit-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.submit-input-group {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.leaderboard-name-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  color: #F5F5F7;
+  font-family: 'Prompt', sans-serif;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-name-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 8px rgba(76, 154, 224, 0.3);
+}
+
+.leaderboard-submit-btn {
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Prompt', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-submit-btn:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.leaderboard-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.leaderboard-submitted-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #34d399;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 0;
+}
+
+.gameover-leaderboard-offline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 8px 0;
+}
+
+/* Sensei Profile Setup Box */
+.halo-profile-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 16px 24px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.profile-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.profile-name-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  color: #F5F5F7;
+  font-family: 'Prompt', sans-serif;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.profile-name-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 10px rgba(76, 154, 224, 0.25);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard-submitted-msg.info {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
