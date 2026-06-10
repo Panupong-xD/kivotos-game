@@ -56,7 +56,7 @@ export default function App() {
                 SELECT GAME MODE
               </h2>
               <p className="lobby-desc">
-                ห้องสันทนาการคิโวทอสของ SCHALE เลือกโหมดเพื่อทดสอบข้อมูลนักเรียนของคุณ!
+                เลือกโหมดเพื่อทดสอบความรู้เกี่ยวกับนักเรียนของคุณ!
               </p>
             </div>
 

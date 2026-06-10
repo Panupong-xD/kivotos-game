@@ -163,9 +163,9 @@ export default function StudentGuesser({ soundEnabled }) {
           localStorage.setItem('ba_guess_status', 'playing')
         }
         
-        // Ensure loader is visible for at least 800ms to allow a smooth animation transition
+        // Ensure loader is visible for at least 400ms to allow a smooth animation transition
         const elapsed = Date.now() - startTime
-        const delay = Math.max(0, 800 - elapsed)
+        const delay = Math.max(0, 300 - elapsed)
         
         setTimeout(() => {
           setFadeLoading(false)

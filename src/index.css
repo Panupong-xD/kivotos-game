@@ -877,14 +877,31 @@ body {
   gap: 8px;
   padding: 12px 8px;
   margin-bottom: 8px;
-  text-align: center;
   font-weight: 600;
   font-size: 0.92rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-secondary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  align-items: center;
 }
+
+.guess-grid-header > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  min-height: 40px;
+}
+
+.header-terrain-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
 
 .guess-row {
   display: grid;
@@ -1273,6 +1290,11 @@ body {
     height: 14px;
   }
 
+  .header-terrain-img {
+    width: 16px;
+    height: 16px;
+  }
+
   .adaptation-rank {
     font-size: 0.9rem;
   }
@@ -1338,7 +1360,7 @@ body {
 .ba-loading-ring.outer {
   width: 100px;
   height: 100px;
-  animation: spinClockwise 8s linear infinite;
+  animation: spinClockwise 4s linear infinite;
   border-width: 2px;
 }
 
@@ -1346,7 +1368,7 @@ body {
   width: 76px;
   height: 76px;
   border: 1.5px dashed rgba(0, 229, 255, 0.6);
-  animation: spinCounterClockwise 5s linear infinite;
+  animation: spinCounterClockwise 2.5s linear infinite;
 }
 
 .ba-loading-logo {
@@ -1359,7 +1381,7 @@ body {
   justify-content: center;
   border: 2px solid #00e5ff;
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
-  animation: baPulse 2s ease-in-out infinite;
+  animation: baPulse 1.2s ease-in-out infinite;
   z-index: 2;
 }
 
@@ -1377,7 +1399,7 @@ body {
   letter-spacing: 0.05em;
   text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
   margin: 0;
-  animation: baTextPulse 1.5s ease-in-out infinite;
+  animation: baTextPulse 1s ease-in-out infinite;
 }
 
 .ba-loading-progress-bar {
@@ -1394,7 +1416,7 @@ body {
   width: 100%;
   background: linear-gradient(90deg, #00e5ff, #0077ff);
   border-radius: 2px;
-  animation: baProgress 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: baProgress 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   transform-origin: left;
 }
 
