@@ -52,6 +52,37 @@ const Autocomplete = forwardRef(({ suggestions, onSelect, guessedIds = [], place
              school.includes(cleanQuery)
     })
 
+    // Sort by relevance before slicing (e.g. prioritize exact/starts-with name matches over school matches)
+    matches.sort((a, b) => {
+      const aEng = a.englishName.toLowerCase()
+      const bEng = b.englishName.toLowerCase()
+      
+      // 1. Exact match on English Name
+      const aExact = aEng === cleanQuery
+      const bExact = bEng === cleanQuery
+      if (aExact && !bExact) return -1
+      if (!aExact && bExact) return 1
+
+      // 2. Starts with English Name
+      const aStartsWith = aEng.startsWith(cleanQuery)
+      const bStartsWith = bEng.startsWith(cleanQuery)
+      if (aStartsWith && !bStartsWith) return -1
+      if (!aStartsWith && bStartsWith) return 1
+
+      // 3. Contains English Name (or Dev Name, or PathName)
+      const aPath = a.pathName ? a.pathName.toLowerCase() : ''
+      const bPath = b.pathName ? b.pathName.toLowerCase() : ''
+      const aDev = a.devName ? a.devName.toLowerCase() : ''
+      const bDev = b.devName ? b.devName.toLowerCase() : ''
+      const aNameContains = aEng.includes(cleanQuery) || aDev.includes(cleanQuery) || aPath.includes(cleanQuery)
+      const bNameContains = bEng.includes(cleanQuery) || bDev.includes(cleanQuery) || bPath.includes(cleanQuery)
+      if (aNameContains && !bNameContains) return -1
+      if (!aNameContains && bNameContains) return 1
+
+      // Fallback to ID order
+      return a.id - b.id
+    })
+
     setFiltered(matches.slice(0, 10)) // Limit to 10 suggestions for performance
     setActiveIndex(0)
   }, [query, suggestions, guessedIds])

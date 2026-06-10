@@ -200,6 +200,7 @@ const findHaloForStudent = (student) => {
   const baseName = baseParts[0];
 
   // Custom manual mappings
+  if (baseName === 'ako' || devName === 'ako') return 'Ako_Halo.png';
   if (baseName === 'aris' || devName === 'aris') return 'Alice_Halo.png';
   if (baseName === 'hatsune' || devName === 'hatsune_miku') return 'Miku_Halo.png';
   if (baseName === 'hifumi' || devName === 'hifumi') return 'Hifumi_Halo.png';
