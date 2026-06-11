@@ -9,17 +9,17 @@ import { collection, doc, setDoc, getDoc, serverTimestamp } from 'firebase/fires
 
 // Game Cost Configurations (ปรับเปลี่ยนค่าใช้จ่าย Cost ต่างๆ ของเกมได้จากตรงนี้)
 export const GAME_COSTS = {
-  STARTING_COST: 10,     // ค่า Cost เริ่มต้นในแต่ละรอบ
-  MAX_COST: 20,          // ค่า Cost สูงสุดที่สะสมได้
-  ROUND_BONUS_COST: 10,  // ค่า Cost ที่ได้รับเพิ่มในแต่ละรอบใหม่
-  SUBMIT_GUESS: 2,       // ค่า Cost ที่ใช้เมื่อผู้เล่นส่งทายชื่อ (รวมถึงหักเมื่อทายผิด)
-  DECREASE_BLUR: 2,      // ค่า Cost ที่ใช้ในการปรับความเบลอภาพ
-  RESTORE_COLOR: 6,      // ค่า Cost ที่ใช้ในการยกเลิกถมดำ Silhouette คืนสีผมตัวละคร
-  REVEAL_HALO: 5,        // ค่า Cost ที่ใช้ในการวิเคราะห์รูปฮาโล
-  REVEAL_WEAPON: 6,      // ค่า Cost ที่ใช้ในการตรวจสอบรูปปืน
-  REVEAL_GEAR: 2,        // ค่า Cost ที่ใช้ในการใบ้ Unique Gear เฉพาะตัว
-  REVEAL_COMBAT: 1,      // ค่า Cost ที่ใช้ในการปลดล็อคประวัติการรบ
-  REVEAL_PERSONAL: 1     // ค่า Cost ที่ใช้ในการปลดล็อคข้อมูลประวัติส่วนตัว
+  STARTING_COST: 20,     // ค่า Cost เริ่มต้นในแต่ละรอบ
+  MAX_COST: 40,          // ค่า Cost สูงสุดที่สะสมได้
+  ROUND_BONUS_COST: 15,  // ค่า Cost ที่ได้รับเพิ่มในแต่ละรอบใหม่
+  SUBMIT_GUESS: 4,       // ค่า Cost ที่ใช้เมื่อผู้เล่นส่งทายชื่อ (รวมถึงหักเมื่อทายผิด)
+  DECREASE_BLUR: 3,      // ค่า Cost ที่ใช้ในการปรับความเบลอภาพ
+  RESTORE_COLOR: 15,      // ค่า Cost ที่ใช้ในการยกเลิกถมดำ Silhouette คืนสีผมตัวละคร
+  REVEAL_HALO: 12,        // ค่า Cost ที่ใช้ในการวิเคราะห์รูปฮาโล
+  REVEAL_WEAPON: 15,      // ค่า Cost ที่ใช้ในการตรวจสอบรูปปืน
+  REVEAL_GEAR: 4,        // ค่า Cost ที่ใช้ในการใบ้ Unique Gear เฉพาะตัว
+  REVEAL_COMBAT: 12,      // ค่า Cost ที่ใช้ในการปลดล็อคประวัติการรบ
+  REVEAL_PERSONAL: 10     // ค่า Cost ที่ใช้ในการปลดล็อคข้อมูลประวัติส่วนตัว
 };
 
 
@@ -1372,7 +1372,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                 ) : (
                   /* Active Input box */
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <span className="guesser-input-title">ระบุชื่อนักเรียนที่ต้องสงสัย (การส่งทายจะหัก 2 Cost)</span>
+                    <span className="guesser-input-title">ระบุชื่อนักเรียนที่ต้องสงสัย (การส่งทายจะหัก 4 Cost)</span>
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <div style={{ flex: 1 }}>
                         <Autocomplete
