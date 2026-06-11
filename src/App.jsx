@@ -158,10 +158,10 @@ export default function App() {
                 {/* Visual collage preview for Hints (Silhouette, Halo, Gift, Weapon) */}
                 <div className="lobby-card-preview">
                   <div className="collage-grid">
-                    <img src="/images/student/icon/10000.webp" alt="Aru Silhouette" className="collage-img" style={{ filter: 'brightness(0)', padding: '2px' }} />
-                    <img src="/images/halos/Aru_Halo.png" alt="Aru Halo" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
-                    <img src="/images/item/icon/item_icon_favor_0.webp" alt="Cat Pillow Gift" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
-                    <img src="/images/weapon/weapon_icon_10000.webp" alt="Aru Weapon" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/student/icon/20059.webp" alt="Aru Silhouette" className="collage-img" style={{ objectFit: 'contain', padding: '2px' }} />
+                    <img src="/images/halos/Shiroko_Halo.png" alt="Aru Halo" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/gear/icon/10033.webp" alt="wakamo gear" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/weapon/weapon_icon_10015.webp" alt="Aru Weapon" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
                   </div>
                 </div>
                 
