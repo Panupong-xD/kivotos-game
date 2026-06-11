@@ -161,7 +161,7 @@ const Autocomplete = forwardRef(({ suggestions, onSelect, guessedIds = [], place
                   {item.englishName}
                 </span>
                 <span style={{ fontSize: '0.7rem', color: '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {item.name}
+                  {item.school}
                 </span>
               </div>
             </li>
