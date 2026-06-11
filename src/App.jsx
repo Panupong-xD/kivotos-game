@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import StudentGuesser from './games/StudentGuesser.jsx'
 import SkillGuesser from './games/SkillGuesser.jsx'
 import HaloGuesser from './games/HaloGuesser.jsx'
+import WeaponGuesser from './games/WeaponGuesser.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock } from 'lucide-react'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'skill'
+  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill'
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [customBackAction, setCustomBackAction] = useState(null)
 
@@ -41,7 +42,7 @@ export default function App() {
               className="header-back-btn"
             >
               <ArrowLeft className="w-4 h-4 back-icon" />
-              <span>{activeTab === 'halo' && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}</span>
+              <span>{(activeTab === 'halo' || activeTab === 'weapon') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}</span>
             </button>
           )}
 
@@ -124,26 +125,28 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Card 3: Skill Guess (LOCKED) */}
-              <div className="lobby-card locked">
-                {/* Blurred Locked preview */}
+              {/* Card 3: Weapon Guess (PLAYABLE) */}
+              <div 
+                onClick={() => setActiveTab('weapon')}
+                className="lobby-card"
+              >
+                {/* Visual collage preview of Weapons */}
                 <div className="lobby-card-preview">
-                  <div className="lock-preview-bg">
-                    <div className="lock-icon-img"></div>
-                    <div className="lock-icon-img"></div>
-                    <div className="lock-icon-img"></div>
-                    <div className="lock-icon-img"></div>
+                  <div className="collage-grid">
+                    <img src="/images/weapon/weapon_icon_10000.webp" alt="Aru Weapon" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/weapon/weapon_icon_10010.webp" alt="Shiroko Weapon" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/weapon/weapon_icon_10004.webp" alt="Hina Weapon" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/weapon/weapon_icon_10005.webp" alt="Hoshino Weapon" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
                   </div>
-                  <Lock className="w-8 h-8 lock-overlay-symbol" />
                 </div>
                 
                 <div className="lobby-card-info">
-                  <h3 className="lobby-card-title text-muted">เร็วๆนี้</h3>
-                  <span className="lobby-card-tag locked">LOCKED</span>
+                  <h3 className="lobby-card-title">ทายอาวุธนักเรียน</h3>
+                  <span className="lobby-card-tag ready">READY</span>
                 </div>
                 
-                <button disabled className="lobby-card-btn locked">
-                  COMING SOON
+                <button className="lobby-card-btn ready">
+                  PLAY WEAPON MODE
                 </button>
               </div>
 
@@ -157,6 +160,14 @@ export default function App() {
 
         {activeTab === 'halo' && (
           <HaloGuesser 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+            setCustomBackAction={setCustomBackAction}
+          />
+        )}
+
+        {activeTab === 'weapon' && (
+          <WeaponGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
             setCustomBackAction={setCustomBackAction}
