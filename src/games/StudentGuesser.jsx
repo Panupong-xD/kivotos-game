@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Autocomplete from '../components/Autocomplete.jsx'
 import WinModal from '../components/WinModal.jsx'
+import LoadingScreen from '../components/LoadingScreen.jsx'
 import { RotateCcw } from 'lucide-react'
 
 // Capitalization helper for English names derived from PathName
@@ -437,29 +438,7 @@ export default function StudentGuesser({ soundEnabled }) {
   }
 
   if (loading) {
-    return (
-      <div className={`ba-loading-screen ${!fadeLoading ? 'fade-out' : ''}`}>
-        <div className="ba-loading-halo-wrapper">
-          <div className="ba-loading-ring outer"></div>
-          <div className="ba-loading-ring inner"></div>
-          <div className="ba-loading-logo">
-            <img 
-              src="/images/icon/icon_x512.png" 
-              alt="SCHALE Logo" 
-              className="ba-loading-logo-img"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = '/images/schoolicon/ETC.png';
-              }} 
-            />
-          </div>
-        </div>
-        <p className="ba-loading-text">กำลังโหลดข้อมูลนักเรียน SCHALE...</p>
-        <div className="ba-loading-progress-bar">
-          <div className="ba-loading-progress-fill"></div>
-        </div>
-      </div>
-    )
+    return <LoadingScreen fadeLoading={fadeLoading} />
   }
 
   return (

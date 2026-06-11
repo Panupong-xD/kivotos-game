@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Autocomplete from '../components/Autocomplete.jsx'
+import LoadingScreen from '../components/LoadingScreen.jsx'
 import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Eye, Volume2, VolumeX, Sparkles, HelpCircle, RefreshCw, LayoutGrid, Check, X, Edit2 } from 'lucide-react'
 
 import { db } from '../firebase.js'
@@ -305,6 +306,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
   // Database States
   const [students, setStudents] = useState([])
   const [loading, setLoading] = useState(true)
+  const [fadeLoading, setFadeLoading] = useState(true) // For smooth fade-out transition
 
   // Game Mode States: 'lobby', 'time-attack', 'practice'
   const [mode, setMode] = useState('lobby')
@@ -567,6 +569,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
   // Load students & prepare database
   useEffect(() => {
     async function loadData() {
+      const startTime = Date.now()
       try {
         const res = await fetch('/jp_data/students.min.json')
         const data = await res.json()
@@ -593,9 +596,20 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
           }
         }
         setStudents(list)
-        setLoading(false)
+        
+        // Ensure loader is visible for at least 300ms to allow a smooth animation transition
+        const elapsed = Date.now() - startTime
+        const delay = Math.max(0, 300 - elapsed)
+        
+        setTimeout(() => {
+          setFadeLoading(false)
+          setTimeout(() => {
+            setLoading(false)
+          }, 300)
+        }, delay)
       } catch (err) {
         console.error("Failed to load students in HaloGuesser:", err)
+        setFadeLoading(false)
         setLoading(false)
       }
     }
@@ -822,15 +836,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
 
   // Render Loader
   if (loading) {
-    return (
-      <div className="ba-loading-screen">
-        <div className="ba-loading-halo-wrapper">
-          <div className="ba-loading-ring outer"></div>
-          <div className="ba-loading-ring inner"></div>
-        </div>
-        <p className="ba-loading-text">กำลังซิงค์ฐานข้อมูลฮาโลนักเรียน SCHALE...</p>
-      </div>
-    )
+    return <LoadingScreen fadeLoading={fadeLoading} />
   }
 
   return (
@@ -840,7 +846,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
       {mode === 'lobby' && (
         <div className="halo-lobby-panel animate-scaleUp">
           <div className="halo-lobby-header">
-            <span className="halo-lobby-badge">Mini-Game Mode 02</span>
+            <span className="halo-lobby-badge">Mini-Game</span>
             <h2 className="halo-lobby-title">HALO GUESSER</h2>
             <p className="halo-lobby-subtitle">ทายวงฮาโลปริศนาของเหล่านักเรียนแห่งคิโวทอส!</p>
           </div>
