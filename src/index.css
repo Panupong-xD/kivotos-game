@@ -2441,7 +2441,7 @@ body {
    ========================================================================== */
 .halo-leaderboard-card {
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
   background: linear-gradient(135deg, rgba(28, 28, 30, 0.75) 0%, rgba(44, 44, 46, 0.75) 100%);
   border: 1px solid rgba(76, 154, 224, 0.2);
   border-radius: 16px;
@@ -2736,4 +2736,163 @@ body {
   font-size: 0.75rem;
   font-weight: 500;
 }
+
+/* Profile and Score Row side-by-side */
+.lobby-profile-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 800px;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.lobby-profile-row .halo-highscore-box {
+  flex: 4;
+  margin: 0;
+  max-width: none;
+  width: auto;
+  box-sizing: border-box;
+}
+
+.lobby-profile-row .halo-profile-box {
+  flex: 6;
+  margin: 0;
+  max-width: none;
+  width: auto;
+  box-sizing: border-box;
+}
+
+.lobby-profile-row .halo-highscore-box {
+  padding: 12px 18px;
+  justify-content: flex-start;
+}
+
+.lobby-profile-row .halo-profile-box {
+  padding: 12px 18px;
+  justify-content: flex-start;
+}
+
+@media (max-width: 640px) {
+  .lobby-profile-row {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  .lobby-profile-row .halo-highscore-box,
+  .lobby-profile-row .halo-profile-box {
+    width: 100%;
+  }
+}
+
+/* Edit/Display Name Mode inside profile box */
+.profile-display-mode {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.profile-name-text {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #F5F5F7;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 250px;
+  text-align: left;
+}
+
+.profile-edit-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Prompt', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.profile-edit-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #F5F5F7;
+}
+
+.profile-edit-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.profile-name-input-edit {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--color-accent);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  color: #F5F5F7;
+  font-family: 'Prompt', sans-serif;
+  outline: none;
+  box-shadow: 0 0 8px rgba(76, 154, 224, 0.2);
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.profile-action-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Prompt', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.profile-action-btn.save {
+  background: var(--color-accent);
+  color: white;
+}
+
+.profile-action-btn.save:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.profile-action-btn.save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.profile-action-btn.cancel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.profile-action-btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #F5F5F7;
+}
+
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Autocomplete from '../components/Autocomplete.jsx'
-import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Eye, Volume2, VolumeX, Sparkles, HelpCircle, RefreshCw, LayoutGrid, Check, X } from 'lucide-react'
+import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Eye, Volume2, VolumeX, Sparkles, HelpCircle, RefreshCw, LayoutGrid, Check, X, Edit2 } from 'lucide-react'
+
 import { db } from '../firebase.js'
 import { collection, doc, setDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp } from 'firebase/firestore'
 
@@ -331,6 +332,10 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
   const timerRef = useRef(null)
   const autocompleteRef = useRef(null)
   const nextRoundTimeoutRef = useRef(null)
+  
+  // Anti-spam caching refs
+  const lastFetchTimeRef = useRef(0)
+  const lastSavedNameRef = useRef(localStorage.getItem('ba_halo_player_name') || 'Anonymous Sensei')
 
   // Leaderboard States
   const [leaderboard, setLeaderboard] = useState([])
@@ -338,12 +343,18 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
   const [playerName, setPlayerName] = useState(() => {
     return localStorage.getItem('ba_halo_player_name') || 'Anonymous Sensei'
   })
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [tempName, setTempName] = useState('')
   const [submittingScore, setSubmittingScore] = useState(false)
   const [scoreSubmitted, setScoreSubmitted] = useState(false)
 
   // Fetch top 5 high scores from Firestore
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = async (force = false) => {
     if (!db) return
+    // Throttle reads to once every 20 seconds unless forced (e.g. after score submission)
+    if (!force && Date.now() - lastFetchTimeRef.current < 20000) {
+      return
+    }
     setLeaderboardLoading(true)
     try {
       const q = query(
@@ -357,6 +368,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
         list.push({ id: doc.id, ...doc.data() })
       })
       setLeaderboard(list)
+      lastFetchTimeRef.current = Date.now()
     } catch (err) {
       console.warn("Failed to fetch leaderboard:", err)
     } finally {
@@ -378,9 +390,12 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
             setHighScore(dbData.score)
             localStorage.setItem('ba_halo_high_score', dbData.score.toString())
           }
-          if (dbData.name && !localStorage.getItem('ba_halo_player_name')) {
-            setPlayerName(dbData.name)
-            localStorage.setItem('ba_halo_player_name', dbData.name)
+          if (dbData.name) {
+            lastSavedNameRef.current = dbData.name
+            if (!localStorage.getItem('ba_halo_player_name')) {
+              setPlayerName(dbData.name)
+              localStorage.setItem('ba_halo_player_name', dbData.name)
+            }
           }
         }
       } catch (err) {
@@ -390,20 +405,33 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
     syncProfileWithDb()
   }, [db])
 
-  // Sync name changes to Firestore on input blur
-  const handleNameBlur = async () => {
-    if (!db || highScore <= 0) return
-    try {
-      const uuid = getOrCreatePlayerUuid()
-      const finalName = playerName.trim() ? playerName.trim() : "Anonymous Sensei"
-      await setDoc(doc(db, 'halo_leaderboard', uuid), {
-        name: finalName
-      }, { merge: true })
-      fetchLeaderboard()
-    } catch (err) {
-      console.warn("Failed to update name in database:", err)
+  // Save name changes to local storage and Firestore database (with comparison check)
+  const handleSaveName = async () => {
+    const finalName = tempName.trim() ? tempName.trim() : "Anonymous Sensei"
+    setPlayerName(finalName)
+    localStorage.setItem('ba_halo_player_name', finalName)
+    setIsEditingName(false)
+
+    // Skip write if the name has not actually changed
+    if (finalName === lastSavedNameRef.current) return
+
+    if (db && highScore > 0) {
+      setSubmittingScore(true)
+      try {
+        const uuid = getOrCreatePlayerUuid()
+        await setDoc(doc(db, 'halo_leaderboard', uuid), {
+          name: finalName
+        }, { merge: true })
+        lastSavedNameRef.current = finalName
+        fetchLeaderboard(true) // Force update to show new name
+      } catch (err) {
+        console.warn("Failed to update name in database:", err)
+      } finally {
+        setSubmittingScore(false)
+      }
     }
   }
+
 
   // Auto-submit score when gameOver is triggered (only if it's a new personal best or database high)
   useEffect(() => {
@@ -441,7 +469,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                 createdAt: serverTimestamp()
               }, { merge: true })
               setScoreSubmitted(true)
-              fetchLeaderboard()
+              fetchLeaderboard(true) // Force update to show new high score
             }
           } catch (err) {
             console.error("Error auto-submitting score:", err)
@@ -817,30 +845,63 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
             <p className="halo-lobby-subtitle">ทายวงฮาโลปริศนาของเหล่านักเรียนแห่งคิโวทอส!</p>
           </div>
 
-          {/* High Score Trophy Section */}
-          <div className="halo-highscore-box">
-            <Trophy className="highscore-trophy-icon animate-pulse" />
-            <div>
-              <span className="highscore-label">PERSONAL BEST SCORE</span>
-              <h4 className="highscore-value">{highScore.toLocaleString()} PTS</h4>
+          {/* Lobby Profile & Score Side-by-Side Row */}
+          <div className="lobby-profile-row animate-scaleUp">
+            {/* High Score Trophy Section */}
+            <div className="halo-highscore-box">
+              <Trophy className="highscore-trophy-icon animate-pulse" />
+              <div>
+                <span className="highscore-label">PERSONAL BEST SCORE</span>
+                <h4 className="highscore-value">{highScore.toLocaleString()} PTS</h4>
+              </div>
             </div>
-          </div>
 
-          {/* Sensei Profile Setup Box */}
-          <div className="halo-profile-box animate-scaleUp">
-            <span className="profile-label">SENSEI NAME (ชื่อของคุณครู)</span>
-            <input
-              type="text"
-              value={playerName}
-              onChange={(e) => {
-                const val = e.target.value.slice(0, 15)
-                setPlayerName(val)
-                localStorage.setItem('ba_halo_player_name', val)
-              }}
-              onBlur={handleNameBlur}
-              placeholder="กรอกชื่อคุณครู... (เป็น Anonymous หากเว้นว่าง)"
-              className="profile-name-input"
-            />
+            {/* Sensei Profile Setup Box */}
+            <div className="halo-profile-box">
+              <span className="profile-label">SENSEI NAME (ชื่อของคุณครู)</span>
+              {!isEditingName ? (
+                <div className="profile-display-mode">
+                  <span className="profile-name-text">{playerName}</span>
+                  <button 
+                    onClick={() => {
+                      setTempName(playerName)
+                      setIsEditingName(true)
+                    }}
+                    className="profile-edit-btn"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" /> แก้ไข
+                  </button>
+                </div>
+              ) : (
+                <div className="profile-edit-mode">
+                  <input
+                    type="text"
+                    value={tempName}
+                    onChange={(e) => setTempName(e.target.value.slice(0, 15))}
+                    placeholder="ชื่อของคุณครู..."
+                    className="profile-name-input-edit"
+                    autoFocus
+                  />
+                  <div className="profile-edit-actions">
+                    <button 
+                      onClick={handleSaveName}
+                      disabled={submittingScore}
+                      className="profile-action-btn save"
+                      title="บันทึก"
+                    >
+                      <Check className="w-3 h-3" /> บันทึก
+                    </button>
+                    <button 
+                      onClick={() => setIsEditingName(false)}
+                      className="profile-action-btn cancel"
+                      title="ยกเลิก"
+                    >
+                      <X className="w-3 h-3" /> ยกเลิก
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Selection Cards */}
@@ -872,7 +933,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
 
           </div>
 
-          {/* Global Leaderboard Card */}
+          {/* Global Leaderboard Card (AT BOTTOM) */}
           {db ? (
             <div className="halo-leaderboard-card animate-scaleUp">
               <div className="leaderboard-header">
@@ -904,7 +965,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
               )}
             </div>
           ) : (
-            <div className="halo-leaderboard-card offline">
+            <div className="halo-leaderboard-card offline animate-scaleUp">
               <div className="leaderboard-header">
                 <AlertTriangle className="leaderboard-trophy-icon text-amber-500" />
                 <h3 className="leaderboard-title text-amber-500">GLOBAL LEADERBOARD OFFLINE</h3>
