@@ -912,16 +912,15 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
           {/* Mode Selection */}
           <div className="halo-mode-grid">
             <div className="halo-mode-card time-attack" onClick={startChallenge}>
-              <div className="mode-card-visual" style={{ background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(76, 154, 224, 0.05))' }}>
-                <Timer className="mode-icon" style={{ color: '#06b6d4' }} />
+              <div className="mode-card-visual">
+                <Timer className="mode-icon" />
               </div>
               <div className="mode-card-content">
-                <h3 style={{ color: '#06b6d4' }}>TACTICAL CHALLENGE (โหมดวางแผนจัดอันดับ)</h3>
+                <h3>TACTICAL CHALLENGE (โหมดวางแผนจัดอันดับ)</h3>
                 <p>
-                  สะสมคะแนนต่อเนื่อง! เริ่มต้นรอบแรกที่ 10 Cost (เก็บสะสมได้สูงสุด 20 Cost) ทายผิดหรือกดปุ่มคำใบ้จะหัก Cost 
-                  เมื่อทายถูกในแต่ละรอบจะได้โบนัส +10 Cost และทด Cost ที่เหลือไปรอบถัดไปเพื่อรับตัวคูณคะแนนที่สูงขึ้น!
+                  ท้าทายการบริหาร Cost! เริ่มต้นด้วย 10 Cost (สูงสุด 20 Cost) ใช้ในการส่งคำทายและปลดเบาะแส เมื่อทายถูกในแต่ละรอบจะได้รับโบนัส +10 Cost และทดคะแนนสะสมทวีคูณเพื่อชิงอันดับบน Leaderboard!
                 </p>
-                <button className="mode-start-btn speed-accent" style={{ background: '#06b6d4' }}>START CHALLENGE MODE</button>
+                <button className="mode-start-btn speed-accent">START CHALLENGE MODE</button>
               </div>
             </div>
 
@@ -932,8 +931,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
               <div className="mode-card-content">
                 <h3>PRACTICE (โหมดฝึกซ้อมสบายๆ)</h3>
                 <p>
-                  ฝึกฝนทักษะการดึงเบาะแส ค่อยๆ ปรับความคมชัดภาพเงา หรือปลดล็อคประวัติการต่อสู้ อาวุธ และของเล่นโปรดได้ไร้ขีดจำกัดแรงกดดัน 
-                  เมื่อทายถูกสามารถเริ่มเล่นรอบใหม่ได้ตลอดเวลา
+                  ฝึกฝนทักษะการวิเคราะห์เบาะแสอย่างอิสระไร้แรงกดดัน ปรับความคมชัดของภาพเงา หรือปลดล็อคข้อมูลประวัติการรบ อาวุธ และ Unique Gear โดยไม่มีข้อจำกัดเรื่องพลังงาน Cost หรือแต้มคะแนนในแต่ละรอบ
                 </p>
                 <button className="mode-start-btn practice-accent">START PRACTICE</button>
               </div>
@@ -1287,7 +1285,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                     }}
                   >
                     <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Settings className="w-4 h-4 text-cyan-400" /> Unique Gear
+                      <Settings className="w-4 h-4 text-cyan-400" /> ของรัก
                     </span>
                     <span style={{ padding: '2px 6px', background: 'rgba(6, 182, 212, 0.15)', borderRadius: '99px', fontSize: '0.65rem', color: '#00e5ff', fontWeight: '800' }}>
                       -{GAME_COSTS.REVEAL_GEAR} COST
