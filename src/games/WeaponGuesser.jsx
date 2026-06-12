@@ -851,7 +851,10 @@ export default function WeaponGuesser({ soundEnabled, onBack, setCustomBackActio
                     src={`/images/weapon/${currentTarget.weaponFile}`}
                     alt="Mystery Weapon"
                     className={`mystery-halo-image ${solved ? 'solved-glow' : ''}`}
-                    style={{ maxHeight: '98%', maxWidth: '98%', objectFit: 'contain', filter: solved ? 'drop-shadow(0 2px 15px rgba(0,229,255,0.6))' : 'drop-shadow(0 2px 8px rgba(0,0,0,0.35))' }}
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
+                    onContextMenu={(e) => e.preventDefault()}
+                    style={{ maxHeight: '98%', maxWidth: '98%', objectFit: 'contain', filter: solved ? 'drop-shadow(0 2px 15px rgba(0,229,255,0.6))' : 'drop-shadow(0 2px 8px rgba(0,0,0,0.35))', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = '/images/schoolicon/ETC.png';

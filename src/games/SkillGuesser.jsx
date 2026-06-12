@@ -1050,6 +1050,9 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                   alt="Target Student Silhouette"
                   className="mystery-halo-image"
                   onLoad={handleImageLoad}
+                  draggable={false}
+                  onDragStart={(e) => e.preventDefault()}
+                  onContextMenu={(e) => e.preventDefault()}
                   style={{
                     width: '260px',
                     height: '260px',
@@ -1057,7 +1060,10 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                     objectFit: 'cover',
                     filter: `brightness(${isSilhouette ? 0 : 1}) blur(${getBlurPx()})`,
                     opacity: isTransitioning ? 0 : 1,
-                    transition: isTransitioning ? 'none' : 'filter 0.4s ease, opacity 0.25s ease'
+                    transition: isTransitioning ? 'none' : 'filter 0.4s ease, opacity 0.25s ease',
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                    WebkitUserDrag: 'none'
                   }}
                   onError={(e) => {
                     e.target.onerror = null;
@@ -1129,7 +1135,10 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                         <img 
                           src={`/images/halos/${currentTarget.haloFile}`} 
                           alt="Halo clue" 
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          draggable={false}
+                          onDragStart={(e) => e.preventDefault()}
+                          onContextMenu={(e) => e.preventDefault()}
+                          style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                         />
                       </div>
                     </div>
@@ -1141,7 +1150,10 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                         <img 
                           src={`/images/weapon/${currentTarget.student.weaponImg}.webp`} 
                           alt="Weapon clue" 
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          draggable={false}
+                          onDragStart={(e) => e.preventDefault()}
+                          onContextMenu={(e) => e.preventDefault()}
+                          style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = '/images/schoolicon/ETC.png';
@@ -1158,7 +1170,10 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                           <img 
                             src={`/images/gear/icon/${currentTarget.student.id}.webp`} 
                             alt="Gear clue" 
-                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            draggable={false}
+                            onDragStart={(e) => e.preventDefault()}
+                            onContextMenu={(e) => e.preventDefault()}
+                            style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = '/images/schoolicon/ETC.png';
@@ -1427,7 +1442,10 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                       <img 
                         src={`/images/halos/${currentTarget.haloFile}`} 
                         alt="Halo clue" 
-                        style={{ width: '42px', height: '42px', objectFit: 'contain' }}
+                        draggable={false}
+                        onDragStart={(e) => e.preventDefault()}
+                        onContextMenu={(e) => e.preventDefault()}
+                        style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                       />
                     </div>
                   )}
@@ -1439,7 +1457,10 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                       <img 
                         src={`/images/weapon/${currentTarget.student.weaponImg}.webp`} 
                         alt="Weapon clue" 
-                        style={{ width: '42px', height: '42px', objectFit: 'contain' }}
+                        draggable={false}
+                        onDragStart={(e) => e.preventDefault()}
+                        onContextMenu={(e) => e.preventDefault()}
+                        style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = '/images/schoolicon/ETC.png';
@@ -1462,7 +1483,10 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                           <img 
                             src={`/images/gear/icon/${currentTarget.student.id}.webp`} 
                             alt="Gear Icon clue" 
-                            style={{ width: '42px', height: '42px', objectFit: 'contain' }}
+                            draggable={false}
+                            onDragStart={(e) => e.preventDefault()}
+                            onContextMenu={(e) => e.preventDefault()}
+                            style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = '/images/schoolicon/ETC.png';

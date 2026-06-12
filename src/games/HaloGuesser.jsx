@@ -1003,6 +1003,10 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                     src={`/images/halos/${currentTarget.haloFile}`}
                     alt="Mystery Halo"
                     className={`mystery-halo-image ${solved ? 'solved-glow' : ''}`}
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
+                    onContextMenu={(e) => e.preventDefault()}
+                    style={{ pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = '/images/schoolicon/ETC.png';
