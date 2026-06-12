@@ -6,6 +6,7 @@ import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Check, X, Ed
 
 import { db } from '../firebase.js'
 import { collection, doc, setDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp } from 'firebase/firestore'
+import SecureImage from '../components/SecureImage.jsx'
 
 // Set of 122 validated weapon icons in public/images/weapon
 const VALID_WEAPON_IMAGES = new Set([
@@ -847,7 +848,7 @@ export default function WeaponGuesser({ soundEnabled, onBack, setCustomBackActio
                 </div>
 
                 <div className={`halo-graphic-viewport bg-style-${bgStyle}`} style={{ padding: '10px' }}>
-                  <img
+                  <SecureImage
                     src={`/images/weapon/${currentTarget.weaponFile}`}
                     alt="Mystery Weapon"
                     className={`mystery-halo-image ${solved ? 'solved-glow' : ''}`}

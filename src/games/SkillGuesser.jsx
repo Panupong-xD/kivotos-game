@@ -6,6 +6,7 @@ import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Eye, Volume2
 
 import { db } from '../firebase.js'
 import { collection, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
+import SecureImage from '../components/SecureImage.jsx'
 
 // Game Cost Configurations (ปรับเปลี่ยนค่าใช้จ่าย Cost ต่างๆ ของเกมได้จากตรงนี้)
 export const GAME_COSTS = {
@@ -1045,7 +1046,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
               </div>
 
               <div className={`halo-graphic-viewport bg-style-${bgStyle}`} style={{ height: '300px' }}>
-                <img
+                <SecureImage
                   src={`/images/student/icon/${currentTarget.student.id}.webp`}
                   alt="Target Student Silhouette"
                   className="mystery-halo-image"
@@ -1132,7 +1133,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title="ฮาโลนักเรียน">
                       <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>HALO</span>
                       <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
-                        <img 
+                        <SecureImage 
                           src={`/images/halos/${currentTarget.haloFile}`} 
                           alt="Halo clue" 
                           draggable={false}
@@ -1147,7 +1148,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title="อาวุธ">
                       <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>WEAPON</span>
                       <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
-                        <img 
+                        <SecureImage 
                           src={`/images/weapon/${currentTarget.student.weaponImg}.webp`} 
                           alt="Weapon clue" 
                           draggable={false}
@@ -1167,7 +1168,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                       <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>GEAR</span>
                       <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
                         {currentTarget.gear ? (
-                          <img 
+                          <SecureImage 
                             src={`/images/gear/icon/${currentTarget.student.id}.webp`} 
                             alt="Gear clue" 
                             draggable={false}
@@ -1439,7 +1440,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                   {unlockedClues.halo && currentTarget.haloFile && (
                     <div className="glass-panel" style={{ padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
                       <span className="profile-label">😇 HALO</span>
-                      <img 
+                      <SecureImage 
                         src={`/images/halos/${currentTarget.haloFile}`} 
                         alt="Halo clue" 
                         draggable={false}
@@ -1454,7 +1455,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                   {unlockedClues.weapon && currentTarget.student.weaponImg && (
                     <div className="glass-panel" style={{ padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
                       <span className="profile-label">🔫 WEAPON</span>
-                      <img 
+                      <SecureImage 
                         src={`/images/weapon/${currentTarget.student.weaponImg}.webp`} 
                         alt="Weapon clue" 
                         draggable={false}
@@ -1480,7 +1481,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                       </span>
                       {currentTarget.gear ? (
                         <>
-                          <img 
+                          <SecureImage 
                             src={`/images/gear/icon/${currentTarget.student.id}.webp`} 
                             alt="Gear Icon clue" 
                             draggable={false}

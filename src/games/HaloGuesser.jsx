@@ -6,6 +6,7 @@ import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Eye, Volume2
 
 import { db } from '../firebase.js'
 import { collection, doc, setDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp } from 'firebase/firestore'
+import SecureImage from '../components/SecureImage.jsx'
 
 // Validated list of 183 halo image filenames in public/images/halos
 const HALO_FILES = [
@@ -999,7 +1000,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
 
                 {/* Halo graphic display */}
                 <div className={`halo-graphic-viewport bg-style-${bgStyle}`}>
-                  <img
+                  <SecureImage
                     src={`/images/halos/${currentTarget.haloFile}`}
                     alt="Mystery Halo"
                     className={`mystery-halo-image ${solved ? 'solved-glow' : ''}`}
