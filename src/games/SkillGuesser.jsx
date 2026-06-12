@@ -342,7 +342,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
       if (!db) return
       const uuid = getOrCreatePlayerUuid()
       try {
-        const docRef = doc(db, 'hint_leaderboard', uuid)
+        const docRef = doc(db, 'tactical_leaderboard', uuid)
         const docSnap = await getDoc(docRef)
         if (docSnap.exists()) {
           const dbData = docSnap.data()
@@ -378,7 +378,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
       setSubmittingScore(true)
       try {
         const uuid = getOrCreatePlayerUuid()
-        await setDoc(doc(db, 'hint_leaderboard', uuid), {
+        await setDoc(doc(db, 'tactical_leaderboard', uuid), {
           name: finalName
         }, { merge: true })
         lastSavedNameRef.current = finalName
@@ -407,7 +407,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
             const uuid = getOrCreatePlayerUuid()
             const finalName = playerName.trim() ? playerName.trim() : "Anonymous Sensei"
             
-            const docRef = doc(db, 'hint_leaderboard', uuid)
+            const docRef = doc(db, 'tactical_leaderboard', uuid)
             const docSnap = await getDoc(docRef)
             let shouldWrite = true
             
@@ -946,7 +946,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
           </div>
 
           {/* Leaderboard */}
-          <Leaderboard db={db} collectionName="hint_leaderboard" refreshTrigger={refreshTrigger} />
+          <Leaderboard db={db} collectionName="tactical_leaderboard" refreshTrigger={refreshTrigger} />
 
           <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
             <button onClick={onBack} className="header-back-btn">
