@@ -12,7 +12,7 @@ export const GAME_COSTS = {
   STARTING_COST: 20,     // ค่า Cost เริ่มต้นในแต่ละรอบ
   MAX_COST: 40,          // ค่า Cost สูงสุดที่สะสมได้
   ROUND_BONUS_COST: 15,  // ค่า Cost ที่ได้รับเพิ่มในแต่ละรอบใหม่
-  SUBMIT_GUESS: 4,       // ค่า Cost ที่ใช้เมื่อผู้เล่นส่งทายชื่อ (รวมถึงหักเมื่อทายผิด)
+  SUBMIT_GUESS: 3,       // ค่า Cost ที่ใช้เมื่อผู้เล่นส่งทายชื่อ (รวมถึงหักเมื่อทายผิด)
   DECREASE_BLUR: 3,      // ค่า Cost ที่ใช้ในการปรับความเบลอภาพ
   RESTORE_COLOR: 15,      // ค่า Cost ที่ใช้ในการยกเลิกถมดำ Silhouette คืนสีผมตัวละคร
   REVEAL_HALO: 12,        // ค่า Cost ที่ใช้ในการวิเคราะห์รูปฮาโล
@@ -22,7 +22,13 @@ export const GAME_COSTS = {
   REVEAL_PERSONAL: 10     // ค่า Cost ที่ใช้ในการปลดล็อคข้อมูลประวัติส่วนตัว
 };
 
-
+// Student IDs that have actual gear icon images in /images/gear/icon/
+const GEAR_ICON_IDS = new Set([
+  10000, 10001, 10004, 10005, 10008, 10009, 10010, 10012, 10013, 10022,
+  10025, 10028, 10033, 10034, 10036, 10038, 10039, 10041, 10047, 10065,
+  10066, 13001, 13004, 13007, 13008, 13010, 16003, 16006, 20005, 20006,
+  20009, 20015, 20021, 23003, 23004, 23007, 26005
+]);
 
 // Capitalization helper for English names
 const getEnglishName = (pathName, devName) => {
@@ -592,10 +598,11 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
     const randomStudent = available[Math.floor(Math.random() * available.length)]
     const haloFile = findHaloForStudent(randomStudent)
 
-    // Check if student has Unique Gear
+    // Check if student has Unique Gear AND a matching gear icon image
     const studentGear = randomStudent.gear
     const hasGear = studentGear && studentGear.Released && studentGear.Released.some(r => r === true)
-    const gearData = hasGear ? {
+    const hasGearIcon = GEAR_ICON_IDS.has(randomStudent.id)
+    const gearData = (hasGear && hasGearIcon) ? {
       name: studentGear.Name || 'Unknown Gear',
       hasImage: true
     } : null
