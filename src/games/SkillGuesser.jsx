@@ -1051,6 +1051,8 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                   alt="Target Student Silhouette"
                   className="mystery-halo-image"
                   onLoad={handleImageLoad}
+                  isSilhouette={!solved && !defeat && isSilhouette}
+                  blurPx={(!solved && !defeat) ? getBlurPx() : '0px'}
                   draggable={false}
                   onDragStart={(e) => e.preventDefault()}
                   onContextMenu={(e) => e.preventDefault()}
@@ -1059,7 +1061,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                     height: '260px',
                     borderRadius: '24px',
                     objectFit: 'cover',
-                    filter: `brightness(${isSilhouette ? 0 : 1}) blur(${getBlurPx()})`,
+                    filter: `brightness(${(!solved && !defeat && isSilhouette) ? 0 : 1}) blur(${(!solved && !defeat) ? getBlurPx() : '0px'})`,
                     opacity: isTransitioning ? 0 : 1,
                     transition: isTransitioning ? 'none' : 'filter 0.4s ease, opacity 0.25s ease',
                     pointerEvents: 'none',
