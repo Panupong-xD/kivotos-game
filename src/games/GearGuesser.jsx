@@ -92,10 +92,10 @@ const getArmorLabel = (type) => {
 };
 
 const getOrCreatePlayerUuid = () => {
-  let uuid = localStorage.getItem('ba_gear_player_uuid')
+  let uuid = localStorage.getItem('ba_player_uuid')
   if (!uuid) {
     uuid = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
-    localStorage.setItem('ba_gear_player_uuid', uuid)
+    localStorage.setItem('ba_player_uuid', uuid)
   }
   return uuid
 }
@@ -132,11 +132,11 @@ export default function GearGuesser({ soundEnabled, onBack, setCustomBackAction 
   const autocompleteRef = useRef(null)
   const nextRoundTimeoutRef = useRef(null)
   
-  const lastSavedNameRef = useRef(localStorage.getItem('ba_gear_player_name') || 'Anonymous Sensei')
+  const lastSavedNameRef = useRef(localStorage.getItem('ba_player_name') || 'Anonymous Sensei')
 
   // Leaderboard States
   const [playerName, setPlayerName] = useState(() => {
-    return localStorage.getItem('ba_gear_player_name') || 'Anonymous Sensei'
+    return localStorage.getItem('ba_player_name') || 'Anonymous Sensei'
   })
   const [isEditingName, setIsEditingName] = useState(false)
   const [tempName, setTempName] = useState('')
@@ -160,9 +160,9 @@ export default function GearGuesser({ soundEnabled, onBack, setCustomBackAction 
           }
           if (dbData.name) {
             lastSavedNameRef.current = dbData.name
-            if (!localStorage.getItem('ba_gear_player_name')) {
+            if (!localStorage.getItem('ba_player_name')) {
               setPlayerName(dbData.name)
-              localStorage.setItem('ba_gear_player_name', dbData.name)
+              localStorage.setItem('ba_player_name', dbData.name)
             }
           }
         }
@@ -177,7 +177,7 @@ export default function GearGuesser({ soundEnabled, onBack, setCustomBackAction 
   const handleSaveName = async () => {
     const finalName = tempName.trim() ? tempName.trim() : "Anonymous Sensei"
     setPlayerName(finalName)
-    localStorage.setItem('ba_gear_player_name', finalName)
+    localStorage.setItem('ba_player_name', finalName)
     setIsEditingName(false)
 
     if (finalName === lastSavedNameRef.current) return

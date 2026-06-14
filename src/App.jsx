@@ -4,10 +4,11 @@ import SkillGuesser from './games/SkillGuesser.jsx'
 import HaloGuesser from './games/HaloGuesser.jsx'
 import WeaponGuesser from './games/WeaponGuesser.jsx'
 import GearGuesser from './games/GearGuesser.jsx'
+import ChocolateGuesser from './games/ChocolateGuesser.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock } from 'lucide-react'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear'
+  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate'
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [customBackAction, setCustomBackAction] = useState(null)
 
@@ -43,7 +44,7 @@ export default function App() {
               className="header-back-btn"
             >
               <ArrowLeft className="w-4 h-4 back-icon" />
-              <span>{(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}</span>
+              <span>{(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear' || activeTab === 'chocolate') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}</span>
             </button>
           )}
 
@@ -192,12 +193,37 @@ export default function App() {
                 </div>
                 
                 <div className="lobby-card-info">
-                  <h3 className="lobby-card-title">ทาย Gear นักเรียน</h3>
+                  <h3 className="lobby-card-title">ทายของรักนักเรียน</h3>
                   <span className="lobby-card-tag ready">READY</span>
                 </div>
                 
                 <button className="lobby-card-btn ready">
                   PLAY GEAR MODE
+                </button>
+              </div>
+
+              {/* Card 6: Chocolate Guess (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('chocolate')}
+                className="lobby-card"
+              >
+                {/* Visual collage preview of Chocolates */}
+                <div className="lobby-card-preview">
+                  <div className="collage-grid">
+                    <img src="/images/item/icon/event_vallentine_chocolate_airi.webp" alt="Airi Chocolate" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/item/icon/event_vallentine_chocolate_aru.webp" alt="Aru Chocolate" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/item/icon/event_vallentine_chocolate_hina.webp" alt="Hina Chocolate" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/item/icon/event_vallentine_chocolate_shiroko.webp" alt="Shiroko Chocolate" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">ทายช็อกโกแลต</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY VALENTINE MODE
                 </button>
               </div>
 
@@ -235,6 +261,14 @@ export default function App() {
 
         {activeTab === 'gear' && (
           <GearGuesser 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+            setCustomBackAction={setCustomBackAction}
+          />
+        )}
+
+        {activeTab === 'chocolate' && (
+          <ChocolateGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
             setCustomBackAction={setCustomBackAction}
