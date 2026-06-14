@@ -3,10 +3,11 @@ import StudentGuesser from './games/StudentGuesser.jsx'
 import SkillGuesser from './games/SkillGuesser.jsx'
 import HaloGuesser from './games/HaloGuesser.jsx'
 import WeaponGuesser from './games/WeaponGuesser.jsx'
+import GearGuesser from './games/GearGuesser.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock } from 'lucide-react'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill'
+  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear'
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [customBackAction, setCustomBackAction] = useState(null)
 
@@ -42,7 +43,7 @@ export default function App() {
               className="header-back-btn"
             >
               <ArrowLeft className="w-4 h-4 back-icon" />
-              <span>{(activeTab === 'halo' || activeTab === 'weapon') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}</span>
+              <span>{(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}</span>
             </button>
           )}
 
@@ -175,6 +176,31 @@ export default function App() {
                 </button>
               </div>
 
+              {/* Card 5: Gear Guess (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('gear')}
+                className="lobby-card"
+              >
+                {/* Visual collage preview of Gear */}
+                <div className="lobby-card-preview">
+                  <div className="collage-grid">
+                    <img src="/images/gear/icon/10000.webp" alt="Aru Gear" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/gear/icon/10010.webp" alt="Shiroko Gear" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/gear/icon/10004.webp" alt="Hina Gear" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                    <img src="/images/gear/icon/10005.webp" alt="Hoshino Gear" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">ทาย Gear นักเรียน</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY GEAR MODE
+                </button>
+              </div>
+
             </div>
           </div>
         )}
@@ -201,6 +227,14 @@ export default function App() {
 
         {activeTab === 'skill' && (
           <SkillGuesser 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+            setCustomBackAction={setCustomBackAction}
+          />
+        )}
+
+        {activeTab === 'gear' && (
+          <GearGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
             setCustomBackAction={setCustomBackAction}
