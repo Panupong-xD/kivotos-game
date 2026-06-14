@@ -300,13 +300,15 @@ export default function StudentGuesser({ soundEnabled }) {
       'Millennium': 'Millennium.png',
       'RedWinter': 'RedWinter.png',
       'SRT': 'SRT.png',
+      'Srt': 'SRT.png',
       'Shanhaijing': 'Shanhaijing.png',
       'Tokiwadai': 'Tokiwadai.png',
       'Trinity': 'Trinity.png',
       'Valkyrie': 'Valkyrie.png',
       'ETC': 'ETC.png',
-      'Highlander': 'ETC.png',
-      'WildHunt': 'ETC.png',
+      'Highlander': 'Highlander.png',
+      'WildHunt': 'Wildhunt.png',
+      'Wildhunt': 'Wildhunt.png',
       'Sakugawa': 'ETC.png'
     }
     const icon = schoolMap[school] || 'ETC.png'

@@ -5,57 +5,151 @@ import HaloGuesser from './games/HaloGuesser.jsx'
 import WeaponGuesser from './games/WeaponGuesser.jsx'
 import GearGuesser from './games/GearGuesser.jsx'
 import ChocolateGuesser from './games/ChocolateGuesser.jsx'
-import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock } from 'lucide-react'
+import StudentDatabase from './components/StudentDatabase.jsx'
+import AboutSchale from './components/AboutSchale.jsx'
+import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users } from 'lucide-react'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate'
+  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about'
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [customBackAction, setCustomBackAction] = useState(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Main Header Bar */}
-      <header className="header-container">
-        {/* Brand Logo and Title */}
-        <div className="brand-wrapper" onClick={() => {
-          setCustomBackAction(null)
-          setActiveTab('lobby')
-        }}>
-          <div className="brand-icon-box">
-            <img src="/images/icon/icon_x512.png" alt="Kivotos Arcade Logo" className="brand-logo-img" />
+      {/* Main Header / Navigation Bar */}
+      <header className="navbar-container">
+        <div className="navbar-inner">
+          
+          {/* Left Side: Brand Logo and Title */}
+          <div className="brand-wrapper" onClick={() => {
+            setCustomBackAction(null)
+            setMobileMenuOpen(false)
+            setActiveTab('lobby')
+          }}>
+            <div className="brand-icon-box">
+              <img src="/images/icon/icon_x512.png" alt="Kivotos Arcade Logo" className="brand-logo-img" />
+            </div>
+            <div className="brand-title-box">
+              <h1>KIVOTOS ARCADE</h1>
+              <p>SCHALE GAME STATION</p>
+            </div>
           </div>
-          <div className="brand-title-box">
-            <h1>KIVOTOS ARCADE</h1>
-            <p>SCHALE GAME STATION</p>
-          </div>
-        </div>
 
-        {/* Header Control Buttons */}
-        <div className="controls-wrapper">
-          {activeTab !== 'lobby' && (
+          {/* Center Side: Desktop Navigation Links */}
+          <nav className="desktop-nav-links">
             <button
               onClick={() => {
-                if (customBackAction) {
-                  customBackAction()
-                } else {
-                  setActiveTab('lobby')
-                }
+                setCustomBackAction(null)
+                setActiveTab('lobby')
               }}
-              className="header-back-btn"
+              className={`nav-link-btn ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate') ? 'active' : ''}`}
             >
-              <ArrowLeft className="w-4 h-4 back-icon" />
-              <span>{(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear' || activeTab === 'chocolate') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}</span>
+              <Gamepad2 className="w-4 h-4 nav-link-icon" />
+              <span>Arcade</span>
             </button>
-          )}
+            <button
+              onClick={() => {
+                setCustomBackAction(null)
+                setActiveTab('database')
+              }}
+              className={`nav-link-btn ${activeTab === 'database' ? 'active' : ''}`}
+            >
+              <BookOpen className="w-4 h-4 nav-link-icon" />
+              <span>Student DB</span>
+            </button>
+            <button
+              onClick={() => {
+                setCustomBackAction(null)
+                setActiveTab('about')
+              }}
+              className={`nav-link-btn ${activeTab === 'about' ? 'active' : ''}`}
+            >
+              <Users className="w-4 h-4 nav-link-icon" />
+              <span>Characters</span>
+            </button>
+          </nav>
 
-          <button
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className="sound-toggle-btn"
-            title={soundEnabled ? 'ปิดเสียง' : 'เปิดเสียง'}
-          >
-            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-          </button>
+          {/* Right Side: Header Control Buttons & Hamburger */}
+          <div className="controls-wrapper">
+            {/* Back Button (Only shown inside active games, e.g. when not on lobby, database, or about) */}
+            {activeTab !== 'lobby' && activeTab !== 'database' && activeTab !== 'about' && (
+              <button
+                onClick={() => {
+                  if (customBackAction) {
+                    customBackAction()
+                  } else {
+                    setActiveTab('lobby')
+                  }
+                }}
+                className="header-back-btn"
+              >
+                <ArrowLeft className="w-4 h-4 back-icon" />
+                <span className="back-btn-text">
+                  {(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear' || activeTab === 'chocolate') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}
+                </span>
+              </button>
+            )}
+
+            {/* Sound Toggle */}
+            <button
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className="sound-toggle-btn"
+              title={soundEnabled ? 'ปิดเสียง' : 'เปิดเสียง'}
+            >
+              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </button>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="mobile-hamburger-btn"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+
         </div>
+
+        {/* Mobile Navigation Drawer Dropdown */}
+        {mobileMenuOpen && (
+          <div className="mobile-nav-drawer">
+            <button
+              onClick={() => {
+                setCustomBackAction(null)
+                setMobileMenuOpen(false)
+                setActiveTab('lobby')
+              }}
+              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate') ? 'active' : ''}`}
+            >
+              <Gamepad2 className="w-4 h-4" />
+              <span>Arcade (ห้องเกม)</span>
+            </button>
+            <button
+              onClick={() => {
+                setCustomBackAction(null)
+                setMobileMenuOpen(false)
+                setActiveTab('database')
+              }}
+              className={`mobile-nav-link ${activeTab === 'database' ? 'active' : ''}`}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Student DB (ฐานข้อมูล)</span>
+            </button>
+            <button
+              onClick={() => {
+                setCustomBackAction(null)
+                setMobileMenuOpen(false)
+                setActiveTab('about')
+              }}
+              className={`mobile-nav-link ${activeTab === 'about' ? 'active' : ''}`}
+            >
+              <Users className="w-4 h-4" />
+              <span>Characters (ทำเนียบ)</span>
+            </button>
+          </div>
+        )}
       </header>
 
       {/* Main App Workspace */}
@@ -273,6 +367,14 @@ export default function App() {
             onBack={() => setActiveTab('lobby')} 
             setCustomBackAction={setCustomBackAction}
           />
+        )}
+
+        {activeTab === 'database' && (
+          <StudentDatabase />
+        )}
+
+        {activeTab === 'about' && (
+          <AboutSchale />
         )}
       </main>
 
