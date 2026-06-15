@@ -6,6 +6,7 @@ import WeaponGuesser from './games/WeaponGuesser.jsx'
 import GearGuesser from './games/GearGuesser.jsx'
 import ChocolateGuesser from './games/ChocolateGuesser.jsx'
 import VoiceGuesser from './games/VoiceGuesser.jsx'
+import HeightGuesser from './games/HeightGuesser.jsx'
 import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users } from 'lucide-react'
@@ -44,7 +45,7 @@ export default function App() {
                 setCustomBackAction(null)
                 setActiveTab('lobby')
               }}
-              className={`nav-link-btn ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice') ? 'active' : ''}`}
+              className={`nav-link-btn ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height') ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4 nav-link-icon" />
               <span>Arcade</span>
@@ -87,7 +88,7 @@ export default function App() {
               >
                 <ArrowLeft className="w-4 h-4 back-icon" />
                 <span className="back-btn-text">
-                  {(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}
+                  {(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}
                 </span>
               </button>
             )}
@@ -122,7 +123,7 @@ export default function App() {
                 setMobileMenuOpen(false)
                 setActiveTab('lobby')
               }}
-              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice') ? 'active' : ''}`}
+              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height') ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4" />
               <span>Arcade (ห้องเกม)</span>
@@ -355,6 +356,40 @@ export default function App() {
                   PLAY VOICE MODE
                 </button>
               </div>
+ 
+              {/* Card 8: Height Guess (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('height')}
+                className="lobby-card"
+              >
+                <div className="lobby-card-preview" style={{ position: 'relative' }}>
+                  <div className="collage-grid">
+                    <img src="/images/student/icon/10005.webp" alt="Hoshino" className="collage-img" />
+                    <img src="/images/student/icon/10004.webp" alt="Hina" className="collage-img" />
+                    <img src="/images/student/icon/10000.webp" alt="Aru" className="collage-img" />
+                    <img src="/images/student/icon/10015.webp" alt="Natsu" className="collage-img" />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Award style={{ width: '48px', height: '48px', color: '#fbbf24', filter: 'drop-shadow(0 0 8px rgba(251,191,37,0.8))' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">วัดส่วนสูงนักเรียน</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY HEIGHT MODE
+                </button>
+              </div>
 
             </div>
           </div>
@@ -406,6 +441,14 @@ export default function App() {
 
         {activeTab === 'voice' && (
           <VoiceGuesser 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+            setCustomBackAction={setCustomBackAction}
+          />
+        )}
+
+        {activeTab === 'height' && (
+          <HeightGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
             setCustomBackAction={setCustomBackAction}
