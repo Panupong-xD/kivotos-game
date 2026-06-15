@@ -146,7 +146,7 @@ const Autocomplete = forwardRef(({ suggestions, onSelect, guessedIds = [], place
             >
               {/* Face Icon */}
               <img
-                src={`/images/student/icon/${item.id}.webp`}
+                src={item.icon || `/images/student/icon/${item.id}.webp`}
                 alt={item.englishName}
                 className="autocomplete-avatar"
                 onError={(e) => {

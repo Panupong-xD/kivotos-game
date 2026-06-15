@@ -195,103 +195,52 @@ const HALO_FILES = [
   "Yuzu_Halo.png"
 ];
 
-// Helper to map a student to their halo file
-const findHaloForStudent = (student) => {
-  if (!student) return null;
-  const pathName = student.PathName ? student.PathName.toLowerCase() : '';
-  const devName = student.DevName ? student.DevName.toLowerCase() : '';
-
-  // Get base names
-  const baseParts = pathName.split('_');
-  const baseName = baseParts[0];
-
-  // Custom manual mappings
-  if (baseName === 'ako' || devName === 'ako') return 'Ako_Halo.png';
-  if (baseName === 'aris' || devName === 'aris') return 'Alice_Halo.png';
-  if (baseName === 'hatsune' || devName === 'hatsune_miku') return 'Miku_Halo.png';
-  if (baseName === 'hifumi' || devName === 'hifumi') return 'Hifumi_Halo.png';
-  if (pathName === 'misaka_mikoto' || devName === 'misaka_mikoto') return 'Misaka_Mikoto_Halo.png';
-  if (pathName === 'shokuhou_misaki' || devName === 'shokuhou_misaki') return 'Shokuhou_Misaki_Halo.png';
-  if (pathName === 'saten_ruiko' || devName === 'saten_ruiko') return 'Saten_Ruiko_Halo.png';
-  if (pathName === 'shiroko_terror' || devName === 'shiroko_terror') return 'Shiroko_Terror_Halo.png';
-  if (pathName === 'arona' || devName === 'arona') return 'Arona_Halo.png';
-  if (pathName === 'plana' || devName === 'plana') return 'Plana_Halo.png';
-
-  // Scan in HALO_FILES
-  for (const file of HALO_FILES) {
-    const fNormalized = file
-      .replace('_Halo.png', '')
-      .replace('_Angered', '')
-      .replace('_Happy', '')
-      .replace('_Motivated', '')
-      .replace('_Sad', '')
-      .replace('_Shocked', '')
-      .toLowerCase();
-
-    if (fNormalized === baseName || fNormalized === devName || fNormalized === pathName) {
-      return file;
+// Helper to map a story character to their halo file
+const findHaloForStoryCharacter = (char) => {
+  if (!char || !char.NameEn) return null;
+  const nameEn = char.NameEn;
+  const nameParts = nameEn.toLowerCase().split(' ');
+  let matchedHalo = null;
+  
+  // 1. Try exact match on NameEn (replacing spaces with underscores)
+  const exactEnFile = `${nameEn.replace(/ /g, '_')}_Halo.png`;
+  if (HALO_FILES.includes(exactEnFile)) {
+    matchedHalo = exactEnFile;
+  }
+  
+  // 2. Try matching by first name or last name
+  if (!matchedHalo) {
+    for (const part of nameParts) {
+      if (part.length <= 2) continue;
+      const candidate = `${part.charAt(0).toUpperCase() + part.slice(1)}_Halo.png`;
+      if (HALO_FILES.includes(candidate)) {
+        matchedHalo = candidate;
+        break;
+      }
     }
   }
 
-  return null;
-};
-
-// Capitalization helper for English names derived from PathName
-const getEnglishName = (pathName, devName) => {
-  if (!pathName) return devName || "Unknown";
-  
-  const capitalize = (str) => {
-    if (!str) return '';
-    if (str === 'miku') return 'Miku';
-    if (str === 'hatsune') return 'Hatsune';
-    if (str === 'ruiko') return 'Ruiko';
-    if (str === 'saten') return 'Saten';
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  const variantsMap = {
-    'swimsuit': 'Swimsuit',
-    'newyear': 'New Year',
-    'dress': 'Dress',
-    'bunnygirl': 'Bunny',
-    'bunny': 'Bunny',
-    'track': 'Track',
-    'gym': 'Gym',
-    'casual': 'Casual',
-    'hotspring': 'Hot Spring',
-    'onsen': 'Hot Spring',
-    'cheerleader': 'Cheerleader',
-    'guide': 'Guide',
-    'kid': 'Kid',
-    'child': 'Kid',
-    'small': 'Kid',
-    'christmas': 'Christmas',
-    'parttime': 'Part-time',
-    'uniform': 'Uniform',
-    'band': 'Band',
-    'idol': 'Idol',
-    'battle': 'Battle',
-    'camp': 'Camp',
-    'qipao': 'Qipao',
-    'pajama': 'Pajama',
-    'riding': 'Cycling',
-    'cycling': 'Cycling',
-    'dressup': 'Dress',
-    'wildcard': 'Wildcard'
-  };
-
-  const parts = pathName.split('_');
-  if (parts.length === 1) {
-    return capitalize(parts[0]);
+  // 3. Fallback manually defined mappings for special cases
+  if (!matchedHalo) {
+    const lower = nameEn.toLowerCase();
+    if (lower === 'arona') matchedHalo = 'Arona_Halo.png';
+    else if (lower === 'plana') matchedHalo = 'Plana_Halo.png';
+    else if (lower === 'tendou alice') matchedHalo = 'Alice_Halo.png';
+    else if (lower === 'tendou kei') matchedHalo = 'Kei_Halo.png';
+    else if (lower === 'hatsune miku') matchedHalo = 'Miku_Halo.png';
+    else if (lower === 'misaka mikoto') matchedHalo = 'Misaka_Mikoto_Halo.png';
+    else if (lower === 'shokuhou misaki') matchedHalo = 'Shokuhou_Misaki_Halo.png';
+    else if (lower === 'saten ruiko') matchedHalo = 'Saten_Ruiko_Halo.png';
+    else if (lower === 'shiroko terror') matchedHalo = 'Shiroko_Terror_Halo.png';
+    else if (lower === 'nanagami rin') matchedHalo = 'Rin_Halo.png';
+    else if (lower === 'okusora ayane') matchedHalo = 'Ayane_Halo.png';
+    else if (lower === 'arakawa arata') matchedHalo = 'Arata_Halo.png';
+    else if (lower === 'yurizono seia') matchedHalo = 'Seia_Halo.png';
+    else if (lower === 'komakaze rabu') matchedHalo = 'Rabu_Halo.png';
+    else if (lower === 'goryou nagusa') matchedHalo = 'Nagusa_Halo.png';
   }
-  
-  const lastPart = parts[parts.length - 1];
-  if (variantsMap[lastPart]) {
-    const base = parts.slice(0, -1).map(capitalize).join(' ');
-    return `${base} (${variantsMap[lastPart]})`;
-  }
-  
-  return parts.map(capitalize).join(' ');
+
+  return matchedHalo;
 };
 
 // Helper to get or generate persistent player UUID
@@ -532,33 +481,30 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
     }
   }
 
-  // Load students & prepare database
+  // Load story characters & prepare database
   useEffect(() => {
     async function loadData() {
       const startTime = Date.now()
       try {
-        const res = await fetch('/jp_data/students.min.json')
+        const res = await fetch('/jp_data/story_characters_info.json')
         const data = await res.json()
         const list = []
-        for (const id in data) {
-          const s = data[id]
-          if (s.IsReleased && s.IsReleased[0]) {
-            const haloFile = findHaloForStudent(s)
-            if (haloFile) {
-              list.push({
-                id: s.Id,
-                name: s.Name,
-                devName: s.DevName,
-                pathName: s.PathName,
-                englishName: getEnglishName(s.PathName, s.DevName),
-                school: s.School,
-                schoolYear: s.SchoolYear || 'N/A',
-                squadType: s.SquadType,
-                armorType: s.ArmorType,
-                starGrade: s.StarGrade,
-                haloFile: haloFile
-              })
-            }
+        for (const name in data) {
+          const char = data[name]
+          const haloFile = findHaloForStoryCharacter(char)
+          if (haloFile) {
+            list.push({
+              id: char.NameEn.replace(/ /g, '_'),
+              name: char.Name,
+              devName: char.NameEn,
+              pathName: char.NameEn.replace(/ /g, '_').toLowerCase(),
+              englishName: char.NameEn,
+              school: char.School || 'ETC',
+              schoolTh: char.SchoolTh || 'อื่นๆ',
+              schoolYear: char.Age || 'N/A',
+              icon: char.IconLocalPath ? char.IconLocalPath.replace('./', '/') : '',
+              haloFile: haloFile
+            })
           }
         }
         setStudents(list)
@@ -574,7 +520,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
           }, 300)
         }, delay)
       } catch (err) {
-        console.error("Failed to load students in HaloGuesser:", err)
+        console.error("Failed to load story characters in HaloGuesser:", err)
         setFadeLoading(false)
         setLoading(false)
       }
@@ -1027,7 +973,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                 {solved && (
                   <div className="solved-target-profile-card animate-scaleUp">
                     <img 
-                      src={`/images/student/icon/${currentTarget.student.id}.webp`}
+                      src={currentTarget.student.icon || '/images/schoolicon/ETC.png'}
                       alt={currentTarget.student.englishName}
                       className="solved-profile-avatar"
                       onError={(e) => {
@@ -1115,7 +1061,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                         {/* Avatar & Name */}
                         <div className="log-student-info">
                           <img
-                            src={`/images/student/icon/${g.id}.webp`}
+                            src={g.icon || '/images/schoolicon/ETC.png'}
                             alt={g.englishName}
                             className="log-student-avatar"
                             onError={(e) => {
@@ -1133,9 +1079,9 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                               {g.schoolMatch ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
                               {g.school}
                             </span>
-                            <span className={`log-pill ${g.yearMatch ? 'match' : 'no-match'}`} title="ชั้นปี">
+                            <span className={`log-pill ${g.yearMatch ? 'match' : 'no-match'}`} title="อายุ">
                               {g.yearMatch ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
-                              ปี {g.schoolYear.replace('年生', '')}
+                              {g.schoolYear === 'N/A' ? 'อายุ: N/A' : `อายุ: ${g.schoolYear} ปี`}
                             </span>
                           </div>
                         )}
@@ -1203,7 +1149,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                     <div className="gameover-row-student">
                       <span className="row-index">#{idx + 1}</span>
                       <img 
-                        src={`/images/student/icon/${item.student.id}.webp`}
+                        src={item.student.icon || '/images/schoolicon/ETC.png'}
                         alt={item.student.englishName}
                         className="gameover-row-avatar"
                         onError={(e) => {
