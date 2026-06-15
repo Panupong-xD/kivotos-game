@@ -16,10 +16,10 @@ export const GAME_COSTS = {
   SUBMIT_GUESS: 3,       // ค่า Cost ที่ใช้เมื่อผู้เล่นส่งทายชื่อ (รวมถึงหักเมื่อทายผิด)
   DECREASE_BLUR: 3,      // ค่า Cost ที่ใช้ในการปรับความเบลอภาพ
   RESTORE_COLOR: 15,      // ค่า Cost ที่ใช้ในการยกเลิกถมดำ Silhouette คืนสีผมตัวละคร
-  REVEAL_HALO: 12,        // ค่า Cost ที่ใช้ในการวิเคราะห์รูปฮาโล
+  REVEAL_HALO: 10,        // ค่า Cost ที่ใช้ในการวิเคราะห์รูปฮาโล
   REVEAL_WEAPON: 15,      // ค่า Cost ที่ใช้ในการตรวจสอบรูปปืน
   REVEAL_GEAR: 4,        // ค่า Cost ที่ใช้ในการใบ้ Unique Gear เฉพาะตัว
-  REVEAL_COMBAT: 12,      // ค่า Cost ที่ใช้ในการปลดล็อคประวัติการรบ
+  REVEAL_COMBAT: 10,      // ค่า Cost ที่ใช้ในการปลดล็อคประวัติการรบ
   REVEAL_PERSONAL: 10     // ค่า Cost ที่ใช้ในการปลดล็อคข้อมูลประวัติส่วนตัว
 };
 
