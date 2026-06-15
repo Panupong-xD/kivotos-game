@@ -9,7 +9,7 @@ import VoiceGuesser from './games/VoiceGuesser.jsx'
 import HeightGuesser from './games/HeightGuesser.jsx'
 import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
-import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users } from 'lucide-react'
+import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown } from 'lucide-react'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about'
@@ -366,8 +366,8 @@ export default function App() {
                   <div className="collage-grid">
                     <img src="/images/student/icon/10005.webp" alt="Hoshino" className="collage-img" />
                     <img src="/images/student/icon/10004.webp" alt="Hina" className="collage-img" />
-                    <img src="/images/student/icon/10000.webp" alt="Aru" className="collage-img" />
-                    <img src="/images/student/icon/10015.webp" alt="Natsu" className="collage-img" />
+                    <img src="/images/student/icon/10008.webp" alt="Hasumi" className="collage-img" />
+                    <img src="/images/student/icon/20009.webp" alt="Tsukuyo" className="collage-img" />
                   </div>
                   <div style={{
                     position: 'absolute',
@@ -377,7 +377,7 @@ export default function App() {
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <Award style={{ width: '48px', height: '48px', color: '#fbbf24', filter: 'drop-shadow(0 0 8px rgba(251,191,37,0.8))' }} />
+                    <ArrowUpDown style={{ width: '48px', height: '48px', color: '#fbbf24', filter: 'drop-shadow(0 0 8px rgba(251,191,37,0.8))' }} />
                   </div>
                 </div>
                 
