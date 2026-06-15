@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import LoadingScreen from './LoadingScreen.jsx'
 import { Search, Filter, X, Info, Sparkles, BookOpen } from 'lucide-react'
 
@@ -87,6 +87,31 @@ export default function StudentDatabase() {
   const [filteredStudents, setFilteredStudents] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedStudent, setSelectedStudent] = useState(null)
+  const [visibleCount, setVisibleCount] = useState(24)
+
+  const sentinelRef = useRef(null)
+
+  // Infinite Scroll Observer
+  useEffect(() => {
+    if (loading) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && filteredStudents.length > visibleCount) {
+          setVisibleCount((prev) => prev + 24)
+        }
+      },
+      { rootMargin: '250px' }
+    )
+
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [loading, filteredStudents.length, visibleCount])
   
   // Search & Filter state
   const [searchTerm, setSearchTerm] = useState('')
@@ -191,6 +216,7 @@ export default function StudentDatabase() {
     }
 
     setFilteredStudents(result)
+    setVisibleCount(24) // Reset visible items on filter change
   }, [searchTerm, selectedSchool, selectedRole, selectedBullet, selectedArmor, students])
 
   // Get school icon path
@@ -369,79 +395,88 @@ export default function StudentDatabase() {
 
       {/* Database Grid */}
       {filteredStudents.length > 0 ? (
-        <div className="db-student-grid">
-          {filteredStudents.map(student => (
-            <div
-              key={student.id}
-              className="db-student-card"
-              onClick={() => setSelectedStudent(student)}
-            >
-              {/* Card top badge */}
-              <div className="db-card-school-badge">
-                <img
-                  src={getSchoolIcon(student.school)}
-                  alt={student.school}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/images/schoolicon/ETC.png';
-                  }}
-                />
-              </div>
-
-              {/* Student avatar */}
-              <div className="db-card-avatar-box">
-                <img
-                  src={`/images/student/icon/${student.id}.webp`}
-                  alt={student.englishName}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/images/schoolicon/ETC.png';
-                  }}
-                />
-              </div>
-
-              {/* Student basic info */}
-              <div className="db-card-info-box">
-                <div className="db-card-stars">
-                  {Array.from({ length: student.starGrade }).map((_, i) => '★').join('')}
+        <>
+          <div className="db-student-grid">
+            {filteredStudents.slice(0, visibleCount).map(student => (
+              <div
+                key={student.id}
+                className="db-student-card"
+                onClick={() => setSelectedStudent(student)}
+              >
+                {/* Card top badge */}
+                <div className="db-card-school-badge">
+                  <img
+                    src={getSchoolIcon(student.school)}
+                    alt={student.school}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/schoolicon/ETC.png';
+                    }}
+                  />
                 </div>
-                <h3 className="db-card-name-eng">{student.englishName}</h3>
-                <span className="db-card-name-jp">{student.name}</span>
-                
-                {/* Secondary stats */}
-                <div className="db-card-metadata">
-                  <span className="db-meta-school-tag">{student.school}</span>
-                  <div className="db-meta-role">
-                    <img
-                      src={getTacticRoleIcon(student.tacticRole)}
-                      alt={student.tacticRole}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/images/schoolicon/ETC.png';
-                      }}
-                    />
-                    <span>{getTacticRoleLabel(student.tacticRole)}</span>
+
+                {/* Student avatar */}
+                <div className="db-card-avatar-box">
+                  <img
+                    src={`/images/student/icon/${student.id}.webp`}
+                    alt={student.englishName}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/schoolicon/ETC.png';
+                    }}
+                  />
+                </div>
+
+                {/* Student basic info */}
+                <div className="db-card-info-box">
+                  <div className="db-card-stars">
+                    {Array.from({ length: student.starGrade }).map((_, i) => '★').join('')}
+                  </div>
+                  <h3 className="db-card-name-eng">{student.englishName}</h3>
+                  <span className="db-card-name-jp">{student.name}</span>
+                  
+                  {/* Secondary stats */}
+                  <div className="db-card-metadata">
+                    <span className="db-meta-school-tag">{student.school}</span>
+                    <div className="db-meta-role">
+                      <img
+                        src={getTacticRoleIcon(student.tacticRole)}
+                        alt={student.tacticRole}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/images/schoolicon/ETC.png';
+                        }}
+                      />
+                      <span>{getTacticRoleLabel(student.tacticRole)}</span>
+                    </div>
+                  </div>
+
+                  {/* Tactical pills */}
+                  <div className="db-card-tactical-pills">
+                    <span className={`db-pill ${getBulletPillClass(student.bulletType)}`}>
+                      {student.bulletType}
+                    </span>
+                    <span className={`db-pill ${getArmorPillClass(student.armorType)}`}>
+                      {student.armorType === 'LightArmor' ? 'Light' : student.armorType === 'HeavyArmor' ? 'Heavy' : student.armorType === 'Unarmed' ? 'Special' : 'Elastic'}
+                    </span>
                   </div>
                 </div>
 
-                {/* Tactical pills */}
-                <div className="db-card-tactical-pills">
-                  <span className={`db-pill ${getBulletPillClass(student.bulletType)}`}>
-                    {student.bulletType}
-                  </span>
-                  <span className={`db-pill ${getArmorPillClass(student.armorType)}`}>
-                    {student.armorType === 'LightArmor' ? 'Light' : student.armorType === 'HeavyArmor' ? 'Heavy' : student.armorType === 'Unarmed' ? 'Special' : 'Elastic'}
-                  </span>
+                <div className="db-card-action-bar">
+                  <span>ดูโปรไฟล์เชิงลึก</span>
+                  <Info style={{ width: '14px', height: '14px' }} />
                 </div>
               </div>
+            ))}
+          </div>
 
-              <div className="db-card-action-bar">
-                <span>ดูโปรไฟล์เชิงลึก</span>
-                <Info style={{ width: '14px', height: '14px' }} />
-              </div>
+          {filteredStudents.length > visibleCount && (
+            <div ref={sentinelRef} className="db-infinite-loading">
+              <div className="db-infinite-spinner"></div>
+              <span>กำลังโหลดข้อมูลเพิ่มเติม...</span>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
         <div className="db-no-results">
           <BookOpen style={{ width: '48px', height: '48px', opacity: 0.3, marginBottom: '12px' }} />

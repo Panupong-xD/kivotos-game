@@ -609,15 +609,6 @@ export default function AboutSchale() {
           </div>
         </div>
       )}
-
-      {/* Useful Links / Actions */}
-      <div className="about-footer-links" style={{ marginTop: '40px' }}>
-        <a href="https://bluearchive.nexon.com" target="_blank" rel="noreferrer" className="about-link-btn">
-          <Globe style={{ width: '14px', height: '14px' }} />
-          <span>Official Website</span>
-          <ExternalLink style={{ width: '12px', height: '12px' }} />
-        </a>
-      </div>
     </div>
   )
 }
