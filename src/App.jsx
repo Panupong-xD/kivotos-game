@@ -321,56 +321,6 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Card 7: Student Database (NEW) */}
-              <div 
-                onClick={() => setActiveTab('database')}
-                className="lobby-card"
-              >
-                {/* Visual collage preview of Students */}
-                <div className="lobby-card-preview">
-                  <div className="collage-grid">
-                    <img src="/images/student/icon/13000.webp" alt="Azusa" className="collage-img" />
-                    <img src="/images/student/icon/10015.webp" alt="Yuuka" className="collage-img" />
-                    <img src="/images/student/icon/16000.webp" alt="Mika" className="collage-img" />
-                    <img src="/images/student/icon/20000.webp" alt="Alice" className="collage-img" />
-                  </div>
-                </div>
-                
-                <div className="lobby-card-info">
-                  <h3 className="lobby-card-title">ฐานข้อมูลนักเรียน</h3>
-                  <span className="lobby-card-tag info-tag">DATABASE</span>
-                </div>
-                
-                <button className="lobby-card-btn info-btn">
-                  VIEW DATABASE
-                </button>
-              </div>
-
-              {/* Card 8: Characters Roster (NEW) */}
-              <div 
-                onClick={() => setActiveTab('about')}
-                className="lobby-card"
-              >
-                {/* Visual collage preview of Story Characters */}
-                <div className="lobby-card-preview">
-                  <div className="collage-grid">
-                    <img src="/images/story_characters/icons/The_Iridescence.png" alt="The Iridescence" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
-                    <img src="/images/student/icon/10005.webp" alt="Hoshino" className="collage-img" />
-                    <img src="/images/story_characters/icons/Angels_of_the_Apocalypse.png" alt="Decagrammaton" className="collage-img" style={{ objectFit: 'contain', padding: '4px' }} />
-                    <img src="/images/student/icon/10000.webp" alt="Aru" className="collage-img" />
-                  </div>
-                </div>
-                
-                <div className="lobby-card-info">
-                  <h3 className="lobby-card-title">ทำเนียบตัวละคร</h3>
-                  <span className="lobby-card-tag info-tag">CHARACTERS</span>
-                </div>
-                
-                <button className="lobby-card-btn info-btn">
-                  VIEW CHARACTERS
-                </button>
-              </div>
-
             </div>
           </div>
         )}
