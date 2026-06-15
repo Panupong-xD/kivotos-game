@@ -993,7 +993,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 70,
         "StatType": [
@@ -1413,7 +1413,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 70,
         "StatType": [
@@ -1818,7 +1818,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 70,
         "StatType": [
@@ -2223,7 +2223,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 70,
         "StatType": [
@@ -2668,7 +2668,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 70,
         "StatType": [
@@ -3083,7 +3083,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 70,
         "StatType": [
@@ -4590,7 +4590,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 1,
         "StatType": [],
@@ -4761,7 +4761,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 1,
         "StatType": [],
@@ -4932,7 +4932,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 1,
         "StatType": [],
@@ -5103,7 +5103,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 1,
         "StatType": [],
@@ -5274,7 +5274,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 1,
         "StatType": [],
@@ -5445,7 +5445,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "MaxLevel": 1,
         "StatType": [],

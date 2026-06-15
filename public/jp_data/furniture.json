@@ -21778,7 +21778,7 @@
         "Craftable": [
             true,
             true,
-            false
+            true
         ],
         "ComfortBonus": 500,
         "Category": "Decorations",
@@ -42244,7 +42244,7 @@
         "Craftable": [
             true,
             true,
-            false
+            true
         ],
         "ComfortBonus": 350,
         "Category": "Furnitures",
@@ -42283,7 +42283,7 @@
         "Craftable": [
             true,
             true,
-            false
+            true
         ],
         "ComfortBonus": 350,
         "Category": "Furnitures",
@@ -42322,7 +42322,7 @@
         "Craftable": [
             true,
             true,
-            false
+            true
         ],
         "ComfortBonus": 350,
         "Category": "Furnitures",
@@ -42703,7 +42703,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "Rarity": "SSR",
         "Icon": "my_event076_board",
@@ -42734,7 +42734,7 @@
         "Interaction": [
             true,
             true,
-            false
+            true
         ]
     },
     "210360": {
@@ -42820,7 +42820,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "Rarity": "SSR",
         "Icon": "my_event077_table_02",
@@ -42851,7 +42851,7 @@
         "Interaction": [
             true,
             true,
-            false
+            true
         ]
     },
     "210363": {
@@ -42859,7 +42859,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "Rarity": "SSR",
         "Icon": "my_event077_table_03",
@@ -42890,7 +42890,7 @@
         "Interaction": [
             true,
             true,
-            false
+            true
         ]
     },
     "210364": {
@@ -44453,7 +44453,8 @@
         "Tags": [
             "Dn",
             "A",
-            "dT"
+            "dT",
+            "IQ"
         ],
         "ShiftingCraftQuality": 200,
         "CraftQuality": 100,
@@ -44462,7 +44463,7 @@
         "Name": "氷河を秘めし冷蔵庫",
         "Desc": "冷たい飲み物がたっぷり入った冷蔵庫。開けた後は必ずドアを閉めるように。",
         "Interaction": [
-            false,
+            true,
             false,
             false
         ]
