@@ -293,6 +293,12 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.lobby-card-tag.info-tag {
+  background: rgba(0, 229, 255, 0.15);
+  color: #00e5ff;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
 /* Slanted Slate Play Button */
 .lobby-card-btn {
   width: 100%;
@@ -319,6 +325,18 @@ body {
   background: rgba(255, 255, 255, 0.04);
   color: #F5F5F7;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lobby-card:hover .lobby-card-btn.info-btn {
+  background: #00e5ff;
+  color: #0c0c0e;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+}
+
+.lobby-card-btn.info-btn {
+  background: rgba(0, 229, 255, 0.05);
+  color: #00e5ff;
+  border: 1px solid rgba(0, 229, 255, 0.2);
 }
 
 .lobby-card-btn.locked {
@@ -2971,8 +2989,8 @@ body {
   display: none;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -2997,6 +3015,7 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 999;
 }
 
 @keyframes slideDown {
