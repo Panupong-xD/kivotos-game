@@ -7,9 +7,10 @@ import GearGuesser from './games/GearGuesser.jsx'
 import ChocolateGuesser from './games/ChocolateGuesser.jsx'
 import VoiceGuesser from './games/VoiceGuesser.jsx'
 import HeightGuesser from './games/HeightGuesser.jsx'
+import AgeGuesser from './games/AgeGuesser.jsx'
 import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
-import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown } from 'lucide-react'
+import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar } from 'lucide-react'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about'
@@ -45,7 +46,7 @@ export default function App() {
                 setCustomBackAction(null)
                 setActiveTab('lobby')
               }}
-              className={`nav-link-btn ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height') ? 'active' : ''}`}
+              className={`nav-link-btn ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age') ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4 nav-link-icon" />
               <span>Arcade</span>
@@ -88,7 +89,7 @@ export default function App() {
               >
                 <ArrowLeft className="w-4 h-4 back-icon" />
                 <span className="back-btn-text">
-                  {(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}
+                  {(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}
                 </span>
               </button>
             )}
@@ -123,7 +124,7 @@ export default function App() {
                 setMobileMenuOpen(false)
                 setActiveTab('lobby')
               }}
-              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height') ? 'active' : ''}`}
+              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age') ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4" />
               <span>Arcade (ห้องเกม)</span>
@@ -391,6 +392,40 @@ export default function App() {
                 </button>
               </div>
 
+              {/* Card 9: Sibling Guess (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('age')}
+                className="lobby-card"
+              >
+                <div className="lobby-card-preview" style={{ position: 'relative' }}>
+                  <div className="collage-grid">
+                    <img src="/images/student/icon/10050.webp" alt="Kokona" className="collage-img" />
+                    <img src="/images/student/icon/10009.webp" alt="Cherino" className="collage-img" />
+                    <img src="/images/student/icon/10008.webp" alt="Hasumi" className="collage-img" />
+                    <img src="/images/student/icon/10036.webp" alt="Shun" className="collage-img" />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Users style={{ width: '48px', height: '48px', color: '#ec4899', filter: 'drop-shadow(0 0 8px rgba(236,72,153,0.8))' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">พี่หรือน้อง?</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY SIBLING MODE
+                </button>
+              </div>
+
             </div>
           </div>
         )}
@@ -449,6 +484,14 @@ export default function App() {
 
         {activeTab === 'height' && (
           <HeightGuesser 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+            setCustomBackAction={setCustomBackAction}
+          />
+        )}
+
+        {activeTab === 'age' && (
+          <AgeGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
             setCustomBackAction={setCustomBackAction}
