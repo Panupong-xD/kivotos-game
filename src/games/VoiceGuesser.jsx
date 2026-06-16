@@ -774,7 +774,7 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
                 className="gameplay-badge practice-mode" 
                 style={{ backgroundColor: 'rgba(76, 154, 224, 0.1)', color: 'var(--color-accent)', borderColor: 'rgba(76, 154, 224, 0.2)', borderWidth: '1px' }}
               >
-                PRACTICE MODE (เล่นชิลๆ)
+                MINI GAME
               </span>
               <button onClick={onBack} className="gameplay-exit-btn">
                 กลับหน้าหลัก

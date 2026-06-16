@@ -463,7 +463,7 @@ export default function StudentGuesser({ soundEnabled, onBack }) {
       {/* Top Exit Bar */}
       <div className="halo-gameplay-header" style={{ width: '100%', margin: '0 auto 16px auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span className="gameplay-badge practice-mode">
-          PRACTICE MODE (เล่นชิลๆ)
+          MINI GAME
         </span>
         <button onClick={onBack} className="gameplay-exit-btn">
           กลับหน้าหลัก

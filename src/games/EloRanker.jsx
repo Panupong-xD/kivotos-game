@@ -845,13 +845,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
                 ไม่พบคู่ดวล กรุณากดปุ่มรีเซ็ตเพื่อโหลดนักเรียนใหม่
               </div>
             )}
-            
-            <div className="elo-info-box">
-              <Info className="w-4 h-4 text-sky-400 elo-info-icon" />
-              <p className="elo-info-text">
-                <strong>ระบบจัดอันดับโดยใช้ Binary Insertion Sort</strong>
-              </p>
-            </div>
+
           </div>
         )}
 
