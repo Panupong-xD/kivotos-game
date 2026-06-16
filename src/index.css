@@ -5134,19 +5134,52 @@ body {
 /* Responsive styles */
 @media (max-width: 768px) {
   .height-comparison-wrapper {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    gap: 8px;
+    align-items: stretch;
   }
   .height-student-card {
-    width: 100%;
-    max-width: 340px;
-    min-height: 420px;
+    flex: 1;
+    width: 50%;
+    max-width: 175px;
+    min-height: 280px;
+    border-radius: 12px;
   }
-  .card-portrait-wrapper {
-    height: 220px;
+  .height-student-card .card-portrait-wrapper {
+    height: 140px;
+  }
+  .height-student-card .card-student-info {
+    padding: 10px 8px;
+  }
+  .height-student-card .student-name-en {
+    font-size: 0.82rem;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .height-student-card .student-club-th {
+    font-size: 0.6rem;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .height-student-card .height-num {
+    font-size: 1.6rem;
+  }
+  .height-student-card .height-unit {
+    font-size: 0.8rem;
+  }
+  .height-student-card .school-tag {
+    font-size: 0.6rem;
+    padding: 2px 6px;
   }
   .height-vs-badge {
-    margin: -10px 0;
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+    margin: 0 -16px;
+    align-self: center;
   }
   .height-game-header {
     flex-direction: column;
@@ -5155,6 +5188,7 @@ body {
   }
   .height-guess-controls {
     max-width: 340px;
+    gap: 12px;
   }
 }
 
@@ -5452,16 +5486,56 @@ body {
 /* Responsive styles */
 @media (max-width: 768px) {
   .age-comparison-wrapper {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    gap: 8px;
+    align-items: stretch;
   }
   .age-student-card {
-    width: 100%;
-    max-width: 340px;
-    min-height: 420px;
+    flex: 1;
+    width: 50%;
+    max-width: 175px;
+    min-height: 280px;
+    border-radius: 12px;
+  }
+  .age-student-card .card-portrait-wrapper {
+    height: 140px;
+  }
+  .age-student-card .card-student-info {
+    padding: 10px 8px;
+  }
+  .age-student-card .student-name-en {
+    font-size: 0.82rem;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .age-student-card .student-club-th {
+    font-size: 0.6rem;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .age-student-card .age-num {
+    font-size: 1.6rem;
+  }
+  .age-student-card .age-unit {
+    font-size: 0.8rem;
+  }
+  .age-student-card .birth-value-box {
+    font-size: 0.65rem;
+    margin-top: 2px;
+  }
+  .age-student-card .school-tag {
+    font-size: 0.6rem;
+    padding: 2px 6px;
   }
   .age-vs-badge {
-    margin: -10px 0;
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+    margin: 0 -16px;
+    align-self: center;
   }
   .age-game-header {
     flex-direction: column;
@@ -5470,6 +5544,7 @@ body {
   }
   .age-guess-controls {
     max-width: 340px;
+    gap: 12px;
   }
 }
 

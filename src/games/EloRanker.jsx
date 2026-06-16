@@ -578,12 +578,15 @@ function EloRankerGame({ onBack, soundEnabled }) {
       <div className="elo-header-section">
         <div className="elo-title-area">
           <h2>CHARACTER RANKER</h2>
-          <p>จัดอันดับความชื่นชอบของนักเรียนผ่านการดวลเปรียบเทียบระบบ Elo Rating</p>
+          <p>จัดอันดับตัวละคร Blue Archive</p>
         </div>
         <div className="elo-header-actions">
           {confirmReset ? (
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.8rem', color: '#fca5a5' }}>คุณครูต้องการล้างคะแนนทั้งหมดใช่หรือไม่?</span>
+            <div className="elo-reset-confirmation">
+              <span style={{ fontSize: '0.8rem', color: '#fca5a5' }}>
+                <span className="desktop-only">คุณครูต้องการล้างคะแนนทั้งหมดใช่หรือไม่?</span>
+                <span className="mobile-only">ล้างคะแนนทั้งหมด?</span>
+              </span>
               <button 
                 onClick={() => {
                   playSound('reset')
@@ -606,13 +609,19 @@ function EloRankerGame({ onBack, soundEnabled }) {
           ) : (
             <button onClick={() => setConfirmReset(true)} className="btn-secondary" title="รีเซ็ตคะแนนนักเรียนทั้งหมดกลับไปที่ 1500">
               <RotateCcw className="w-4 h-4" />
-              <span>รีเซ็ตอันดับ</span>
+              <span>
+                <span className="desktop-only">รีเซ็ตอันดับ</span>
+                <span className="mobile-only">รีเซ็ต</span>
+              </span>
             </button>
           )}
           
           <button onClick={exportRankingJson} className="btn-secondary" title="ส่งออกไฟล์ข้อมูลคะแนนทั้งหมด">
             <FileJson className="w-4 h-4" />
-            <span>ส่งออก JSON</span>
+            <span>
+              <span className="desktop-only">ส่งออก JSON</span>
+              <span className="mobile-only">ส่งออก</span>
+            </span>
           </button>
           
           <button 
@@ -622,7 +631,10 @@ function EloRankerGame({ onBack, soundEnabled }) {
             title="ดาวน์โหลดภาพสรุปอันดับ Top 10"
           >
             <Download className="w-4 h-4" />
-            <span>{downloading ? '...' : 'เซฟรูป Top 10'}</span>
+            <span>
+              <span className="desktop-only">{downloading ? '...' : 'เซฟรูป Top 10'}</span>
+              <span className="mobile-only">{downloading ? '...' : 'เซฟ Top 10'}</span>
+            </span>
           </button>
           
           <button 
@@ -633,25 +645,17 @@ function EloRankerGame({ onBack, soundEnabled }) {
             title="ดาวน์โหลดโปสเตอร์สรุปอันดับทั้งหมด"
           >
             <Download className="w-4 h-4" />
-            <span>{downloading ? '...' : 'เซฟรูปทั้งหมด'}</span>
+            <span>
+              <span className="desktop-only">{downloading ? '...' : 'เซฟรูปทั้งหมด'}</span>
+              <span className="mobile-only">{downloading ? '...' : 'เซฟทั้งหมด'}</span>
+            </span>
           </button>
         </div>
       </div>
 
       {/* Finished Summary Panel Banner */}
       {isFinished && (
-        <div style={{
-          background: 'rgba(251, 191, 36, 0.06)',
-          border: '1px solid rgba(251, 191, 36, 0.25)',
-          borderRadius: '16px',
-          padding: '24px',
-          textAlign: 'center',
-          animation: 'scaleUp 0.5s ease',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '12px'
-        }}>
+        <div className="elo-finished-banner">
           <Trophy className="w-12 h-12 text-amber-400 animate-bounce" style={{ filter: 'drop-shadow(0 0 10px rgba(251,191,36,0.6))' }} />
           <h3 style={{ fontSize: '1.45rem', fontWeight: 'bold', color: '#fbbf24', fontFamily: 'Outfit, sans-serif' }}>
             การจัดอันดับนักเรียนเสร็จสมบูรณ์!
@@ -659,7 +663,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '560px', lineHeight: '1.5' }}>
             ระบบได้เรียงลำดับความชื่นชอบของนักเรียนครบทุกตัวละคร ({characters.length} คน) ด้วยความแม่นยำ 100% แล้วค่ะ! (โหวตสะสมเปรียบเทียบทั้งหมด {voteCount} ครั้ง) คุณครูสามารถดาวน์โหลดการ์ดสรุปอันดับเพื่อแชร์ หรือกดส่งออกข้อมูลด้านบนได้เลย!
           </p>
-          <div style={{ display: 'flex', gap: '12px', marginTop: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div className="elo-finished-actions">
             <button 
               onClick={() => downloadLeaderboardPng('top10')} 
               disabled={downloading}
@@ -693,7 +697,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
       )}
 
       {/* Stats Board */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+      <div className="elo-stats-grid">
         <div className="elo-stat-box">
           <div className="elo-stat-box-val">{voteCount}</div>
           <div className="elo-stat-box-lbl">จำนวนการตัดสินใจสะสม (โหวต)</div>
@@ -725,7 +729,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
             <div className="elo-stability-container">
               <div className="elo-stability-header">
                 <span className="elo-stability-phase" style={{ color: 'var(--color-accent)' }}>
-                  ความคืบหน้าการจัดอันดับ (Binary Insertion Sort)
+                  ความคืบหน้าการจัดอันดับ
                 </span>
                 <span style={{ fontSize: '0.8rem', fontWeight: 'bold', fontFamily: 'Outfit, sans-serif' }}>
                   {sortedCharactersCount} / {characters.length} คน
@@ -813,9 +817,12 @@ function EloRankerGame({ onBack, soundEnabled }) {
 
                 {/* Action Buttons */}
                 <div className="elo-controls">
-                  <button className="btn-action-draw" onClick={() => handleVote('draw')} style={{ gridColumn: 'span 2' }}>
+                  <button className="btn-action-draw" onClick={() => handleVote('draw')}>
                     <Sparkles className="w-4 h-4" />
-                    <span>ชื่นชอบพอๆ กัน (เสมอ)</span>
+                    <span>
+                      <span className="desktop-only">ชื่นชอบพอๆ กัน (เสมอ)</span>
+                      <span className="mobile-only">เสมอ</span>
+                    </span>
                   </button>
 
                   {/* Undo Button (ย้อนกลับการโหวตล่าสุด) */}
@@ -823,11 +830,13 @@ function EloRankerGame({ onBack, soundEnabled }) {
                     className="btn-action-undo" 
                     disabled={!canUndo} 
                     onClick={undoLastVote}
-                    style={{ gridColumn: 'span 2' }}
                     title={canUndo ? "ย้อนกลับผลการเปรียบเทียบล่าสุดในกรณีที่กดผิด" : "ยังไม่มีประวัติการเปรียบเทียบ"}
                   >
                     <Undo className="w-4 h-4" />
-                    <span>ย้อนกลับขั้นตอนที่แล้ว</span>
+                    <span>
+                      <span className="desktop-only">ย้อนกลับขั้นตอนที่แล้ว</span>
+                      <span className="mobile-only">ย้อนกลับ</span>
+                    </span>
                   </button>
                 </div>
               </div>
@@ -837,10 +846,10 @@ function EloRankerGame({ onBack, soundEnabled }) {
               </div>
             )}
             
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'rgba(255, 255, 255, 0.02)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', marginTop: '8px' }}>
-              <Info className="w-4 h-4 text-sky-400" style={{ flexShrink: 0 }} />
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
-                <strong>ระบบจัดอันดับ Binary Insertion Sort:</strong> ระบบจะจับคู่นักเรียนมาให้เปรียบเทียบทีละคนและวางอันดับที่ถูกต้องให้ 100% (ตามหลักสัจพจน์ถ่ายทอด) ระบบจะเสร็จสิ้นเมื่อเรียงลำดับครบนักเรียนทั้ง {characters.length} คน คุณครูสามารถกด "ย้อนกลับขั้นตอนที่แล้ว" เพื่อแก้ไขคะแนนได้ค่ะ
+            <div className="elo-info-box">
+              <Info className="w-4 h-4 text-sky-400 elo-info-icon" />
+              <p className="elo-info-text">
+                <strong>ระบบจัดอันดับโดยใช้ Binary Insertion Sort</strong>
               </p>
             </div>
           </div>
@@ -890,7 +899,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
               <span>อันดับ</span>
               <span>รูป</span>
               <span>นักเรียน / สังกัด</span>
-              <span style={{ textAlign: 'right' }}>ELO</span>
+              <span style={{ textAlign: 'right' }}>คะแนน</span>
             </div>
 
             {pagedCharacters.length === 0 ? (

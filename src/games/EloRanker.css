@@ -145,43 +145,266 @@
   min-height: 360px;
 }
 
+/* Media display utilities */
+.mobile-only {
+  display: none !important;
+}
+
+/* Default state for stats grid */
+.elo-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+/* Default state for bottom info box */
+.elo-info-box {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+
+.elo-info-icon {
+  flex-shrink: 0;
+}
+
+.elo-info-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Default state for finished banner */
+.elo-finished-banner {
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  animation: scaleUp 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.elo-finished-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Default reset confirmation styling */
+.elo-reset-confirmation {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: inline !important;
+  }
+  
+  .elo-header-section {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  
+  .elo-title-area {
+    text-align: center;
+  }
+  
+  .elo-title-area h2 {
+    font-size: 1.4rem;
+  }
+  
+  .elo-title-area p {
+    font-size: 0.8rem;
+  }
+  
+  .elo-header-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .elo-header-actions .btn-secondary {
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .elo-reset-confirmation {
+    grid-column: span 2;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: rgba(167, 30, 60, 0.05);
+    border: 1px solid rgba(167, 30, 60, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+  }
+  
+  .elo-reset-confirmation button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .elo-stats-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+  
+  .elo-stat-box {
+    padding: 8px 4px !important;
+  }
+  
+  .elo-stat-box-val {
+    font-size: 0.95rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .elo-stat-box-lbl {
+    font-size: 0.55rem !important;
+    line-height: 1.2;
+  }
+  
+  .elo-arena-panel {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .elo-finished-banner {
+    padding: 16px;
+    gap: 8px;
+  }
+  
+  .elo-finished-banner h3 {
+    font-size: 1.25rem !important;
+  }
+  
+  .elo-finished-banner p {
+    font-size: 0.78rem !important;
+  }
+  
+  .elo-finished-actions {
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .elo-finished-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 480px) {
   .elo-duel-container {
     flex-direction: row !important;
     min-height: auto;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
   }
+  
   .elo-char-card {
-    max-width: 150px;
+    max-width: 135px;
+    margin: 0;
   }
+  
   .elo-char-overlay {
     padding: 8px;
   }
+  
   .elo-char-school-badge {
     font-size: 0.55rem;
     padding: 1px 4px;
     margin-bottom: 2px;
   }
+  
   .elo-char-name-en {
     font-size: 0.8rem;
     line-height: 1.1;
   }
+  
   .elo-char-name-jp {
     font-size: 0.6rem;
     margin-bottom: 4px;
   }
+  
   .elo-char-rating-badge {
     font-size: 0.8rem;
   }
+  
   .elo-char-stats-row {
     font-size: 0.55rem;
   }
+  
   .elo-vs-badge {
-    width: 38px;
-    height: 38px;
-    font-size: 0.9rem;
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
     border-width: 2px;
+    margin: 0 -10px;
+    align-self: center;
+  }
+  
+  .btn-action-draw,
+  .btn-action-undo {
+    grid-column: span 1 !important;
+  }
+  
+  .elo-controls {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .elo-list-header,
+  .elo-row {
+    grid-template-columns: 40px 42px 1fr 70px;
+    padding: 6px 8px;
+  }
+  
+  .elo-avatar-img {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .elo-name-text {
+    font-size: 0.8rem;
+  }
+  
+  .elo-sub-text {
+    font-size: 0.62rem;
+  }
+  
+  .elo-rating-col {
+    font-size: 0.85rem;
+  }
+  
+  .elo-info-box {
+    padding: 8px 10px;
+  }
+  
+  .elo-info-text {
+    font-size: 0.68rem;
   }
 }
 
@@ -379,6 +602,7 @@
 }
 
 .btn-action-undo {
+  grid-column: span 2;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
