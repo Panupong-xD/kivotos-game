@@ -378,7 +378,7 @@
 
   .elo-list-header,
   .elo-row {
-    grid-template-columns: 40px 42px 1fr 70px;
+    grid-template-columns: 40px 42px 1fr;
     padding: 6px 8px;
   }
   
@@ -792,7 +792,7 @@
 
 .elo-list-header {
   display: grid;
-  grid-template-columns: 60px 50px 1fr 100px;
+  grid-template-columns: 60px 50px 1fr;
   padding: 8px 12px;
   font-size: 0.75rem;
   font-weight: 600;
@@ -804,7 +804,7 @@
 
 .elo-row {
   display: grid;
-  grid-template-columns: 60px 50px 1fr 100px;
+  grid-template-columns: 60px 50px 1fr;
   align-items: center;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);

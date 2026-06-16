@@ -3000,14 +3000,35 @@ body {
 .desktop-nav-links {
   display: flex;
   align-items: center;
-  gap: 6px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
   margin-left: 20px;
   margin-right: auto;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.nav-sliding-indicator {
+  position: absolute;
+  height: calc(100% - 8px);
+  top: 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: none;
+  transition: all 0.38s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 0;
 }
 
 .nav-link-btn {
-  background: transparent;
-  border: 1px solid transparent;
+  background: transparent !important;
+  border: 1px solid transparent !important;
   outline: none;
   cursor: pointer;
   color: var(--text-secondary);
@@ -3019,18 +3040,19 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color 0.3s ease;
+  z-index: 1;
+  position: relative;
 }
 
 .nav-link-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
 }
 
 .nav-link-btn.active {
-  color: var(--color-accent);
-  background: rgba(76, 154, 224, 0.08);
-  border-color: rgba(76, 154, 224, 0.15);
+  color: var(--text-primary) !important;
+  border-color: transparent !important;
+  background: transparent !important;
 }
 
 .nav-link-icon {

@@ -105,13 +105,38 @@ function EloRankerGame({ onBack, soundEnabled }) {
     error,
     updateElo,
     resetRatings,
-    undoLastVote
+    undoLastVote,
+    importRankings
   } = useEloRanking()
 
   const [searchTerm, setSearchTerm] = useState('')
   const [pageSize, setPageSize] = useState(25) // 10, 25, 50, 'all'
   const [downloading, setDownloading] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
+  const fileInputRef = useRef(null)
+
+  const handleJsonImport = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target.result)
+        const success = importRankings(parsed)
+        if (success) {
+          playSound('reset')
+          alert('นำเข้าข้อมูลการจัดอันดับสำเร็จแล้วค่ะ!')
+        } else {
+          alert('ไฟล์ JSON ไม่ถูกต้องตามรูปแบบที่กำหนด')
+        }
+      } catch (err) {
+        alert('ไม่สามารถอ่านไฟล์ JSON ได้: ' + err.message)
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
 
   // Force page size to 'all' when finished to show the full leaderboard
   useEffect(() => {
@@ -291,7 +316,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
 
       ctx.font = '500 14px Outfit, Prompt, sans-serif'
       ctx.fillStyle = '#4C9AE0'
-      ctx.fillText(isAll ? 'SCHALE STUDENT FULL CHARACTER RANKINGS' : 'SCHALE STUDENT ELO RANKING', 130, 92)
+      ctx.fillText(isAll ? 'SCHALE STUDENT FULL CHARACTER RANKINGS' : 'SCHALE STUDENT CHARACTER RANKINGS', 130, 92)
 
       const dateText = new Date().toLocaleDateString('th-TH', { 
         year: 'numeric', month: 'long', day: 'numeric' 
@@ -356,9 +381,9 @@ function EloRankerGame({ onBack, soundEnabled }) {
         ctx.font = 'bold 15px Prompt, sans-serif'
         ctx.fillText(student.nameEn, spot.x, spot.y + radius + 42)
 
-        ctx.fillStyle = '#fbbf24'
-        ctx.font = 'bold 14px Outfit, sans-serif'
-        ctx.fillText(`${student.rating} Elo`, spot.x, spot.y + radius + 60)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'
+        ctx.font = '500 13px Prompt, sans-serif'
+        ctx.fillText(student.schoolTh || student.school, spot.x, spot.y + radius + 60)
       }
       
       ctx.shadowBlur = 0
@@ -386,9 +411,6 @@ function EloRankerGame({ onBack, soundEnabled }) {
           ctx.font = 'bold 12px Prompt, sans-serif'
           ctx.fillText('อันดับ', colX, startY)
           ctx.fillText('นักเรียน / สถาบัน', colX + 85, startY)
-          ctx.textAlign = 'right'
-          ctx.fillText('ELO', colX + columnWidth, startY)
-          ctx.textAlign = 'left'
 
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)'
           ctx.lineWidth = 1
@@ -441,13 +463,6 @@ function EloRankerGame({ onBack, soundEnabled }) {
           ctx.fillStyle = '#6E6E73'
           ctx.font = '10px Prompt, sans-serif'
           ctx.fillText(student.schoolTh, colX + 85, rowY + 18)
-
-          // Draw ELO
-          ctx.textAlign = 'right'
-          ctx.fillStyle = '#fbbf24'
-          ctx.font = 'bold 13px Outfit, sans-serif'
-          ctx.fillText(student.rating, colX + columnWidth - 4, rowY + 14)
-          ctx.textAlign = 'left'
         })
 
       } else {
@@ -457,8 +472,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
         ctx.fillText('อันดับ', 60, 470)
         ctx.fillText('ชื่อนักเรียน', 170, 470)
         ctx.textAlign = 'right'
-        ctx.fillText('สถาบัน', 600, 470)
-        ctx.fillText('ELO RATING', 740, 470)
+        ctx.fillText('สถาบัน', 740, 470)
         ctx.textAlign = 'left'
 
         const top10Count = Math.min(10, sortedAllCharacters.length)
@@ -500,11 +514,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
           ctx.textAlign = 'right'
           ctx.fillStyle = '#8E8E93'
           ctx.font = '13px Prompt, sans-serif'
-          ctx.fillText(student.schoolTh, 600, rowY + 16)
-
-          ctx.fillStyle = '#fbbf24'
-          ctx.font = 'bold 16px Outfit, sans-serif'
-          ctx.fillText(student.rating, 740, rowY + 16)
+          ctx.fillText(student.schoolTh, 740, rowY + 16)
           ctx.textAlign = 'left'
         })
       }
@@ -543,7 +553,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
       const dataBlob = new Blob([dataStr], { type: 'application/json' })
       const url = URL.createObjectURL(dataBlob)
       const link = document.createElement('a')
-      link.download = `ba_elo_rankings_${Date.now()}.json`
+      link.download = `ba_character_rankings_${Date.now()}.json`
       link.href = url
       link.click()
       URL.revokeObjectURL(url)
@@ -564,7 +574,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
   if (error) {
     return (
       <div className="elo-empty-state" style={{ border: '1px solid var(--border-failure)', background: 'rgba(74, 21, 32, 0.15)', borderRadius: '12px' }}>
-        <p style={{ color: '#fca5a5', fontSize: '1.1rem', marginBottom: '16px' }}>เกิดข้อผิดพลาดในการโหลดระบบ Elo Rating: {error}</p>
+        <p style={{ color: '#fca5a5', fontSize: '1.1rem', marginBottom: '16px' }}>เกิดข้อผิดพลาดในการโหลดระบบจัดอันดับ: {error}</p>
         <button onClick={resetRatings} className="btn-danger">
           <RotateCcw className="w-4 h-4" /> รีเซ็ตข้อมูลและทดลองอีกครั้ง
         </button>
@@ -607,7 +617,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
               </button>
             </div>
           ) : (
-            <button onClick={() => setConfirmReset(true)} className="btn-secondary" title="รีเซ็ตคะแนนนักเรียนทั้งหมดกลับไปที่ 1500">
+            <button onClick={() => setConfirmReset(true)} className="btn-secondary" title="รีเซ็ตการจัดอันดับนักเรียนทั้งหมด">
               <RotateCcw className="w-4 h-4" />
               <span>
                 <span className="desktop-only">รีเซ็ตอันดับ</span>
@@ -616,7 +626,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
             </button>
           )}
           
-          <button onClick={exportRankingJson} className="btn-secondary" title="ส่งออกไฟล์ข้อมูลคะแนนทั้งหมด">
+          <button onClick={exportRankingJson} className="btn-secondary" title="ส่งออกไฟล์ข้อมูลการจัดอันดับทั้งหมด">
             <FileJson className="w-4 h-4" />
             <span>
               <span className="desktop-only">ส่งออก JSON</span>
@@ -625,15 +635,14 @@ function EloRankerGame({ onBack, soundEnabled }) {
           </button>
           
           <button 
-            onClick={() => downloadLeaderboardPng('top10')} 
-            disabled={downloading}
+            onClick={() => fileInputRef.current?.click()} 
             className="btn-secondary" 
-            title="ดาวน์โหลดภาพสรุปอันดับ Top 10"
+            title="นำเข้าไฟล์ข้อมูลการจัดอันดับที่เคยบันทึกไว้"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4" style={{ transform: 'rotate(180deg)' }} />
             <span>
-              <span className="desktop-only">{downloading ? '...' : 'เซฟรูป Top 10'}</span>
-              <span className="mobile-only">{downloading ? '...' : 'เซฟ Top 10'}</span>
+              <span className="desktop-only">นำเข้า JSON</span>
+              <span className="mobile-only">นำเข้า</span>
             </span>
           </button>
           
@@ -650,6 +659,14 @@ function EloRankerGame({ onBack, soundEnabled }) {
               <span className="mobile-only">{downloading ? '...' : 'เซฟทั้งหมด'}</span>
             </span>
           </button>
+          
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleJsonImport} 
+            accept=".json" 
+            style={{ display: 'none' }} 
+          />
         </div>
       </div>
 
@@ -664,15 +681,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
             ระบบได้เรียงลำดับความชื่นชอบของนักเรียนครบทุกตัวละคร ({characters.length} คน) ด้วยความแม่นยำ 100% แล้วค่ะ! (โหวตสะสมเปรียบเทียบทั้งหมด {voteCount} ครั้ง) คุณครูสามารถดาวน์โหลดการ์ดสรุปอันดับเพื่อแชร์ หรือกดส่งออกข้อมูลด้านบนได้เลย!
           </p>
           <div className="elo-finished-actions">
-            <button 
-              onClick={() => downloadLeaderboardPng('top10')} 
-              disabled={downloading}
-              className="btn-secondary"
-              style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#fff', borderColor: 'rgba(255, 255, 255, 0.2)', fontWeight: '600' }}
-            >
-              <Download className="w-4 h-4" />
-              {downloading ? 'กำลังเซฟภาพ...' : 'ดาวน์โหลดสรุป Top 10'}
-            </button>
+
             <button 
               onClick={() => downloadLeaderboardPng('all')} 
               disabled={downloading}
@@ -771,14 +780,6 @@ function EloRankerGame({ onBack, soundEnabled }) {
                         <span className="elo-char-school-badge">{currentDuel[0].school}</span>
                         <h4 className="elo-char-name-en">{currentDuel[0].nameEn}</h4>
                         <p className="elo-char-name-jp">{currentDuel[0].nameJp}</p>
-                        <div className="elo-char-rating-badge">
-                          <span>{currentDuel[0].rating}</span>
-                          <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>ELO</span>
-                        </div>
-                        <div className="elo-char-stats-row">
-                          <span>ชื่นชอบ: {currentDuel[0].wins}</span>
-                          <span>แพ้: {currentDuel[0].losses}</span>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -802,14 +803,6 @@ function EloRankerGame({ onBack, soundEnabled }) {
                         <span className="elo-char-school-badge">{currentDuel[1].school}</span>
                         <h4 className="elo-char-name-en">{currentDuel[1].nameEn}</h4>
                         <p className="elo-char-name-jp">{currentDuel[1].nameJp}</p>
-                        <div className="elo-char-rating-badge">
-                          <span>{currentDuel[1].rating}</span>
-                          <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>ELO</span>
-                        </div>
-                        <div className="elo-char-stats-row">
-                          <span>ชื่นชอบ: {currentDuel[1].wins}</span>
-                          <span>แพ้: {currentDuel[1].losses}</span>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -893,7 +886,6 @@ function EloRankerGame({ onBack, soundEnabled }) {
               <span>อันดับ</span>
               <span>รูป</span>
               <span>นักเรียน / สังกัด</span>
-              <span style={{ textAlign: 'right' }}>คะแนน</span>
             </div>
 
             {pagedCharacters.length === 0 ? (
@@ -938,9 +930,6 @@ function EloRankerGame({ onBack, soundEnabled }) {
                       <div className="elo-name-col">
                         <span className="elo-name-text">{char.nameEn}</span>
                         <span className="elo-sub-text">{char.nameJp} • {char.schoolTh}</span>
-                      </div>
-                      <div className="elo-rating-col">
-                        {char.rating}
                       </div>
                     </motion.div>
                   )

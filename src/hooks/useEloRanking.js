@@ -524,6 +524,51 @@ export default function useEloRanking() {
     }
   }, [])
 
+  // Import JSON rankings
+  const importRankings = useCallback((importedList) => {
+    if (!Array.isArray(importedList) || importedList.length === 0) return false
+
+    // Validate characters list
+    const validated = importedList.map(item => {
+      return {
+        key: item.key,
+        name: item.name || item.nameEn,
+        nameEn: item.nameEn,
+        nameJp: item.nameJp || item.name || item.nameEn,
+        school: item.school || 'Other',
+        schoolTh: item.schoolTh || item.school || 'อื่นๆ',
+        club: item.club || 'ไม่มีสังกัด',
+        iconPath: item.iconPath,
+        portraitPath: item.portraitPath
+      }
+    }).filter(c => c.key && c.nameEn && c.iconPath)
+
+    if (validated.length === 0) return false
+
+    setState({
+      characters: validated,
+      sorted: validated,
+      currentIndex: validated.length,
+      low: 0,
+      high: 0,
+      isFinished: true,
+      history: [],
+      currentDuel: null,
+      voteCount: 0
+    })
+
+    localStorage.setItem(LOCAL_STORAGE_KEYS.CHARACTERS, JSON.stringify(validated))
+    localStorage.setItem(LOCAL_STORAGE_KEYS.SORTED, JSON.stringify(validated))
+    localStorage.setItem(LOCAL_STORAGE_KEYS.CURRENT_INDEX, String(validated.length))
+    localStorage.setItem(LOCAL_STORAGE_KEYS.LOW, '0')
+    localStorage.setItem(LOCAL_STORAGE_KEYS.HIGH, '0')
+    localStorage.setItem(LOCAL_STORAGE_KEYS.FINISHED, 'true')
+    localStorage.setItem(LOCAL_STORAGE_KEYS.VOTE_COUNT, '0')
+    localStorage.setItem(LOCAL_STORAGE_KEYS.HISTORY, JSON.stringify([]))
+
+    return true
+  }, [])
+
   // Map elements to pseudo-ratings for Leaderboard compatibility
   const charactersWithRatings = useMemo(() => {
     const { characters, sorted } = state
@@ -561,6 +606,7 @@ export default function useEloRanking() {
     updateElo,
     skipMatch: () => {},
     resetRatings,
-    undoLastVote
+    undoLastVote,
+    importRankings
   }
 }

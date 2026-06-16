@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import StudentGuesser from './games/StudentGuesser.jsx'
 import SkillGuesser from './games/SkillGuesser.jsx'
 import HaloGuesser from './games/HaloGuesser.jsx'
@@ -17,6 +17,34 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about', 'eloRanker'
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const navContainerRef = useRef(null)
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 })
+
+  useEffect(() => {
+    const updateIndicator = () => {
+      const activeBtn = navContainerRef.current?.querySelector('.nav-link-btn.active')
+      if (activeBtn) {
+        const { offsetLeft, offsetWidth } = activeBtn
+        setIndicatorStyle({
+          left: offsetLeft,
+          width: offsetWidth,
+          opacity: 1
+        })
+      } else {
+        setIndicatorStyle(prev => ({ ...prev, opacity: 0 }))
+      }
+    }
+
+    updateIndicator()
+    const timeoutId = setTimeout(updateIndicator, 100)
+
+    window.addEventListener('resize', updateIndicator)
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener('resize', updateIndicator)
+    }
+  }, [activeTab])
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -39,7 +67,15 @@ export default function App() {
           </div>
 
           {/* Center Side: Desktop Navigation Links */}
-          <nav className="desktop-nav-links">
+          <nav className="desktop-nav-links" ref={navContainerRef}>
+            <div 
+              className="nav-sliding-indicator" 
+              style={{
+                left: `${indicatorStyle.left}px`,
+                width: `${indicatorStyle.width}px`,
+                opacity: indicatorStyle.opacity
+              }}
+            />
             <button
               onClick={() => {
                 setActiveTab('lobby')
