@@ -681,7 +681,6 @@ function EloRankerGame({ onBack, soundEnabled }) {
             ระบบได้เรียงลำดับความชื่นชอบของนักเรียนครบทุกตัวละคร ({characters.length} คน) ด้วยความแม่นยำ 100% แล้วค่ะ! (โหวตสะสมเปรียบเทียบทั้งหมด {voteCount} ครั้ง) คุณครูสามารถดาวน์โหลดการ์ดสรุปอันดับเพื่อแชร์ หรือกดส่งออกข้อมูลด้านบนได้เลย!
           </p>
           <div className="elo-finished-actions">
-
             <button 
               onClick={() => downloadLeaderboardPng('all')} 
               disabled={downloading}
@@ -691,6 +690,17 @@ function EloRankerGame({ onBack, soundEnabled }) {
               <Download className="w-4 h-4" />
               {downloading ? 'กำลังเซฟภาพ...' : 'ดาวน์โหลดโปสเตอร์ทั้งหมด (1-198)'}
             </button>
+            
+            <button 
+              onClick={() => fileInputRef.current?.click()} 
+              className="btn-secondary"
+              style={{ borderColor: 'rgba(255, 255, 255, 0.15)', background: 'rgba(255, 255, 255, 0.03)' }}
+              title="นำเข้าไฟล์ JSON เพื่อแสดงผลอันดับทันที"
+            >
+              <FileJson className="w-4 h-4 text-cyan-400" />
+              <span style={{ color: 'var(--text-primary)' }}>นำเข้าข้อมูล JSON</span>
+            </button>
+
             <button 
               onClick={() => {
                 playSound('reset')

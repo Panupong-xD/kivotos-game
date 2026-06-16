@@ -1202,10 +1202,16 @@ body {
    ========================================================================== */
 
 @media (max-width: 820px) {
+  main {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    margin-top: 16px !important;
+  }
+
   .lobby-game-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 0 8px;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 0 !important;
   }
   
   .lobby-card {
@@ -1254,9 +1260,7 @@ body {
   }
 
   .lobby-card-btn {
-    padding: 8px 6px !important;
-    font-size: 0.72rem !important;
-    border-radius: 6px !important;
+    display: none !important;
   }
   
   .lobby-title {
@@ -3004,7 +3008,7 @@ body {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 4px;
-  border-radius: 12px;
+  border-radius: 9999px;
   gap: 4px;
   margin-left: 20px;
   margin-right: auto;
@@ -3013,17 +3017,14 @@ body {
 
 .nav-sliding-indicator {
   position: absolute;
-  height: calc(100% - 8px);
-  top: 4px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  inset: 0;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   pointer-events: none;
-  transition: all 0.38s cubic-bezier(0.25, 1, 0.5, 1);
-  z-index: 0;
+  z-index: -1;
 }
 
 .nav-link-btn {
@@ -3036,7 +3037,7 @@ body {
   font-size: 0.85rem;
   font-weight: 600;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -4664,7 +4665,7 @@ body {
   }
   .about-sidebar {
     position: static;
-    max-height: 380px !important;
+    max-height: 520px !important;
     flex: none;
   }
 }

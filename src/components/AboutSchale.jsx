@@ -35,7 +35,9 @@ export default function AboutSchale() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        const activeGroup = characterGroups[selectedGroup]
+        const totalCount = activeGroup ? activeGroup.totalCount : 0
+        if (entries[0].isIntersecting && totalCount > visibleCount) {
           setVisibleCount((prev) => prev + 30)
         }
       },
@@ -49,7 +51,7 @@ export default function AboutSchale() {
     return () => {
       observer.disconnect()
     }
-  }, [loading, selectedGroup])
+  }, [loading, selectedGroup, visibleCount, characterGroups])
 
 
   useEffect(() => {
@@ -624,7 +626,7 @@ export default function AboutSchale() {
                         <span>ส่วนสูง (Height)</span>
                       </div>
                       <span className="about-detail-value">
-                        {selectedCharacter.height !== 'N/A' && selectedCharacter.height !== 'Unknown' && !selectedCharacter.height.includes('cm')
+                        {selectedCharacter.height !== 'N/A' && selectedCharacter.height !== 'Unknown' && !String(selectedCharacter.height).includes('cm')
                           ? `${selectedCharacter.height} cm`
                           : selectedCharacter.height}
                       </span>

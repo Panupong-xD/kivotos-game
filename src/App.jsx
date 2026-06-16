@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'
 import StudentGuesser from './games/StudentGuesser.jsx'
 import SkillGuesser from './games/SkillGuesser.jsx'
 import HaloGuesser from './games/HaloGuesser.jsx'
@@ -14,45 +15,70 @@ import AboutSchale from './components/AboutSchale.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords } from 'lucide-react'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about', 'eloRanker'
+  const [activeTab, setActiveTabVal] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age'
   const [renderTab, setRenderTab] = useState('lobby')
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isWorkspaceLoading, setIsWorkspaceLoading] = useState(false)
 
+  const controls = useAnimation()
   const navContainerRef = useRef(null)
-  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 })
 
-  // Synchronize activeTab to renderTab using startTransition (React 18)
-  useEffect(() => {
-    React.startTransition(() => {
-      setRenderTab(activeTab)
-    })
-  }, [activeTab])
-
+  // Track the active button and animate the persistent glass switcher smoothly (spring + jelly keyframes)
   useEffect(() => {
     const updateIndicator = () => {
       const activeBtn = navContainerRef.current?.querySelector('.nav-link-btn.active')
       if (activeBtn) {
         const { offsetLeft, offsetWidth } = activeBtn
-        setIndicatorStyle({
+        controls.start({
           left: offsetLeft,
           width: offsetWidth,
-          opacity: 1
+          opacity: 1,
+          scaleX: [1, 1.38, 0.85, 1],
+          scaleY: [1, 0.72, 1.15, 1],
+          transition: {
+            left: { type: 'spring', stiffness: 350, damping: 20, mass: 0.8 },
+            width: { type: 'spring', stiffness: 350, damping: 20, mass: 0.8 },
+            scaleX: { duration: 0.45, ease: [0.25, 1, 0.5, 1] },
+            scaleY: { duration: 0.45, ease: [0.25, 1, 0.5, 1] }
+          }
         })
       } else {
-        setIndicatorStyle(prev => ({ ...prev, opacity: 0 }))
+        controls.start({ opacity: 0 })
       }
     }
 
     updateIndicator()
-    const timeoutId = setTimeout(updateIndicator, 100)
+    const timeoutId = setTimeout(updateIndicator, 50)
 
     window.addEventListener('resize', updateIndicator)
     return () => {
       clearTimeout(timeoutId)
       window.removeEventListener('resize', updateIndicator)
     }
-  }, [activeTab])
+  }, [activeTab, controls])
+
+  // A wrapper for switching tabs with a luxurious loading screen & lag prevention
+  const handleTabChange = (tab) => {
+    if (tab === activeTab) return
+    setActiveTabVal(tab) // Start the pill animation immediately
+    
+    // Delay showing the loader so the pill spring animation completes in isolation (lag-free)
+    setTimeout(() => {
+      setIsWorkspaceLoading(true)
+      
+      // Defer rendering the actual heavy tab content
+      setTimeout(() => {
+        setRenderTab(tab)
+        // Keep the loading screen visible a bit longer for premium feel
+        setTimeout(() => {
+          setIsWorkspaceLoading(false)
+        }, 550) // stays on loading screen to ensure all sub-components render smoothly
+      }, 350) // loading overlay fade-in time
+    }, 180) // 180ms delay before loader mounts (pill completes most of its slide)
+  }
+
+  const setActiveTab = handleTabChange
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -76,45 +102,34 @@ export default function App() {
 
           {/* Center Side: Desktop Navigation Links */}
           <nav className="desktop-nav-links" ref={navContainerRef}>
-            <div 
+            <motion.div 
               className="nav-sliding-indicator" 
-              style={{
-                left: `${indicatorStyle.left}px`,
-                width: `${indicatorStyle.width}px`,
-                opacity: indicatorStyle.opacity
-              }}
+              animate={controls}
+              initial={{ opacity: 0 }}
             />
             <button
-              onClick={() => {
-                setActiveTab('lobby')
-              }}
-              className={`nav-link-btn ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age') ? 'active' : ''}`}
+              onClick={() => handleTabChange('lobby')}
+              className={`nav-link-btn ${['lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age'].includes(activeTab) ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4 nav-link-icon" />
               <span>Arcade</span>
             </button>
             <button
-              onClick={() => {
-                setActiveTab('eloRanker')
-              }}
+              onClick={() => handleTabChange('eloRanker')}
               className={`nav-link-btn ${activeTab === 'eloRanker' ? 'active' : ''}`}
             >
               <Swords className="w-4 h-4 nav-link-icon" />
               <span>BA Ranker</span>
             </button>
             <button
-              onClick={() => {
-                setActiveTab('database')
-              }}
+              onClick={() => handleTabChange('database')}
               className={`nav-link-btn ${activeTab === 'database' ? 'active' : ''}`}
             >
               <BookOpen className="w-4 h-4 nav-link-icon" />
               <span>Student DB</span>
             </button>
             <button
-              onClick={() => {
-                setActiveTab('about')
-              }}
+              onClick={() => handleTabChange('about')}
               className={`nav-link-btn ${activeTab === 'about' ? 'active' : ''}`}
             >
               <Users className="w-4 h-4 nav-link-icon" />
@@ -128,7 +143,7 @@ export default function App() {
             {activeTab !== 'lobby' && activeTab !== 'database' && activeTab !== 'about' && (
               <button
                 onClick={() => {
-                  setActiveTab('lobby')
+                  handleTabChange('lobby')
                 }}
                 className="header-back-btn"
               >
@@ -560,6 +575,45 @@ export default function App() {
       <footer className="site-footer">
         © 2026 Kivotos Arcade. Data belongs to Nexon Games & Yostar. Designed for Sensei with Love
       </footer>
+
+      <AnimatePresence>
+        {isWorkspaceLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(12, 12, 14, 0.6)',
+              backdropFilter: 'blur(15px)',
+              WebkitBackdropFilter: 'blur(15px)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 850, // Sit behind the navbar (z-index 900) so the header remains clear and interactive
+              pointerEvents: 'all'
+            }}
+          >
+            {/* Blue Archive Modern Loading Screen */}
+            <div className="ba-loading-screen">
+              <div className="ba-loading-halo-wrapper">
+                <div className="ba-loading-ring outer" />
+                <div className="ba-loading-ring inner" />
+                <div className="ba-loading-logo">
+                  <img src="/images/icon/icon_x512.png" className="ba-loading-logo-img" alt="logo" />
+                </div>
+              </div>
+              <p className="ba-loading-text">กำลังเชื่อมต่อข้อมูลชาเล่ต์...</p>
+              <div className="ba-loading-progress-bar">
+                <div className="ba-loading-progress-fill" />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
