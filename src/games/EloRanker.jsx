@@ -220,33 +220,59 @@ function EloRankerGame({ onBack, soundEnabled }) {
   }
 
   // Download rankings as PNG Image Card
-  const downloadLeaderboardPng = async () => {
+  const downloadLeaderboardPng = async (mode = 'top10') => {
     if (sortedAllCharacters.length === 0) return
     setDownloading(true)
 
     try {
-      const topN = sortedAllCharacters.slice(0, 10)
+      const isAll = mode === 'all'
+      const targets = isAll ? sortedAllCharacters : sortedAllCharacters.slice(0, 10)
+      const topN = sortedAllCharacters.slice(0, 10) // still need top 3 for podium
 
       const canvas = document.createElement('canvas')
-      canvas.width = 800
-      canvas.height = 1150
-      const ctx = canvas.getContext('2d')
+      
+      // Calculate Canvas dimensions dynamically (virtual dimensions)
+      const baseWidth = isAll ? 1200 : 800
+      let baseHeight = 1150
+      
+      const rowHeight = isAll ? 44 : 56
+      const startY = isAll ? 480 : 500
+      
+      if (isAll) {
+        const remainingCount = Math.max(0, sortedAllCharacters.length - 3)
+        const colCount = 3
+        const rowsPerCol = Math.ceil(remainingCount / colCount)
+        baseHeight = startY + 30 + (rowsPerCol * rowHeight) + 80 // 30px headers, 80px footer
+      } else {
+        const top10Count = Math.min(10, sortedAllCharacters.length)
+        baseHeight = startY + (top10Count * rowHeight) + 80
+      }
 
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
+      // 2x Retina Scaling for high resolution sharp results
+      const scale = 2
+      canvas.width = baseWidth * scale
+      canvas.height = baseHeight * scale
+      const ctx = canvas.getContext('2d')
+      ctx.scale(scale, scale)
+
+      // Draw background (using virtual height/width)
+      const gradient = ctx.createLinearGradient(0, 0, 0, baseHeight)
       gradient.addColorStop(0, '#0C0C0E')
       gradient.addColorStop(0.3, '#141419')
       gradient.addColorStop(0.8, '#1C1C24')
       gradient.addColorStop(1, '#0C0C0E')
       ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.fillRect(0, 0, baseWidth, baseHeight)
 
-      const radialGlow = ctx.createRadialGradient(400, -200, 100, 400, -200, 600)
+      const centerX = baseWidth / 2
+      const radialGlow = ctx.createRadialGradient(centerX, -200, 100, centerX, -200, isAll ? 800 : 600)
       radialGlow.addColorStop(0, 'rgba(76, 154, 224, 0.25)')
       radialGlow.addColorStop(1, 'rgba(0, 0, 0, 0)')
       ctx.fillStyle = radialGlow
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.fillRect(0, 0, baseWidth, baseHeight)
 
-      const iconPromises = topN.map(c => loadCanvasImage(c.iconPath))
+      // Preload images
+      const iconPromises = targets.map(c => loadCanvasImage(c.iconPath))
       const brandLogoPromise = loadCanvasImage('/images/icon/icon_x512.png')
 
       const [loadedIcons, brandLogo] = await Promise.all([
@@ -254,6 +280,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
         brandLogoPromise
       ])
 
+      // Draw Brand Logo & Header
       if (brandLogo) {
         ctx.drawImage(brandLogo, 50, 45, 60, 60)
       }
@@ -264,7 +291,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
 
       ctx.font = '500 14px Outfit, Prompt, sans-serif'
       ctx.fillStyle = '#4C9AE0'
-      ctx.fillText('SCHALE STUDENT ELO RANKING', 130, 92)
+      ctx.fillText(isAll ? 'SCHALE STUDENT FULL CHARACTER RANKINGS' : 'SCHALE STUDENT ELO RANKING', 130, 92)
 
       const dateText = new Date().toLocaleDateString('th-TH', { 
         year: 'numeric', month: 'long', day: 'numeric' 
@@ -272,27 +299,29 @@ function EloRankerGame({ onBack, soundEnabled }) {
       ctx.font = '13px Prompt, sans-serif'
       ctx.fillStyle = '#8E8E93'
       ctx.textAlign = 'right'
-      ctx.fillText(`บันทึกข้อมูล ณ วันที่: ${dateText}`, 750, 80)
+      ctx.fillText(`บันทึกข้อมูล ณ วันที่: ${dateText}`, baseWidth - 50, 80)
       ctx.textAlign = 'left'
 
+      // Horizontal separator line
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
       ctx.lineWidth = 1
       ctx.beginPath()
       ctx.moveTo(50, 130)
-      ctx.lineTo(750, 130)
+      ctx.lineTo(baseWidth - 50, 130)
       ctx.stroke()
 
+      // Draw Top 3 Podium
       const podiumSpots = [
-        { rank: 2, x: 220, y: 310, label: '🥈 2nd', color: '#d1d5db', size: 100 },
-        { rank: 1, x: 400, y: 280, label: '🥇 1st', color: '#fbbf24', size: 120 },
-        { rank: 3, x: 580, y: 320, label: '🥉 3rd', color: '#f97316', size: 90 }
+        { rank: 2, x: centerX - 180, y: 310, label: '🥈 2nd', color: '#d1d5db', size: 100 },
+        { rank: 1, x: centerX, y: 280, label: '🥇 1st', color: '#fbbf24', size: 120 },
+        { rank: 3, x: centerX + 180, y: 320, label: '🥉 3rd', color: '#f97316', size: 90 }
       ]
 
       ctx.shadowColor = 'rgba(0, 0, 0, 0.4)'
       ctx.shadowBlur = 15
 
       for (const spot of podiumSpots) {
-        const student = topN[spot.rank - 1]
+        const student = sortedAllCharacters[spot.rank - 1]
         if (!student) continue
 
         const img = loadedIcons[spot.rank - 1]
@@ -334,85 +363,170 @@ function EloRankerGame({ onBack, soundEnabled }) {
       
       ctx.shadowBlur = 0
 
+      // Separator line before list
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
       ctx.beginPath()
       ctx.moveTo(50, 440)
-      ctx.lineTo(750, 440)
+      ctx.lineTo(baseWidth - 50, 440)
       ctx.stroke()
 
-      ctx.fillStyle = '#8E8E93'
-      ctx.font = 'bold 13px Prompt, sans-serif'
-      ctx.fillText('อันดับ', 60, 470)
-      ctx.fillText('ชื่อนักเรียน', 170, 470)
-      ctx.textAlign = 'right'
-      ctx.fillText('สถาบัน', 600, 470)
-      ctx.fillText('ELO RATING', 740, 470)
-      ctx.textAlign = 'left'
+      if (isAll) {
+        // 3-Column List Layout for Ranks 4 to N
+        const remainingCharacters = sortedAllCharacters.slice(3)
+        const colCount = 3
+        const rowsPerCol = Math.ceil(remainingCharacters.length / colCount)
+        const columnWidth = 340
+        const colGapX = 30
+        const startX = 60
 
-      let startY = 500
-      const rowHeight = 56
+        // Draw Headers for each column
+        for (let col = 0; col < colCount; col++) {
+          const colX = startX + col * (columnWidth + colGapX)
+          ctx.fillStyle = '#8E8E93'
+          ctx.font = 'bold 12px Prompt, sans-serif'
+          ctx.fillText('อันดับ', colX, startY)
+          ctx.fillText('นักเรียน / สถาบัน', colX + 85, startY)
+          ctx.textAlign = 'right'
+          ctx.fillText('ELO', colX + columnWidth, startY)
+          ctx.textAlign = 'left'
 
-      topN.forEach((student, index) => {
-        const rowY = startY + (index * rowHeight)
-        ctx.fillStyle = index % 2 === 0 ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
-        ctx.fillRect(50, rowY - 18, 700, rowHeight)
-
-        let rankStr = `#${index + 1}`
-        if (index === 0) rankStr = '🥇'
-        else if (index === 1) rankStr = '🥈'
-        else if (index === 2) rankStr = '🥉'
-        
-        ctx.fillStyle = index === 0 ? '#fbbf24' : index === 1 ? '#d1d5db' : index === 2 ? '#f97316' : '#8E8E93'
-        ctx.font = 'bold 15px Prompt, sans-serif'
-        ctx.fillText(rankStr, 65, rowY + 16)
-
-        const img = loadedIcons[index]
-        const avatarSize = 36
-        if (img) {
-          ctx.save()
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)'
+          ctx.lineWidth = 1
           ctx.beginPath()
-          ctx.roundRect(110, rowY - 6, avatarSize, avatarSize, 6)
-          ctx.clip()
-          ctx.drawImage(img, 110, rowY - 6, avatarSize, avatarSize)
-          ctx.restore()
+          ctx.moveTo(colX, startY + 10)
+          ctx.lineTo(colX + columnWidth, startY + 10)
+          ctx.stroke()
         }
 
-        ctx.fillStyle = '#F5F5F7'
-        ctx.font = 'bold 15px Prompt, sans-serif'
-        ctx.fillText(student.nameEn, 160, rowY + 10)
+        // Draw rows
+        remainingCharacters.forEach((student, idx) => {
+          const col = Math.floor(idx / rowsPerCol)
+          const row = idx % rowsPerCol
+          
+          const colX = startX + col * (columnWidth + colGapX)
+          const rowY = startY + 28 + row * rowHeight
 
+          // Alternating background
+          if (row % 2 === 0) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.015)'
+            ctx.fillRect(colX - 4, rowY - 14, columnWidth + 8, rowHeight)
+          }
+
+          // Draw Rank
+          const globalRank = idx + 4
+          ctx.fillStyle = '#8E8E93'
+          ctx.font = '500 13px Prompt, sans-serif'
+          ctx.fillText(`#${globalRank}`, colX + 4, rowY + 14)
+
+          // Draw Avatar
+          const img = loadedIcons[idx + 3] // Offset by 3
+          const avatarSize = 28
+          const avatarX = colX + 45
+          const avatarY = rowY - 6
+          if (img) {
+            ctx.save()
+            ctx.beginPath()
+            ctx.roundRect(avatarX, avatarY, avatarSize, avatarSize, 4)
+            ctx.clip()
+            ctx.drawImage(img, avatarX, avatarY, avatarSize, avatarSize)
+            ctx.restore()
+          }
+
+          // Draw Name
+          ctx.fillStyle = '#F5F5F7'
+          ctx.font = 'bold 13px Prompt, sans-serif'
+          ctx.fillText(student.nameEn, colX + 85, rowY + 6)
+
+          // Draw School
+          ctx.fillStyle = '#6E6E73'
+          ctx.font = '10px Prompt, sans-serif'
+          ctx.fillText(student.schoolTh, colX + 85, rowY + 18)
+
+          // Draw ELO
+          ctx.textAlign = 'right'
+          ctx.fillStyle = '#fbbf24'
+          ctx.font = 'bold 13px Outfit, sans-serif'
+          ctx.fillText(student.rating, colX + columnWidth - 4, rowY + 14)
+          ctx.textAlign = 'left'
+        })
+
+      } else {
+        // Classic 1-Column Layout for Top 10
         ctx.fillStyle = '#8E8E93'
-        ctx.font = '11px Prompt, sans-serif'
-        ctx.fillText(student.nameJp, 160, rowY + 24)
-
+        ctx.font = 'bold 13px Prompt, sans-serif'
+        ctx.fillText('อันดับ', 60, 470)
+        ctx.fillText('ชื่อนักเรียน', 170, 470)
         ctx.textAlign = 'right'
-        ctx.fillStyle = '#8E8E93'
-        ctx.font = '13px Prompt, sans-serif'
-        ctx.fillText(student.schoolTh, 600, rowY + 16)
-
-        ctx.fillStyle = '#fbbf24'
-        ctx.font = 'bold 16px Outfit, sans-serif'
-        ctx.fillText(student.rating, 740, rowY + 16)
+        ctx.fillText('สถาบัน', 600, 470)
+        ctx.fillText('ELO RATING', 740, 470)
         ctx.textAlign = 'left'
-      })
 
+        const top10Count = Math.min(10, sortedAllCharacters.length)
+        const top10List = sortedAllCharacters.slice(0, top10Count)
+
+        top10List.forEach((student, index) => {
+          const rowY = startY + (index * rowHeight)
+          ctx.fillStyle = index % 2 === 0 ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
+          ctx.fillRect(50, rowY - 18, 700, rowHeight)
+
+          let rankStr = `#${index + 1}`
+          if (index === 0) rankStr = '🥇'
+          else if (index === 1) rankStr = '🥈'
+          else if (index === 2) rankStr = '🥉'
+          
+          ctx.fillStyle = index === 0 ? '#fbbf24' : index === 1 ? '#d1d5db' : index === 2 ? '#f97316' : '#8E8E93'
+          ctx.font = 'bold 15px Prompt, sans-serif'
+          ctx.fillText(rankStr, 65, rowY + 16)
+
+          const img = loadedIcons[index]
+          const avatarSize = 36
+          if (img) {
+            ctx.save()
+            ctx.beginPath()
+            ctx.roundRect(110, rowY - 6, avatarSize, avatarSize, 6)
+            ctx.clip()
+            ctx.drawImage(img, 110, rowY - 6, avatarSize, avatarSize)
+            ctx.restore()
+          }
+
+          ctx.fillStyle = '#F5F5F7'
+          ctx.font = 'bold 15px Prompt, sans-serif'
+          ctx.fillText(student.nameEn, 160, rowY + 10)
+
+          ctx.fillStyle = '#8E8E93'
+          ctx.font = '11px Prompt, sans-serif'
+          ctx.fillText(student.nameJp, 160, rowY + 24)
+
+          ctx.textAlign = 'right'
+          ctx.fillStyle = '#8E8E93'
+          ctx.font = '13px Prompt, sans-serif'
+          ctx.fillText(student.schoolTh, 600, rowY + 16)
+
+          ctx.fillStyle = '#fbbf24'
+          ctx.font = 'bold 16px Outfit, sans-serif'
+          ctx.fillText(student.rating, 740, rowY + 16)
+          ctx.textAlign = 'left'
+        })
+      }
+
+      // Draw Footer
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
       ctx.beginPath()
-      ctx.moveTo(50, 1070)
-      ctx.lineTo(750, 1070)
+      ctx.moveTo(50, baseHeight - 70)
+      ctx.lineTo(baseWidth - 50, baseHeight - 70)
       ctx.stroke()
 
       ctx.fillStyle = '#8E8E93'
       ctx.font = '13px Prompt, sans-serif'
-      ctx.fillText('Kivotos Arcade - Elo Match Character Ranker', 60, 1105)
+      ctx.fillText('Kivotos Arcade - Character Ranker Poster', 60, baseHeight - 35)
 
       ctx.textAlign = 'right'
-      ctx.fillText(`จำนวนโหวตทั้งหมด: ${voteCount} ครั้ง`, 740, 1105)
+      ctx.fillText(`จำนวนโหวตทั้งหมด: ${voteCount} ครั้ง | ตัวละครทั้งหมด: ${sortedAllCharacters.length} คน`, baseWidth - 60, baseHeight - 35)
       ctx.textAlign = 'left'
 
       const dataUrl = canvas.toDataURL('image/png')
       const link = document.createElement('a')
-      link.download = `sensei_elo_ranking_${Date.now()}.png`
+      link.download = `sensei_character_rankings_${mode}_${Date.now()}.png`
       link.href = dataUrl
       link.click()
     } catch (e) {
@@ -502,14 +616,24 @@ function EloRankerGame({ onBack, soundEnabled }) {
           </button>
           
           <button 
-            onClick={downloadLeaderboardPng} 
+            onClick={() => downloadLeaderboardPng('top10')} 
+            disabled={downloading}
+            className="btn-secondary" 
+            title="ดาวน์โหลดภาพสรุปอันดับ Top 10"
+          >
+            <Download className="w-4 h-4" />
+            <span>{downloading ? '...' : 'เซฟรูป Top 10'}</span>
+          </button>
+          
+          <button 
+            onClick={() => downloadLeaderboardPng('all')} 
             disabled={downloading}
             className="btn-secondary" 
             style={{ borderColor: 'var(--color-accent)', color: 'var(--color-accent)' }}
-            title="ดาวน์โหลดภาพสรุปอันดับ Top 10 ของสถาบัน"
+            title="ดาวน์โหลดโปสเตอร์สรุปอันดับทั้งหมด"
           >
             <Download className="w-4 h-4" />
-            <span>{downloading ? 'กำลังบันทึก...' : 'ดาวน์โหลดการ์ดสรุป'}</span>
+            <span>{downloading ? '...' : 'เซฟรูปทั้งหมด'}</span>
           </button>
         </div>
       </div>
@@ -537,13 +661,22 @@ function EloRankerGame({ onBack, soundEnabled }) {
           </p>
           <div style={{ display: 'flex', gap: '12px', marginTop: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
             <button 
-              onClick={downloadLeaderboardPng} 
+              onClick={() => downloadLeaderboardPng('top10')} 
+              disabled={downloading}
+              className="btn-secondary"
+              style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#fff', borderColor: 'rgba(255, 255, 255, 0.2)', fontWeight: '600' }}
+            >
+              <Download className="w-4 h-4" />
+              {downloading ? 'กำลังเซฟภาพ...' : 'ดาวน์โหลดสรุป Top 10'}
+            </button>
+            <button 
+              onClick={() => downloadLeaderboardPng('all')} 
               disabled={downloading}
               className="btn-secondary"
               style={{ background: 'linear-gradient(135deg, #fbbf24, #d97706)', color: '#000', borderColor: '#fbbf24', fontWeight: '700' }}
             >
               <Download className="w-4 h-4" />
-              {downloading ? 'กำลังเซฟภาพ...' : 'ดาวน์โหลดการ์ดอันดับสรุป (Top 10)'}
+              {downloading ? 'กำลังเซฟภาพ...' : 'ดาวน์โหลดโปสเตอร์ทั้งหมด (1-198)'}
             </button>
             <button 
               onClick={() => {
