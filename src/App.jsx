@@ -15,11 +15,19 @@ import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, 
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about', 'eloRanker'
+  const [renderTab, setRenderTab] = useState('lobby')
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navContainerRef = useRef(null)
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 })
+
+  // Synchronize activeTab to renderTab using startTransition (React 18)
+  useEffect(() => {
+    React.startTransition(() => {
+      setRenderTab(activeTab)
+    })
+  }, [activeTab])
 
   useEffect(() => {
     const updateIndicator = () => {
@@ -199,7 +207,7 @@ export default function App() {
 
       {/* Main App Workspace */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 mt-12">
-        {activeTab === 'lobby' && (
+        {renderTab === 'lobby' && (
           <div className="lobby-layout">
             
             {/* Header Title Section */}
@@ -472,78 +480,78 @@ export default function App() {
           </div>
         )}
 
-        {activeTab === 'student' && (
+        {renderTab === 'student' && (
           <StudentGuesser soundEnabled={soundEnabled} onBack={() => setActiveTab('lobby')} />
         )}
 
-        {activeTab === 'halo' && (
+        {renderTab === 'halo' && (
           <HaloGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'weapon' && (
+        {renderTab === 'weapon' && (
           <WeaponGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'skill' && (
+        {renderTab === 'skill' && (
           <SkillGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'gear' && (
+        {renderTab === 'gear' && (
           <GearGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'chocolate' && (
+        {renderTab === 'chocolate' && (
           <ChocolateGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'voice' && (
+        {renderTab === 'voice' && (
           <VoiceGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'height' && (
+        {renderTab === 'height' && (
           <HeightGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'age' && (
+        {renderTab === 'age' && (
           <AgeGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'eloRanker' && (
+        {renderTab === 'eloRanker' && (
           <EloRanker 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
         )}
 
-        {activeTab === 'database' && (
+        {renderTab === 'database' && (
           <StudentDatabase />
         )}
 
-        {activeTab === 'about' && (
+        {renderTab === 'about' && (
           <AboutSchale />
         )}
       </main>
