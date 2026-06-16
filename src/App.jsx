@@ -34,17 +34,53 @@ if (activeBtn) {
     left: offsetLeft,
     width: offsetWidth,
     opacity: 1,
-    // ปรับคีย์เฟรมให้รับแรงกระแทกแล้วค่อยๆ นิ่ง
+    
+    // คีย์เฟรมยืดหด 5 จังหวะของคุณ (Duration 0.8s)
     scaleX: [1, 1.30, 0.90, 1.05, 1], 
-    scaleY: [1, 0.70, 1.18, 0.95, 1], 
+    scaleY: [1, 0.70, 1.18, 0.95, 1],
+    
+    backgroundColor: [
+      "rgba(255, 255, 255, 0.09)", // 0% : เริ่มออกตัว (ขุ่น)
+      "rgba(255, 255, 255, 0.01)", // 10% : พุ่งตัว (ใสทันที)
+      "rgba(255, 255, 255, 0.01)", // 30% : รั้งความใสไว้แป๊บเดียวพอ
+      "rgba(255, 255, 255, 0.09)"  // 65% : กลับมาขุ่นเต็มที่แล้ว! (ก่อนอนิเมชั่นทั้งหมดจะจบที่ 100%)
+    ],
+    backdropFilter: [
+      "blur(16px)", // 0%
+      "blur(0px)",  // 10%
+      "blur(0px)",  // 30%
+      "blur(16px)"  // 65% กลับมาเบลอขุ่นรอไว้เลยก่อนเด้งดึ๋งจบ
+    ],
+    WebkitBackdropFilter: [
+      "blur(16px)",
+      "blur(0px)",
+      "blur(0px)",
+      "blur(16px)"
+    ],
+    
     transition: {
-      // ตำแหน่ง (Left/Width): ใช้สopริงที่พุ่งตัวเร็วมาก แต่ไม่เด้งเลยขอบ (Overdamping)
       left: { type: 'spring', stiffness: 450, damping: 32, mass: 0.6 },
       width: { type: 'spring', stiffness: 450, damping: 32, mass: 0.6 },
       
-      // การยืดหด (Scale): ใช้ Ease-Out ที่เริ่มต้นเร็วจี๊ด แล้วค่อยๆ หน่วงตอนปลาย
       scaleX: { duration: 0.8, ease: [0.16, 1, 0.8, 1] },
-      scaleY: { duration: 0.8, ease: [0.16, 1, 0.8, 1] }
+      scaleY: { duration: 0.8, ease: [0.16, 1, 0.8, 1] },
+      
+      // ปรับจังหวะความใส/ขุ่น ให้จบก่อนอนิเมชั่นหลัก
+      backgroundColor: { 
+        duration: 0.8, 
+        ease: "easeOut", // เปลี่ยนเป็น easeOut ให้ช่วงขุ่นกลับมานุ่มนวลขึ้น
+        times: [0, 0.10, 0.30, 0.65] // <--- ร่นเวลาจาก 0.45->0.30 และ 1.0->0.65
+      },
+      backdropFilter: { 
+        duration: 0.8, 
+        ease: "easeOut",
+        times: [0, 0.10, 0.30, 0.65] 
+      },
+      WebkitBackdropFilter: { 
+        duration: 0.8, 
+        ease: "easeOut",
+        times: [0, 0.10, 0.30, 0.65] 
+      }
     }
   })
 } else {
