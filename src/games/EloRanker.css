@@ -1,0 +1,686 @@
+/* ==========================================================================
+   ELO CHARACTER RANKER - PREMIUM STYLES
+   ========================================================================== */
+
+.elo-ranker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  animation: fadeInUp 0.4s ease;
+  padding-bottom: 40px;
+}
+
+/* Header & Intro */
+.elo-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+
+.elo-title-area h2 {
+  font-family: var(--font-main);
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.elo-title-area p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.elo-header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(167, 30, 60, 0.15);
+  border: 1px solid rgba(167, 30, 60, 0.3);
+  color: #fca5a5;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+  background: rgba(167, 30, 60, 0.25);
+  border-color: rgba(167, 30, 60, 0.5);
+}
+
+/* Split Layout */
+.elo-layout-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: start;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.elo-layout-grid.is-finished-layout {
+  grid-template-columns: 1fr;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 968px) {
+  .elo-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Arena & Duel Styling */
+.elo-arena-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.elo-arena-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.elo-duel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  position: relative;
+  min-height: 360px;
+}
+
+@media (max-width: 480px) {
+  .elo-duel-container {
+    flex-direction: column;
+    min-height: auto;
+    gap: 24px;
+  }
+}
+
+/* Character Cards */
+.elo-char-card {
+  flex: 1;
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 2/3;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--border-color);
+  background: #151518;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.elo-char-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--color-accent);
+  box-shadow: 0 12px 30px rgba(76, 154, 224, 0.25);
+}
+
+.elo-char-portrait-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.elo-char-portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  transition: transform 0.5s ease;
+}
+
+.elo-char-card:hover .elo-char-portrait {
+  transform: scale(1.05);
+}
+
+/* Info overlay on card */
+.elo-char-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 60%, transparent 100%);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.elo-char-school-badge {
+  align-self: flex-start;
+  font-size: 0.65rem;
+  background: rgba(76, 154, 224, 0.2);
+  border: 1px solid rgba(76, 154, 224, 0.4);
+  color: var(--color-accent);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.elo-char-name-en {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.elo-char-name-jp {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.elo-char-rating-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fbbf24;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.elo-char-stats-row {
+  display: flex;
+  gap: 8px;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* VS Badge */
+.elo-vs-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #1c1c20;
+  border: 3px solid var(--border-color);
+  z-index: 10;
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Control Buttons Under cards */
+.elo-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-action-vote {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(28, 28, 30, 0.9) 100%);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.btn-action-vote:hover {
+  background: var(--border-active);
+  color: #ffffff;
+  border-color: var(--border-active);
+  transform: translateY(-2px);
+}
+
+.btn-action-draw {
+  grid-column: span 2;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  color: #fde047;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-action-draw:hover {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-action-skip {
+  background: transparent;
+  border: 1px dashed var(--border-color);
+  color: var(--text-secondary);
+  padding: 10px;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-action-skip:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.btn-action-undo {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 10px;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-action-undo:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-secondary);
+  color: #ffffff;
+}
+
+.btn-action-undo:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Rating Stability Evaluation Dashboard */
+.elo-stability-container {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.elo-stability-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.elo-stability-phase {
+  color: var(--color-accent);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.elo-stability-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.elo-stability-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent) 0%, #fbbf24 100%);
+  border-radius: 9999px;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.elo-stability-desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Leaderboard Panel */
+.elo-leaderboard-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.is-finished-layout .elo-leaderboard-panel {
+  border-color: rgba(251, 191, 36, 0.25);
+  box-shadow: 0 10px 40px rgba(251, 191, 36, 0.05);
+}
+
+.elo-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.elo-board-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fbbf24;
+}
+
+/* Search and Filters */
+.elo-filters-row {
+  display: flex;
+  gap: 12px;
+}
+
+.elo-search-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.elo-search-input {
+  width: 100%;
+  background: #141416;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px 8px 36px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.elo-search-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 10px rgba(76, 154, 224, 0.15);
+}
+
+.elo-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+.elo-select-filter {
+  background: #141416;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.elo-select-filter:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* Leaderboard List (div-based table) */
+.elo-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.is-finished-layout .elo-list-container {
+  max-height: 600px;
+}
+
+.elo-list-header {
+  display: grid;
+  grid-template-columns: 60px 50px 1fr 100px;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.elo-row {
+  display: grid;
+  grid-template-columns: 60px 50px 1fr 100px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: background-color 0.2s ease;
+}
+
+.elo-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Rank column highlights */
+.elo-rank-col {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+}
+
+.elo-row.rank-1 {
+  background: rgba(251, 191, 36, 0.05);
+  border-color: rgba(251, 191, 36, 0.2);
+}
+.elo-row.rank-1 .elo-rank-col {
+  color: #fbbf24;
+  font-size: 1.1rem;
+}
+
+.elo-row.rank-2 {
+  background: rgba(156, 163, 175, 0.05);
+  border-color: rgba(156, 163, 175, 0.2);
+}
+.elo-row.rank-2 .elo-rank-col {
+  color: #d1d5db;
+  font-size: 1.05rem;
+}
+
+.elo-row.rank-3 {
+  background: rgba(180, 83, 9, 0.05);
+  border-color: rgba(180, 83, 9, 0.2);
+}
+.elo-row.rank-3 .elo-rank-col {
+  color: #f97316;
+}
+
+/* Avatar column */
+.elo-avatar-col {
+  display: flex;
+  align-items: center;
+}
+
+.elo-avatar-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1c1c20;
+}
+
+/* Name column */
+.elo-name-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 8px;
+  overflow: hidden;
+}
+
+.elo-name-text {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.elo-sub-text {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+/* Rating column */
+.elo-rating-col {
+  text-align: right;
+  font-weight: 700;
+  color: #fbbf24;
+  font-size: 0.95rem;
+}
+
+/* Empty states / loaders */
+.elo-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Download Canvas & Share Card styles */
+.canvas-exporter-hidden {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  visibility: hidden;
+}
+
+/* Premium Stat Dashboard */
+.elo-stats-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.elo-stat-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.elo-stat-box-val {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.elo-stat-box-lbl {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}

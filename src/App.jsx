@@ -8,12 +8,13 @@ import ChocolateGuesser from './games/ChocolateGuesser.jsx'
 import VoiceGuesser from './games/VoiceGuesser.jsx'
 import HeightGuesser from './games/HeightGuesser.jsx'
 import AgeGuesser from './games/AgeGuesser.jsx'
+import EloRanker from './games/EloRanker.jsx'
 import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
-import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar } from 'lucide-react'
+import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords } from 'lucide-react'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about'
+  const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about', 'eloRanker'
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [customBackAction, setCustomBackAction] = useState(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -50,6 +51,16 @@ export default function App() {
             >
               <Gamepad2 className="w-4 h-4 nav-link-icon" />
               <span>Arcade</span>
+            </button>
+            <button
+              onClick={() => {
+                setCustomBackAction(null)
+                setActiveTab('eloRanker')
+              }}
+              className={`nav-link-btn ${activeTab === 'eloRanker' ? 'active' : ''}`}
+            >
+              <Swords className="w-4 h-4 nav-link-icon" />
+              <span>BA Ranker</span>
             </button>
             <button
               onClick={() => {
@@ -128,6 +139,17 @@ export default function App() {
             >
               <Gamepad2 className="w-4 h-4" />
               <span>Arcade (ห้องเกม)</span>
+            </button>
+            <button
+              onClick={() => {
+                setCustomBackAction(null)
+                setMobileMenuOpen(false)
+                setActiveTab('eloRanker')
+              }}
+              className={`mobile-nav-link ${activeTab === 'eloRanker' ? 'active' : ''}`}
+            >
+              <Swords className="w-4 h-4" />
+              <span>BA Ranker (จัดอันดับ)</span>
             </button>
             <button
               onClick={() => {
@@ -495,6 +517,13 @@ export default function App() {
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
             setCustomBackAction={setCustomBackAction}
+          />
+        )}
+
+        {activeTab === 'eloRanker' && (
+          <EloRanker 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
           />
         )}
 
