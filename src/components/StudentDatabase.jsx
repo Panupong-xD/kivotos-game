@@ -420,6 +420,7 @@ export default function StudentDatabase() {
                   <img
                     src={`/images/student/icon/${student.id}.webp`}
                     alt={student.englishName}
+                    loading="lazy"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = '/images/schoolicon/ETC.png';

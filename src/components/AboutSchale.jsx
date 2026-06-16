@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Info, Sparkles, User, Calendar, BookOpen, Scaling, Users, ExternalLink, Globe, X } from 'lucide-react'
 import LoadingScreen from './LoadingScreen.jsx'
 
@@ -20,6 +20,37 @@ export default function AboutSchale() {
   const [selectedGroup, setSelectedGroup] = useState('')
   const [loading, setLoading] = useState(true)
   const [selectedCharacter, setSelectedCharacter] = useState(null)
+
+  const [visibleCount, setVisibleCount] = useState(30)
+  const sentinelRef = useRef(null)
+
+  // Reset visibleCount when group changes
+  useEffect(() => {
+    setVisibleCount(30)
+  }, [selectedGroup])
+
+  // Setup infinite scroll observer
+  useEffect(() => {
+    if (loading) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => prev + 30)
+        }
+      },
+      { rootMargin: '300px' }
+    )
+
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [loading, selectedGroup])
+
 
   useEffect(() => {
     async function loadStoryCharacters() {
@@ -415,52 +446,81 @@ export default function AboutSchale() {
           )}
 
           {/* Roster Content Grouped by Subgroups */}
-          {activeGroup && activeGroup.subgroups && activeGroup.subgroups.length > 0 ? (
-            <div className="about-roster-content">
-              {activeGroup.subgroups.map(subgroup => (
-                <div key={subgroup.name} className="about-subgroup-section">
-                  <div className="about-subgroup-header">
-                    <h4>{subgroup.nameTh}</h4>
-                    <span className="about-subgroup-count">{subgroup.characters.length} คน</span>
-                  </div>
-                  <div className="about-characters-grid">
-                    {subgroup.characters.map(char => (
-                      <div
-                        key={char.name}
-                        className="about-character-card"
-                        onClick={() => setSelectedCharacter(char)}
-                      >
-                        <div className="about-card-avatar">
-                          <img
-                            src={char.iconPath || '/images/schoolicon/ETC.png'}
-                            alt={char.nameEn}
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = '/images/schoolicon/ETC.png';
-                            }}
-                          />
-                        </div>
-                        <div className="about-card-info">
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span className={`about-card-tag-type ${char.templateType === 'NPC' ? 'npc' : 'playable'}`}>
-                              {char.templateType}
-                            </span>
-                          </div>
-                          <h4>{char.nameEn}</h4>
-                          <p>{char.nameJp}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+          {(() => {
+            if (!activeGroup || !activeGroup.subgroups || activeGroup.subgroups.length === 0) {
+              return (
+                <div className="about-empty-roster">
+                  <Users style={{ width: '48px', height: '48px', opacity: 0.3, marginBottom: '12px' }} />
+                  <p>ไม่มีข้อมูลตัวละคร</p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="about-empty-roster">
-              <Users style={{ width: '48px', height: '48px', opacity: 0.3, marginBottom: '12px' }} />
-              <p>ไม่มีข้อมูลตัวละคร</p>
-            </div>
-          )}
+              )
+            }
+
+            let totalRendered = 0;
+            const subgroupsToRender = [];
+
+            for (const subgroup of activeGroup.subgroups) {
+              const charsForThisSubgroup = [];
+              for (const char of subgroup.characters) {
+                if (totalRendered < visibleCount) {
+                  charsForThisSubgroup.push(char);
+                  totalRendered++;
+                }
+              }
+              if (charsForThisSubgroup.length > 0) {
+                subgroupsToRender.push({
+                  ...subgroup,
+                  characters: charsForThisSubgroup
+                });
+              }
+            }
+
+            return (
+              <div className="about-roster-content">
+                {subgroupsToRender.map(subgroup => (
+                  <div key={subgroup.name} className="about-subgroup-section">
+                    <div className="about-subgroup-header">
+                      <h4>{subgroup.nameTh}</h4>
+                      <span className="about-subgroup-count">{subgroup.characters.length} คน</span>
+                    </div>
+                    <div className="about-characters-grid">
+                      {subgroup.characters.map(char => (
+                        <div
+                          key={char.name}
+                          className="about-character-card"
+                          onClick={() => setSelectedCharacter(char)}
+                        >
+                          <div className="about-card-avatar">
+                            <img
+                              src={char.iconPath || '/images/schoolicon/ETC.png'}
+                              alt={char.nameEn}
+                              loading="lazy"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/images/schoolicon/ETC.png';
+                              }}
+                            />
+                          </div>
+                          <div className="about-card-info">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <span className={`about-card-tag-type ${char.templateType === 'NPC' ? 'npc' : 'playable'}`}>
+                                {char.templateType}
+                              </span>
+                            </div>
+                            <h4>{char.nameEn}</h4>
+                            <p>{char.nameJp}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Sentinel element for infinite scroll */}
+                <div ref={sentinelRef} style={{ height: '30px', width: '100%' }} />
+              </div>
+            );
+          })()}
         </main>
 
       </div>

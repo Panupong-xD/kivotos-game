@@ -1204,14 +1204,59 @@ body {
 @media (max-width: 820px) {
   .lobby-game-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 0 10px;
+    gap: 10px;
+    padding: 0 8px;
   }
   
   .lobby-card {
-    padding: 16px;
-    border-radius: 16px;
-    gap: 12px;
+    padding: 10px 10px 12px 10px !important;
+    border-radius: 12px !important;
+    gap: 8px !important;
+  }
+
+  .lobby-card-preview {
+    height: 95px !important;
+    border-radius: 10px !important;
+  }
+
+  .collage-grid {
+    width: 76px !important;
+    height: 76px !important;
+    gap: 4px !important;
+  }
+
+  .collage-img {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 6px !important;
+  }
+
+  .lock-preview-bg .lock-icon-img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .lobby-card-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+
+  .lobby-card-title {
+    font-size: 0.85rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .lobby-card-tag {
+    font-size: 0.55rem !important;
+    padding: 1px 4px !important;
+    border-radius: 4px !important;
+  }
+
+  .lobby-card-btn {
+    padding: 8px 6px !important;
+    font-size: 0.72rem !important;
+    border-radius: 6px !important;
   }
   
   .lobby-title {
@@ -4597,7 +4642,7 @@ body {
   }
   .about-sidebar {
     position: static;
-    max-height: 200px;
+    max-height: 380px !important;
     flex: none;
   }
 }
@@ -4618,6 +4663,77 @@ body {
   }
   .about-detail-cell {
     grid-column: span 1 !important;
+  }
+
+  /* Student DB 2 Columns Mobile Grid */
+  .db-student-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 0 8px !important;
+  }
+  .db-student-card {
+    padding: 14px 10px !important;
+    border-radius: 14px !important;
+  }
+  .db-card-avatar-box {
+    width: 60px !important;
+    height: 60px !important;
+    margin-top: 4px !important;
+    margin-bottom: 8px !important;
+  }
+  .db-card-name-eng {
+    font-size: 0.85rem !important;
+  }
+  .db-card-name-jp {
+    font-size: 0.65rem !important;
+    margin-bottom: 6px !important;
+  }
+  .db-card-stars {
+    font-size: 0.65rem !important;
+  }
+  .db-card-metadata {
+    font-size: 0.65rem !important;
+    gap: 4px !important;
+    margin-bottom: 8px !important;
+    flex-wrap: wrap !important;
+  }
+  .db-meta-school-tag {
+    padding: 1px 4px !important;
+  }
+  .db-pill {
+    font-size: 0.55rem !important;
+    padding: 2px 4px !important;
+  }
+  .db-card-action-bar {
+    padding-top: 8px !important;
+    font-size: 0.65rem !important;
+  }
+
+  /* Characters 2 Columns Mobile Grid */
+  .about-characters-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  .about-character-card {
+    padding: 12px 8px !important;
+    border-radius: 12px !important;
+  }
+  .about-card-avatar {
+    width: 54px !important;
+    height: 54px !important;
+    border-radius: 10px !important;
+    margin-bottom: 8px !important;
+  }
+  .about-character-card h4 {
+    font-size: 0.82rem !important;
+  }
+  .about-character-card p {
+    font-size: 0.65rem !important;
+  }
+  .about-card-tag-type {
+    font-size: 0.5rem !important;
+    padding: 0px 4px !important;
+    margin-bottom: 4px !important;
   }
 }
 
