@@ -34,8 +34,8 @@ export default function App() {
           left: offsetLeft,
           width: offsetWidth,
           opacity: 1,
-          scaleX: [1, 1.38, 0.85, 1],
-          scaleY: [1, 0.72, 1.15, 1],
+          scaleX: [1, 1.10, 0.85, 1],
+          scaleY: [1, 0.82, 1.25, 1],
           transition: {
             left: { type: 'spring', stiffness: 350, damping: 20, mass: 0.8 },
             width: { type: 'spring', stiffness: 350, damping: 20, mass: 0.8 },
