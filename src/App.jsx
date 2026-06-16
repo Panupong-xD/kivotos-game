@@ -28,22 +28,26 @@ export default function App() {
   useEffect(() => {
     const updateIndicator = () => {
       const activeBtn = navContainerRef.current?.querySelector('.nav-link-btn.active')
-      if (activeBtn) {
-        const { offsetLeft, offsetWidth } = activeBtn
-        controls.start({
-          left: offsetLeft,
-          width: offsetWidth,
-          opacity: 1,
-          scaleX: [1, 1.10, 0.85, 1],
-          scaleY: [1, 0.82, 1.25, 1],
-          transition: {
-            left: { type: 'spring', stiffness: 350, damping: 20, mass: 0.8 },
-            width: { type: 'spring', stiffness: 350, damping: 20, mass: 0.8 },
-            scaleX: { duration: 0.45, ease: [0.25, 1, 0.5, 1] },
-            scaleY: { duration: 0.45, ease: [0.25, 1, 0.5, 1] }
-          }
-        })
-      } else {
+if (activeBtn) {
+  const { offsetLeft, offsetWidth } = activeBtn
+  controls.start({
+    left: offsetLeft,
+    width: offsetWidth,
+    opacity: 1,
+    // ปรับคีย์เฟรมให้รับแรงกระแทกแล้วค่อยๆ นิ่ง
+    scaleX: [1, 1.30, 0.90, 1.05, 1], 
+    scaleY: [1, 0.70, 1.18, 0.95, 1], 
+    transition: {
+      // ตำแหน่ง (Left/Width): ใช้สopริงที่พุ่งตัวเร็วมาก แต่ไม่เด้งเลยขอบ (Overdamping)
+      left: { type: 'spring', stiffness: 450, damping: 32, mass: 0.6 },
+      width: { type: 'spring', stiffness: 450, damping: 32, mass: 0.6 },
+      
+      // การยืดหด (Scale): ใช้ Ease-Out ที่เริ่มต้นเร็วจี๊ด แล้วค่อยๆ หน่วงตอนปลาย
+      scaleX: { duration: 0.8, ease: [0.16, 1, 0.8, 1] },
+      scaleY: { duration: 0.8, ease: [0.16, 1, 0.8, 1] }
+    }
+  })
+} else {
         controls.start({ opacity: 0 })
       }
     }
