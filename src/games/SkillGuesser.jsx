@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Autocomplete from '../components/Autocomplete.jsx'
 import LoadingScreen from '../components/LoadingScreen.jsx'
-import Leaderboard from '../components/Leaderboard.jsx'
 import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Eye, Volume2, VolumeX, Sparkles, HelpCircle, RefreshCw, LayoutGrid, Check, X, Edit2, Lock, Shield, Swords, Info, Settings, EyeOff, User, BookOpen } from 'lucide-react'
-
-import { db } from '../firebase.js'
-import { collection, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import SecureImage from '../components/SecureImage.jsx'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Game Cost Configurations (ปรับเปลี่ยนค่าใช้จ่าย Cost ต่างๆ ของเกมได้จากตรงนี้)
 export const GAME_COSTS = {
@@ -272,29 +269,21 @@ const getWeaponTypeLabel = (wep) => {
   return wepMap[wep] || wep;
 };
 
-const getOrCreatePlayerUuid = () => {
-  let uuid = localStorage.getItem('ba_player_uuid')
-  if (!uuid) {
-    uuid = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
-    localStorage.setItem('ba_player_uuid', uuid)
-  }
-  return uuid
-}
-
-export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBackAction }) {
+export default function SkillGuesser({ soundEnabled = true, onBack }) {
   // Database & Load States
   const [students, setStudents] = useState([])
   const [loading, setLoading] = useState(true)
   const [fadeLoading, setFadeLoading] = useState(true)
 
-  // Game Mode States: 'lobby', 'challenge', 'practice'
-  const [mode, setMode] = useState('lobby')
+  // Game Mode States: 'practice'
+  const [mode, setMode] = useState('practice')
 
   // Gameplay Target & Variables
   const [currentTarget, setCurrentTarget] = useState(null) // { student, haloFile, gear, combat, personal }
   const [previousTargets, setPreviousTargets] = useState([])
   const [guesses, setGuesses] = useState([])
   const [solved, setSolved] = useState(false)
+  const [isRevealed, setIsRevealed] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [defeat, setDefeat] = useState(false)
   
@@ -310,15 +299,6 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
     personal: false
   })
 
-  // Challenge Stats
-  const [score, setScore] = useState(0)
-  const [combo, setCombo] = useState(1)
-  const [highScore, setHighScore] = useState(() => {
-    return parseInt(localStorage.getItem('ba_hint_high_score') || '0', 10)
-  })
-  const [gameOver, setGameOver] = useState(false)
-  const [correctAnswersList, setCorrectAnswersList] = useState([])
-
   // UI styling state
   const [bgStyle, setBgStyle] = useState('slate')
 
@@ -326,119 +306,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
   const autocompleteRef = useRef(null)
   const nextRoundTimeoutRef = useRef(null)
 
-  // Leaderboard states
-  const [playerName, setPlayerName] = useState(() => {
-    return localStorage.getItem('ba_player_name') || 'Anonymous Sensei'
-  })
-  const [isEditingName, setIsEditingName] = useState(false)
-  const [tempName, setTempName] = useState('')
-  const [submittingScore, setSubmittingScore] = useState(false)
-  const [scoreSubmitted, setScoreSubmitted] = useState(false)
-  const [refreshTrigger, setRefreshTrigger] = useState(0)
-  const lastSavedNameRef = useRef(localStorage.getItem('ba_player_name') || 'Anonymous Sensei')
 
-  // Sync profile & high score from Firestore
-  useEffect(() => {
-    const syncProfileWithDb = async () => {
-      if (!db) return
-      const uuid = getOrCreatePlayerUuid()
-      try {
-        const docRef = doc(db, 'tactical_leaderboard', uuid)
-        const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-          const dbData = docSnap.data()
-          if (dbData.score && dbData.score > highScore) {
-            setHighScore(dbData.score)
-            localStorage.setItem('ba_hint_high_score', dbData.score.toString())
-          }
-          if (dbData.name) {
-            lastSavedNameRef.current = dbData.name
-            if (!localStorage.getItem('ba_player_name')) {
-              setPlayerName(dbData.name)
-              localStorage.setItem('ba_player_name', dbData.name)
-            }
-          }
-        }
-      } catch (err) {
-        console.warn("Failed to sync profile with database:", err)
-      }
-    }
-    syncProfileWithDb()
-  }, [db])
-
-  // Save Sensei Name
-  const handleSaveName = async () => {
-    const finalName = tempName.trim() ? tempName.trim() : "Anonymous Sensei"
-    setPlayerName(finalName)
-    localStorage.setItem('ba_player_name', finalName)
-    setIsEditingName(false)
-
-    if (finalName === lastSavedNameRef.current) return
-
-    if (db && highScore > 0) {
-      setSubmittingScore(true)
-      try {
-        const uuid = getOrCreatePlayerUuid()
-        await setDoc(doc(db, 'tactical_leaderboard', uuid), {
-          name: finalName
-        }, { merge: true })
-        lastSavedNameRef.current = finalName
-        setRefreshTrigger(prev => prev + 1)
-      } catch (err) {
-        console.warn("Failed to update name in database:", err)
-      } finally {
-        setSubmittingScore(false)
-      }
-    }
-  }
-
-  // Auto-submit high score
-  useEffect(() => {
-    if (gameOver && mode === 'challenge' && score > 0) {
-      const autoSubmitScore = async () => {
-        let isNewHighScore = false
-        if (score > highScore) {
-          setHighScore(score)
-          localStorage.setItem('ba_hint_high_score', score.toString())
-          isNewHighScore = true
-        }
-
-        if (db) {
-          try {
-            const uuid = getOrCreatePlayerUuid()
-            const finalName = playerName.trim() ? playerName.trim() : "Anonymous Sensei"
-            
-            const docRef = doc(db, 'tactical_leaderboard', uuid)
-            const docSnap = await getDoc(docRef)
-            let shouldWrite = true
-            
-            if (docSnap.exists()) {
-              const currentDbScore = docSnap.data().score || 0
-              if (score <= currentDbScore) {
-                shouldWrite = false
-              }
-            }
-
-            if (shouldWrite) {
-              setSubmittingScore(true)
-              await setDoc(docRef, {
-                name: finalName,
-                score: score,
-                createdAt: serverTimestamp()
-              }, { merge: true })
-              setScoreSubmitted(true)
-              setRefreshTrigger(prev => prev + 1)
-            }
-          } catch (err) {
-            console.error("Error auto-submitting score:", err)
-          } finally {
-            setSubmittingScore(false)
-          }
-        }
-      }
-      autoSubmitScore()
-    }
-  }, [gameOver, score, mode, db])
 
   // Play Sound Synth Beeps
   const playBeep = (type) => {
@@ -558,6 +426,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
           }
         }
         setStudents(list)
+        selectNextTarget(list, null, [])
 
         const elapsed = Date.now() - startTime
         const delay = Math.max(0, 300 - elapsed)
@@ -580,14 +449,12 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
   useEffect(() => {
     return () => {
       if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-      if (setCustomBackAction) {
-        setCustomBackAction(null)
-      }
     }
-  }, [setCustomBackAction])
+  }, [])
 
   // Select next random target
   const selectNextTarget = (studentsPool = students, itemsPool = null, currentUsed = previousTargets, nextCost = GAME_COSTS.STARTING_COST) => {
+    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
     if (studentsPool.length === 0) return
 
     let available = studentsPool.filter(s => !currentUsed.includes(s.id))
@@ -632,6 +499,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
     setGuesses([])
     setSolved(false)
+    setIsRevealed(false)
     setDefeat(false)
     setCost(nextCost)
     setBlurLevel(4)
@@ -650,46 +518,6 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
       }
     }, 50)
   }
-
-  // Start Challenge Mode
-  const startChallenge = () => {
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('challenge')
-    setScore(0)
-    setCombo(1)
-    setGameOver(false)
-    setCorrectAnswersList([])
-    setPreviousTargets([])
-    setScoreSubmitted(false)
-    selectNextTarget(students, null, [])
-
-    if (setCustomBackAction) {
-      setCustomBackAction(() => exitToLobby)
-    }
-  }
-
-  // Start Practice Mode
-  const startPractice = () => {
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('practice')
-    setPreviousTargets([])
-    selectNextTarget(students, null, [])
-
-    if (setCustomBackAction) {
-      setCustomBackAction(() => exitToLobby)
-    }
-  }
-
-  // Exit back to lobby
-  const exitToLobby = () => {
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('lobby')
-    setGameOver(false)
-    if (setCustomBackAction) {
-      setCustomBackAction(null)
-    }
-  }
-
   // Spend Cost Helper
   const spendCost = (amount, skipDefeatCheck = false) => {
     const nextCost = Math.max(0, cost - amount)
@@ -698,21 +526,17 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
     // Play Click Sound
     playBeep('action')
 
-    // If cost falls below minimum guess cost and not solved, it's a defeat (since they cannot make a guess)
+    // If cost falls below minimum guess cost and not solved, it's a defeat
     if (!skipDefeatCheck && nextCost < GAME_COSTS.SUBMIT_GUESS && !solved) {
       setDefeat(true)
       playBeep('gameover')
-      if (mode === 'challenge') {
-        // End Challenge Mode game immediately on defeat
-        setTimeout(() => setGameOver(true), 1500)
-      }
     }
     return nextCost
   }
 
   // Clue Buy Operations
   const handleDecreaseBlur = () => {
-    if (solved || defeat || gameOver || blurLevel === 0) return
+    if (solved || defeat || blurLevel === 0) return
     if (cost < GAME_COSTS.DECREASE_BLUR) return
     
     spendCost(GAME_COSTS.DECREASE_BLUR)
@@ -720,7 +544,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
   }
 
   const handleRestoreColor = () => {
-    if (solved || defeat || gameOver || !isSilhouette) return
+    if (solved || defeat || !isSilhouette) return
     if (cost < GAME_COSTS.RESTORE_COLOR) return
 
     spendCost(GAME_COSTS.RESTORE_COLOR)
@@ -728,7 +552,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
   }
 
   const handleRevealClue = (type, requiredCost) => {
-    if (solved || defeat || gameOver || unlockedClues[type]) return
+    if (solved || defeat || unlockedClues[type]) return
     if (cost < requiredCost) return
 
     spendCost(requiredCost)
@@ -740,7 +564,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
   // Guess Selection
   const handleGuess = (guessedStudent) => {
-    if (solved || defeat || gameOver || !currentTarget) return
+    if (solved || defeat || !currentTarget) return
     if (cost < GAME_COSTS.SUBMIT_GUESS) return
 
     const isCorrect = guessedStudent.id === currentTarget.student.id
@@ -753,38 +577,9 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
       // CORRECT GUESS!
       setSolved(true)
       playBeep('victory')
-
-      if (mode === 'challenge') {
-        const scoreGained = nextCost * 100 * combo
-        const nextScore = score + scoreGained
-        setScore(nextScore)
-
-        if (nextScore > highScore) {
-          setHighScore(nextScore)
-          localStorage.setItem('ba_hint_high_score', nextScore.toString())
-        }
-
-        setCorrectAnswersList(prev => [
-          ...prev,
-          {
-            student: currentTarget.student,
-            scoreGained,
-            combo,
-            costLeft: nextCost
-          }
-        ])
-
-        // Add to combo
-        setCombo(prev => Math.min(prev + 1, 5))
-
-        // Auto transition to next target after 1.5 seconds
-        nextRoundTimeoutRef.current = setTimeout(() => {
-          setIsTransitioning(true)
-          const newUsed = [...previousTargets, currentTarget.student.id]
-          setPreviousTargets(newUsed)
-          selectNextTarget(students, null, newUsed, Math.min(GAME_COSTS.MAX_COST, nextCost + GAME_COSTS.ROUND_BONUS_COST))
-        }, 1500)
-      }
+      nextRoundTimeoutRef.current = setTimeout(() => {
+        handleNextPractice()
+      }, 1500)
     } else {
       // INCORRECT GUESS
       playBeep('failure')
@@ -792,17 +587,10 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
       const updatedGuesses = [...guesses, guessedStudent]
       setGuesses(updatedGuesses)
 
-      if (mode === 'challenge') {
-        setCombo(1)
-      }
-
       // Check defeat after incorrect guess — if cost too low to make another guess
       if (nextCost < GAME_COSTS.SUBMIT_GUESS) {
         setDefeat(true)
         playBeep('gameover')
-        if (mode === 'challenge') {
-          setTimeout(() => setGameOver(true), 1500)
-        }
       }
     }
   }
@@ -829,6 +617,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
   const handleRevealAnswer = () => {
     if (mode !== 'practice' || solved || defeat) return
     setSolved(true)
+    setIsRevealed(true)
     playBeep('failure')
   }
 
@@ -846,158 +635,41 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
   }
 
   return (
-    <div className="halo-guesser-container font-prompt">
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="halo-guesser-container font-prompt"
+    >
       
-      {/* 1. LOBBY VIEW */}
-      {mode === 'lobby' && (
-        <div className="halo-lobby-panel animate-scaleUp">
-          <div className="halo-lobby-header">
-            <span className="halo-lobby-badge" style={{ backgroundColor: 'rgba(6, 182, 212, 0.1)', borderColor: 'rgba(6, 182, 212, 0.2)', color: '#06b6d4' }}>
-              4th Arcade Game
-            </span>
-            <h2 className="halo-lobby-title">TACTICAL HINT GUESSER</h2>
-            <p className="halo-lobby-subtitle">
-              โหมดบริหารการใช้ Cost วางแผนปลดล็อคเบาะแสข้อมูลเพื่อทายนักเรียน!
-            </p>
-          </div>
-
-          <div className="lobby-profile-row animate-scaleUp">
-            {/* Personal Best */}
-            <div className="halo-highscore-box" style={{ backgroundColor: 'rgba(6, 182, 212, 0.05)', borderColor: 'rgba(6, 182, 212, 0.2)' }}>
-              <Trophy className="highscore-trophy-icon animate-pulse" style={{ color: '#06b6d4' }} />
-              <div>
-                <span className="highscore-label" style={{ color: '#06b6d4' }}>PERSONAL BEST SCORE</span>
-                <h4 className="highscore-value">{highScore.toLocaleString()} PTS</h4>
-              </div>
-            </div>
-
-            {/* Profile Setup */}
-            <div className="halo-profile-box">
-              <span className="profile-label">SENSEI NAME (ชื่อของคุณครู)</span>
-              {!isEditingName ? (
-                <div className="profile-display-mode">
-                  <span className="profile-name-text">{playerName}</span>
-                  <button 
-                    onClick={() => {
-                      setTempName(playerName)
-                      setIsEditingName(true)
-                    }}
-                    className="profile-edit-btn"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" /> แก้ไข
-                  </button>
-                </div>
-              ) : (
-                <div className="profile-edit-mode">
-                  <input
-                    type="text"
-                    value={tempName}
-                    onChange={(e) => setTempName(e.target.value.slice(0, 15))}
-                    placeholder="ชื่อของคุณครู..."
-                    className="profile-name-input-edit"
-                    autoFocus
-                  />
-                  <div className="profile-edit-actions">
-                    <button 
-                      onClick={handleSaveName}
-                      disabled={submittingScore}
-                      className="profile-action-btn save"
-                    >
-                      <Check className="w-3 h-3" /> บันทึก
-                    </button>
-                    <button 
-                      onClick={() => setIsEditingName(false)}
-                      className="profile-action-btn cancel"
-                    >
-                      <X className="w-3 h-3" /> ยกเลิก
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Mode Selection */}
-          <div className="halo-mode-grid">
-            <div className="halo-mode-card time-attack" onClick={startChallenge}>
-              <div className="mode-card-visual">
-                <Timer className="mode-icon" />
-              </div>
-              <div className="mode-card-content">
-                <h3>TACTICAL CHALLENGE (โหมดวางแผนจัดอันดับ)</h3>
-                <p>
-                  ท้าทายการบริหาร Cost! เริ่มต้นด้วย 10 Cost (สูงสุด 20 Cost) ใช้ในการส่งคำทายและปลดเบาะแส เมื่อทายถูกในแต่ละรอบจะได้รับโบนัส +10 Cost และทดคะแนนสะสมทวีคูณเพื่อชิงอันดับบน Leaderboard!
-                </p>
-                <button className="mode-start-btn speed-accent">START CHALLENGE MODE</button>
-              </div>
-            </div>
-
-            <div className="halo-mode-card practice" onClick={startPractice}>
-              <div className="mode-card-visual">
-                <HelpCircle className="mode-icon" />
-              </div>
-              <div className="mode-card-content">
-                <h3>PRACTICE (โหมดฝึกซ้อมสบายๆ)</h3>
-                <p>
-                  ฝึกฝนทักษะการวิเคราะห์เบาะแสอย่างอิสระไร้แรงกดดัน ปรับความคมชัดของภาพเงา หรือปลดล็อคข้อมูลประวัติการรบ อาวุธ และ Unique Gear โดยไม่มีข้อจำกัดเรื่องพลังงาน Cost หรือแต้มคะแนนในแต่ละรอบ
-                </p>
-                <button className="mode-start-btn practice-accent">START PRACTICE</button>
-              </div>
-            </div>
-          </div>
-
-          {/* Leaderboard */}
-          <Leaderboard db={db} collectionName="tactical_leaderboard" refreshTrigger={refreshTrigger} />
-
-          <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
-            <button onClick={onBack} className="header-back-btn">
-              กลับหน้าหลัก
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 2. ACTIVE GAMEPLAY INTERFACE */}
-      {mode !== 'lobby' && !gameOver && currentTarget && (
+      {currentTarget && (
         <div className="halo-gameplay-layout animate-fadeInUp">
           
           {/* HUD Header */}
           <div className="halo-gameplay-header" style={{ marginBottom: '16px' }}>
             <div className="gameplay-title-area">
-              <span className={`gameplay-badge ${mode === 'challenge' ? 'time-attack-mode' : 'practice-mode'}`} style={mode === 'practice' ? { backgroundColor: 'rgba(6, 182, 212, 0.1)', color: '#06b6d4', borderColor: 'rgba(6, 182, 212, 0.2)' } : { backgroundColor: 'rgba(6, 182, 212, 0.1)', color: '#06b6d4', borderColor: 'rgba(6, 182, 212, 0.2)' }}>
-                {mode === 'challenge' ? 'CHALLENGE MODE' : 'PRACTICE MODE'}
+              <span 
+                className="gameplay-badge practice-mode" 
+                style={{ backgroundColor: 'rgba(76, 154, 224, 0.1)', color: 'var(--color-accent)', borderColor: 'rgba(76, 154, 224, 0.2)', borderWidth: '1px' }}
+              >
+                PRACTICE MODE (เล่นชิลๆ)
               </span>
-              <button onClick={exitToLobby} className="gameplay-exit-btn">
-                ออกเกม
+              <button onClick={onBack} className="gameplay-exit-btn">
+                กลับหน้าหลัก
               </button>
             </div>
-
-            {mode === 'challenge' && (
-              <div className="gameplay-hud-stats">
-                <div className="hud-stat-box score" style={{ borderColor: 'rgba(6, 182, 212, 0.3)' }}>
-                  <span>TOTAL SCORE</span>
-                  <div className="hud-val" style={{ color: '#00e5ff' }}>{score}</div>
-                </div>
-                
-                <div className="hud-stat-box combo">
-                  <span>STREAK COMBO</span>
-                  <div className={`hud-val combo-glow ${combo > 1 ? 'active' : ''}`}>
-                    {combo}x
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* EX Cost segments bar (Cyan neon style) */}
-          <div className="glass-panel" style={{ padding: '16px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px', background: 'rgba(13, 14, 18, 0.8)', borderColor: 'rgba(6, 182, 212, 0.15)' }}>
+          <div className="glass-panel" style={{ padding: '16px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px', background: 'rgba(13, 14, 18, 0.8)', borderColor: 'rgba(76, 154, 224, 0.15)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span className="profile-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#00e5ff' }}>
+              <span className="profile-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-accent)' }}>
                 <Sparkles className="w-3.5 h-3.5" /> TACTICAL EX COST BUFFER
               </span>
-              <span style={{ fontSize: '0.9rem', fontWeight: '900', color: cost >= 3 ? '#00e5ff' : '#f43f5e', fontFamily: 'Outfit, sans-serif' }}>
-                {cost} / {GAME_COSTS.MAX_COST} Segment
-              </span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                <span style={{ fontSize: '1.25rem', fontWeight: '900', color: 'var(--color-accent)', letterSpacing: '0.05em' }}>{cost}</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>/ 10 COST</span>
+              </div>
             </div>
             
             {/* Horizontal cost rectangles */}
@@ -1008,8 +680,8 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                 let segmentBorder = 'rgba(255, 255, 255, 0.08)'
                 
                 if (isActive) {
-                  segmentColor = cost >= 3 ? '#00e5ff' : '#ef4444'
-                  segmentBorder = cost >= 3 ? 'rgb(6, 210, 240)' : '#f87171'
+                  segmentColor = cost >= 3 ? 'var(--color-accent)' : '#ef4444'
+                  segmentBorder = cost >= 3 ? 'var(--color-accent)' : '#f87171'
                 }
 
                 return (
@@ -1038,11 +710,29 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
           <div className="halo-gameplay-workspace">
             
             {/* Left column - Avatar Display */}
-            <div className="halo-card-wrapper">
+            <div className="halo-card-wrapper" style={{ borderColor: 'rgba(76, 154, 224, 0.3)' }}>
               <div className="halo-contrast-controls">
-                <button onClick={() => setBgStyle('slate')} className={`contrast-btn ${bgStyle === 'slate' ? 'active' : ''}`}>Slate</button>
-                <button onClick={() => setBgStyle('chess')} className={`contrast-btn ${bgStyle === 'chess' ? 'active' : ''}`}>Grid</button>
-                <button onClick={() => setBgStyle('light')} className={`contrast-btn ${bgStyle === 'light' ? 'active' : ''}`}>Light</button>
+                <button 
+                  onClick={() => setBgStyle('slate')} 
+                  className={`contrast-btn ${bgStyle === 'slate' ? 'active' : ''}`}
+                  style={bgStyle === 'slate' ? { backgroundColor: 'var(--color-accent)' } : {}}
+                >
+                  Slate
+                </button>
+                <button 
+                  onClick={() => setBgStyle('chess')} 
+                  className={`contrast-btn ${bgStyle === 'chess' ? 'active' : ''}`}
+                  style={bgStyle === 'chess' ? { backgroundColor: 'var(--color-accent)' } : {}}
+                >
+                  Grid
+                </button>
+                <button 
+                  onClick={() => setBgStyle('light')} 
+                  className={`contrast-btn ${bgStyle === 'light' ? 'active' : ''}`}
+                  style={bgStyle === 'light' ? { backgroundColor: 'var(--color-accent)' } : {}}
+                >
+                  Light
+                </button>
               </div>
 
               <div className={`halo-graphic-viewport bg-style-${bgStyle}`} style={{ height: '300px' }}>
@@ -1099,80 +789,90 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                 `}} />
 
                 {/* Solved Overlay banner */}
-                {solved && !isTransitioning && (
-                  <div className="halo-viewport-solved-overlay">
-                    <Sparkles className="solved-sparkle-icon" />
-                    <span>SUCCESS IDENTIFIED</span>
-                    
-                    <div className="solved-target-profile-card">
-                      <img
-                        src={`/images/student/icon/${currentTarget.student.id}.webp`}
-                        alt={currentTarget.student.englishName}
-                        className="solved-profile-avatar"
-                      />
-                      <div className="solved-profile-details">
-                        <h3>{currentTarget.student.englishName}</h3>
-                        <p>โรงเรียน (School): {currentTarget.student.school}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {solved && !isTransitioning && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      className="halo-viewport-solved-overlay"
+                      style={isRevealed ? { background: 'rgba(28, 28, 30, 0.85)', borderColor: 'rgba(255, 255, 255, 0.15)' } : {}}
+                    >
+                      <Sparkles className="solved-sparkle-icon" style={isRevealed ? { color: '#8e8e93' } : { color: 'var(--color-accent)' }} />
+                      <span>{isRevealed ? 'REVEALED!' : 'IDENTIFIED!'}</span>
+                      
+                      <motion.div 
+                        initial={{ y: 10, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        className="solved-target-profile-card"
+                        style={{ borderLeftColor: isRevealed ? '#8e8e93' : 'var(--color-accent)' }}
+                      >
+                        <img
+                          src={`/images/student/icon/${currentTarget.student.id}.webp`}
+                          alt={currentTarget.student.englishName}
+                          className="solved-profile-avatar"
+                        />
+                        <div className="solved-profile-details">
+                          <h3>{currentTarget.student.englishName}</h3>
+                          <p>โรงเรียน (School): {currentTarget.student.school}</p>
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* Defeat Overlay banner */}
-                {defeat && !solved && (
-                  <div className="halo-viewport-solved-overlay" style={{ backgroundColor: 'rgba(28, 10, 10, 0.8)' }}>
-                    <AlertTriangle className="solved-sparkle-icon text-rose-500" />
-                    <span className="text-rose-500">TACTICAL DEFEAT</span>
-                    <p className="text-slate-300 text-xs mt-1">Cost พลังงานหมดลงก่อนค้นพบคำตอบ</p>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {defeat && !solved && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      className="halo-viewport-solved-overlay" 
+                      style={{ backgroundColor: 'rgba(28, 10, 10, 0.8)' }}
+                    >
+                      <AlertTriangle className="solved-sparkle-icon text-rose-500" />
+                      <span className="text-rose-500">TACTICAL DEFEAT</span>
+                      <p className="text-slate-300 text-xs mt-1">Cost พลังงานหมดลงก่อนค้นพบคำตอบ</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Unlocked Visual Clues (Halo, Weapon, Gear) directly under image viewport */}
-              {(unlockedClues.halo || unlockedClues.weapon || unlockedClues.gear) && (
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', padding: '10px', background: 'rgba(0,0,0,0.25)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
-                  {unlockedClues.halo && currentTarget.haloFile && (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title="ฮาโลนักเรียน">
-                      <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>HALO</span>
-                      <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
-                        <SecureImage 
-                          src={`/images/halos/${currentTarget.haloFile}`} 
-                          alt="Halo clue" 
-                          draggable={false}
-                          onDragStart={(e) => e.preventDefault()}
-                          onContextMenu={(e) => e.preventDefault()}
-                          style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                  {unlockedClues.weapon && currentTarget.student.weaponImg && (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title="อาวุธ">
-                      <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>WEAPON</span>
-                      <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
-                        <SecureImage 
-                          src={`/images/weapon/${currentTarget.student.weaponImg}.webp`} 
-                          alt="Weapon clue" 
-                          draggable={false}
-                          onDragStart={(e) => e.preventDefault()}
-                          onContextMenu={(e) => e.preventDefault()}
-                          style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = '/images/schoolicon/ETC.png';
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                  {unlockedClues.gear && (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title={currentTarget.gear ? currentTarget.gear.name : 'ไม่มี Unique Gear'}>
-                      <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>GEAR</span>
-                      <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
-                        {currentTarget.gear ? (
+              <AnimatePresence>
+                {(unlockedClues.halo || unlockedClues.weapon || unlockedClues.gear) && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    style={{ display: 'flex', justifyContent: 'center', gap: '12px', padding: '10px', background: 'rgba(0,0,0,0.25)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}
+                  >
+                    {unlockedClues.halo && currentTarget.haloFile && (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title="ฮาโลนักเรียน">
+                        <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>HALO</span>
+                        <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
                           <SecureImage 
-                            src={`/images/gear/icon/${currentTarget.student.id}.webp`} 
-                            alt="Gear clue" 
+                            src={`/images/halos/${currentTarget.haloFile}`} 
+                            alt="Halo clue" 
+                            draggable={false}
+                            onDragStart={(e) => e.preventDefault()}
+                            onContextMenu={(e) => e.preventDefault()}
+                            style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                    {unlockedClues.weapon && currentTarget.student.weaponImg && (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title="อาวุธ">
+                        <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>WEAPON</span>
+                        <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
+                          <SecureImage 
+                            src={`/images/weapon/${currentTarget.student.weaponImg}.webp`} 
+                            alt="Weapon clue" 
                             draggable={false}
                             onDragStart={(e) => e.preventDefault()}
                             onContextMenu={(e) => e.preventDefault()}
@@ -1182,14 +882,35 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                               e.target.src = '/images/schoolicon/ETC.png';
                             }}
                           />
-                        ) : (
-                          <span style={{ fontSize: '0.55rem', color: '#94a3b8', textAlign: 'center' }}>ไม่มี</span>
-                        )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              )}
+                    )}
+                    {unlockedClues.gear && (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }} title={currentTarget.gear ? currentTarget.gear.name : 'ไม่มี Unique Gear'}>
+                        <span style={{ fontSize: '0.55rem', fontWeight: '700', color: '#00e5ff' }}>GEAR</span>
+                        <div style={{ width: '54px', height: '54px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
+                          {currentTarget.gear ? (
+                            <SecureImage 
+                              src={`/images/gear/icon/${currentTarget.student.id}.webp`} 
+                              alt="Gear clue" 
+                              draggable={false}
+                              onDragStart={(e) => e.preventDefault()}
+                              onContextMenu={(e) => e.preventDefault()}
+                              style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/images/schoolicon/ETC.png';
+                              }}
+                            />
+                          ) : (
+                            <span style={{ fontSize: '0.55rem', color: '#94a3b8', textAlign: 'center' }}>ไม่มี</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Status information tags */}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -1209,7 +930,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                   
                   {/* Action 1: Decrease blur */}
                   <button 
-                    disabled={solved || defeat || gameOver || blurLevel === 0 || cost < GAME_COSTS.DECREASE_BLUR}
+                    disabled={solved || defeat || blurLevel === 0 || cost < GAME_COSTS.DECREASE_BLUR}
                     onClick={handleDecreaseBlur}
                     className="contrast-btn"
                     style={{
@@ -1231,7 +952,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
                   {/* Action 2: Silhouette */}
                   <button 
-                    disabled={solved || defeat || gameOver || !isSilhouette || cost < GAME_COSTS.RESTORE_COLOR}
+                    disabled={solved || defeat || !isSilhouette || cost < GAME_COSTS.RESTORE_COLOR}
                     onClick={handleRestoreColor}
                     className="contrast-btn"
                     style={{
@@ -1253,7 +974,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
                   {/* Action 3: Reveal Halo */}
                   <button 
-                    disabled={solved || defeat || gameOver || unlockedClues.halo || cost < GAME_COSTS.REVEAL_HALO}
+                    disabled={solved || defeat || unlockedClues.halo || cost < GAME_COSTS.REVEAL_HALO}
                     onClick={() => handleRevealClue('halo', GAME_COSTS.REVEAL_HALO)}
                     className="contrast-btn"
                     style={{
@@ -1275,7 +996,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
                   {/* Action 4: Reveal Weapon */}
                   <button 
-                    disabled={solved || defeat || gameOver || unlockedClues.weapon || cost < GAME_COSTS.REVEAL_WEAPON}
+                    disabled={solved || defeat || unlockedClues.weapon || cost < GAME_COSTS.REVEAL_WEAPON}
                     onClick={() => handleRevealClue('weapon', GAME_COSTS.REVEAL_WEAPON)}
                     className="contrast-btn"
                     style={{
@@ -1297,7 +1018,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
                   {/* Action 5: Reveal Unique Gear */}
                   <button 
-                    disabled={solved || defeat || gameOver || unlockedClues.gear || cost < GAME_COSTS.REVEAL_GEAR}
+                    disabled={solved || defeat || unlockedClues.gear || cost < GAME_COSTS.REVEAL_GEAR}
                     onClick={() => handleRevealClue('gear', GAME_COSTS.REVEAL_GEAR)}
                     className="contrast-btn"
                     style={{
@@ -1319,7 +1040,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
                   {/* Action 6: Combat profile */}
                   <button 
-                    disabled={solved || defeat || gameOver || unlockedClues.combat || cost < GAME_COSTS.REVEAL_COMBAT}
+                    disabled={solved || defeat || unlockedClues.combat || cost < GAME_COSTS.REVEAL_COMBAT}
                     onClick={() => handleRevealClue('combat', GAME_COSTS.REVEAL_COMBAT)}
                     className="contrast-btn"
                     style={{
@@ -1341,7 +1062,7 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
                   {/* Action 7: Personal profile */}
                   <button 
-                    disabled={solved || defeat || gameOver || unlockedClues.personal || cost < GAME_COSTS.REVEAL_PERSONAL}
+                    disabled={solved || defeat || unlockedClues.personal || cost < GAME_COSTS.REVEAL_PERSONAL}
                     onClick={() => handleRevealClue('personal', GAME_COSTS.REVEAL_PERSONAL)}
                     className="contrast-btn"
                     style={{
@@ -1350,14 +1071,14 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       padding: '0 12px',
-                      borderColor: unlockedClues.personal ? 'rgba(255,255,255,0.05)' : 'rgba(6, 182, 212, 0.2)',
+                      borderColor: unlockedClues.personal ? 'rgba(255,255,255,0.05)' : 'rgba(76, 154, 224, 0.2)',
                       gridColumn: 'span 2'
                     }}
                   >
                     <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <User className="w-4 h-4 text-cyan-400" /> ข้อมูลประวัติส่วนตัว (วันเกิด/ตำแหน่ง/ปืน/Illustrator)
+                      <User className="w-4 h-4" style={{ color: 'var(--color-accent)' }} /> ข้อมูลประวัติส่วนตัว (วันเกิด/ตำแหน่ง/ปืน/Illustrator)
                     </span>
-                    <span style={{ padding: '2px 6px', background: 'rgba(6, 182, 212, 0.15)', borderRadius: '99px', fontSize: '0.65rem', color: '#00e5ff', fontWeight: '800' }}>
+                    <span style={{ padding: '2px 6px', background: 'rgba(76, 154, 224, 0.15)', borderRadius: '99px', fontSize: '0.65rem', color: 'var(--color-accent)', fontWeight: '800' }}>
                       -{GAME_COSTS.REVEAL_PERSONAL} COST
                     </span>
                   </button>
@@ -1367,311 +1088,271 @@ export default function SkillGuesser({ soundEnabled = true, onBack, setCustomBac
 
               {/* Autocomplete Input Card */}
               <div className="halo-input-container">
-                {solved || defeat ? (
-                  /* Victory or Defeat message */
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
-                    {solved ? (
-                      <div className="solved-banner" style={{ margin: 0, width: '100%', boxSizing: 'border-box' }}>
-                        <div className="solved-banner-text">
-                          <span className="solved-banner-tag won">IDENTIFIED</span>
-                          <h3>คำตอบที่ถูกต้องคือ: <strong style={{ color: '#00e5ff' }}>{currentTarget.student.englishName}</strong></h3>
+                <AnimatePresence mode="wait">
+                  {solved || defeat ? (
+                    /* Victory or Defeat message */
+                    <motion.div 
+                      key="status-banner"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}
+                    >
+                      {solved ? (
+                        isRevealed ? (
+                          <div className="solved-banner" style={{ margin: 0, width: '100%', boxSizing: 'border-box', background: 'rgba(245, 158, 11, 0.08)', borderColor: 'rgba(245, 158, 11, 0.2)' }}>
+                            <div className="solved-banner-text">
+                              <span className="solved-banner-tag revealed" style={{ background: '#f59e0b', color: '#0c0c0e' }}>REVEALED</span>
+                              <h3>เฉลยคำตอบ: <strong style={{ color: '#f59e0b' }}>{currentTarget.student.englishName}</strong></h3>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="solved-banner" style={{ margin: 0, width: '100%', boxSizing: 'border-box', borderColor: 'var(--color-accent)', background: 'rgba(76, 154, 224, 0.08)' }}>
+                            <div className="solved-banner-text">
+                              <span className="solved-banner-tag won" style={{ background: 'var(--color-accent)' }}>IDENTIFIED</span>
+                              <h3>ทายถูกต้อง! คำตอบคือ: <strong style={{ color: 'var(--color-accent)' }}>{currentTarget.student.englishName}</strong></h3>
+                            </div>
+                          </div>
+                        )
+                      ) : (
+                        <div className="solved-banner" style={{ margin: 0, width: '100%', boxSizing: 'border-box', background: 'rgba(239, 68, 68, 0.08)', borderColor: 'rgba(239, 68, 68, 0.2)' }}>
+                          <div className="solved-banner-text">
+                            <span className="solved-banner-tag revealed" style={{ background: '#ef4444' }}>FAILED</span>
+                            <h3>ตัวละครเป้าหมายคือ: <strong style={{ color: '#ef4444' }}>{currentTarget.student.englishName}</strong></h3>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="solved-banner" style={{ margin: 0, width: '100%', boxSizing: 'border-box', background: 'rgba(239, 68, 68, 0.08)', borderColor: 'rgba(239, 68, 68, 0.2)' }}>
-                        <div className="solved-banner-text">
-                          <span className="solved-banner-tag revealed" style={{ background: '#ef4444' }}>FAILED</span>
-                          <h3>ตัวละครเป้าหมายคือ: <strong style={{ color: '#ef4444' }}>{currentTarget.student.englishName}</strong></h3>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {mode === 'practice' && (
-                      <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                        <button onClick={handleNextPractice} className="practice-next-btn" style={{ flex: 1, height: '42px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                          เล่นรอบถัดไป <ArrowRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  /* Active Input box */
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <span className="guesser-input-title">ระบุชื่อนักเรียนที่ต้องสงสัย (การส่งทายจะหัก 4 Cost)</span>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <div style={{ flex: 1 }}>
-                        <Autocomplete
-                          ref={autocompleteRef}
-                          suggestions={students}
-                          onSelect={handleGuess}
-                          guessedIds={guesses.map(g => g.id)}
-                          placeholder="ค้นหาชื่อ เช่น Aru, Shiroko, Hina..."
-                        />
-                      </div>
+                      )}
                       
                       {mode === 'practice' && (
-                        <>
-                          <button onClick={handleRevealAnswer} className="gameplay-reveal-btn" style={{ height: '45px' }}>
-                            เฉลย
+                        <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                          <button onClick={handleNextPractice} className="practice-next-btn" style={{ flex: 1, height: '42px', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'var(--color-accent)' }}>
+                            เล่นรอบถัดไป <ArrowRight className="w-4 h-4" />
                           </button>
-                          <button onClick={handleSkipPractice} className="gameplay-skip-btn" style={{ height: '45px' }} title="เปลี่ยนโจทย์">
-                            <RefreshCw className="w-4 h-4" />
-                          </button>
-                        </>
+                        </div>
                       )}
-                    </div>
-                  </div>
-                )}
+                    </motion.div>
+                  ) : (
+                    /* Active Input box */
+                    <motion.div 
+                      key="active-input"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+                    >
+                      <span className="guesser-input-title" style={{ color: 'var(--color-accent)' }}>ระบุชื่อนักเรียนที่ต้องสงสัย (การส่งทายจะหัก 4 Cost)</span>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <div style={{ flex: 1 }}>
+                          <Autocomplete
+                            ref={autocompleteRef}
+                            suggestions={students}
+                            onSelect={handleGuess}
+                            guessedIds={guesses.map(g => g.id)}
+                            placeholder="ค้นหาชื่อ เช่น Aru, Shiroko, Hina..."
+                          />
+                        </div>
+                        
+                        {mode === 'practice' && (
+                          <>
+                            <button onClick={handleRevealAnswer} className="gameplay-reveal-btn" style={{ height: '45px', backgroundColor: 'var(--color-accent)', color: '#fff' }}>
+                              เฉลย
+                            </button>
+                            <button onClick={handleSkipPractice} className="gameplay-skip-btn" style={{ height: '45px', borderColor: 'rgba(76, 154, 224, 0.4)' }} title="เปลี่ยนโจทย์">
+                              <RefreshCw className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
             </div>
           </div>
 
           {/* Unlocked Clues Display Panel */}
-          {(unlockedClues.halo || unlockedClues.weapon || unlockedClues.gear || unlockedClues.combat || unlockedClues.personal) && (
-            <div className="glass-panel animate-fadeIn" style={{ padding: '18px', borderRadius: '20px', marginTop: '20px', background: 'rgba(13, 14, 18, 0.75)' }}>
-              <h4 className="logs-header-title" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#00e5ff' }}>
-                <BookOpen className="w-4 h-4" /> DECLASSIFIED TACTICAL DOSSIER (แฟ้มประวัติเบาะแสที่ปลดล็อคแล้ว)
-              </h4>
+          <AnimatePresence>
+            {(unlockedClues.halo || unlockedClues.weapon || unlockedClues.gear || unlockedClues.combat || unlockedClues.personal) && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="glass-panel" 
+                style={{ padding: '18px', borderRadius: '20px', marginTop: '20px', background: 'rgba(13, 14, 18, 0.75)' }}
+              >
+                <h4 className="logs-header-title" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#00e5ff' }}>
+                  <BookOpen className="w-4 h-4" /> DECLASSIFIED TACTICAL DOSSIER (แฟ้มประวัติเบาะแสที่ปลดล็อคแล้ว)
+                </h4>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
-                
-                {/* Visual Clues Row */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-                  {/* Halo Clue */}
-                  {unlockedClues.halo && currentTarget.haloFile && (
-                    <div className="glass-panel" style={{ padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
-                      <span className="profile-label">😇 HALO</span>
-                      <SecureImage 
-                        src={`/images/halos/${currentTarget.haloFile}`} 
-                        alt="Halo clue" 
-                        draggable={false}
-                        onDragStart={(e) => e.preventDefault()}
-                        onContextMenu={(e) => e.preventDefault()}
-                        style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
-                      />
-                    </div>
-                  )}
-
-                  {/* Weapon Clue */}
-                  {unlockedClues.weapon && currentTarget.student.weaponImg && (
-                    <div className="glass-panel" style={{ padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
-                      <span className="profile-label">🔫 WEAPON</span>
-                      <SecureImage 
-                        src={`/images/weapon/${currentTarget.student.weaponImg}.webp`} 
-                        alt="Weapon clue" 
-                        draggable={false}
-                        onDragStart={(e) => e.preventDefault()}
-                        onContextMenu={(e) => e.preventDefault()}
-                        style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/images/schoolicon/ETC.png';
-                        }}
-                      />
-                      <span className="text-xs font-bold text-slate-300">
-                        {currentTarget.student.weaponType}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Gear Clue */}
-                  {unlockedClues.gear && (
-                    <div className="glass-panel" style={{ padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
-                      <span className="profile-label">
-                        ⚙️ UNIQUE GEAR
-                      </span>
-                      {currentTarget.gear ? (
-                        <>
-                          <SecureImage 
-                            src={`/images/gear/icon/${currentTarget.student.id}.webp`} 
-                            alt="Gear Icon clue" 
-                            draggable={false}
-                            onDragStart={(e) => e.preventDefault()}
-                            onContextMenu={(e) => e.preventDefault()}
-                            style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = '/images/schoolicon/ETC.png';
-                            }}
-                          />
-                          <span className="text-xs text-slate-300 font-bold">
-                            {currentTarget.gear.name}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-xs text-slate-400 font-bold">
-                          ไม่มี Unique Gear สำหรับนักเรียนคนนี้
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Info Profiles Row */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
                   
-                  {/* Combat Stats clue */}
-                  {unlockedClues.combat && (
-                    <div className="glass-panel" style={{ padding: '12px', borderRadius: '12px', background: 'rgba(6, 182, 212, 0.02)', borderColor: 'rgba(6, 182, 212, 0.1)' }}>
-                      <span className="profile-label" style={{ color: '#06b6d4', marginBottom: '8px', display: 'block' }}>🛡️ COMBAT RECORD (ประวัติฝึกซ้อมรบ)</span>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        {currentTarget.combat.map((item, index) => (
-                          <div key={index} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '3px' }}>
-                            <span className="text-slate-400">{item.label}</span>
-                            <span className="text-slate-200 font-bold">{item.value}</span>
-                          </div>
-                        ))}
+                  {/* Visual Clues Row */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+                    {/* Halo Clue */}
+                    {unlockedClues.halo && currentTarget.haloFile && (
+                      <div className="glass-panel" style={{ padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
+                        <span className="profile-label">😇 HALO</span>
+                        <SecureImage 
+                          src={`/images/halos/${currentTarget.haloFile}`} 
+                          alt="Halo clue" 
+                          draggable={false}
+                          onDragStart={(e) => e.preventDefault()}
+                          onContextMenu={(e) => e.preventDefault()}
+                          style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
+                        />
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Personal details clue */}
-                  {unlockedClues.personal && (
-                    <div className="glass-panel" style={{ padding: '12px', borderRadius: '12px', background: 'rgba(6, 182, 212, 0.02)', borderColor: 'rgba(6, 182, 212, 0.1)' }}>
-                      <span className="profile-label" style={{ color: '#06b6d4', marginBottom: '8px', display: 'block' }}>📝 STUDENT BIO (ข้อมูลส่วนบุคคล)</span>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        {currentTarget.personal.map((item, index) => (
-                          <div key={index} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '3px' }}>
-                            <span className="text-slate-400">{item.label}</span>
-                            <span className="text-slate-200 font-bold" style={{ maxWidth: '180px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', textAlign: 'right' }} title={item.value}>
-                              {item.value}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                </div>
-
-              </div>
-            </div>
-          )}
-
-          {/* Incorrect Guesses History Log */}
-          {guesses.length > 0 && (
-            <div className="halo-guess-logs-container" style={{ marginTop: '20px', minHeight: 'auto' }}>
-              <h4 className="logs-header-title">HISTORY OF UNSUCCESSFUL TARGET ESTIMATES (ประวัติทายผิดพลาด)</h4>
-              
-              <div className="logs-scroll-area" style={{ maxHeight: '150px' }}>
-                {guesses.map((g, idx) => (
-                  <div key={idx} className="guess-log-row incorrect" style={{ padding: '6px 12px' }}>
-                    <div className="log-student-info">
-                      <img
-                        src={`/images/student/icon/${g.id}.webp`}
-                        alt={g.englishName}
-                        className="log-student-avatar"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/images/schoolicon/ETC.png';
-                        }}
-                      />
-                      <span className="log-student-name">{g.englishName}</span>
-                    </div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                      {g.school}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-        </div>
-      )}
-
-      {/* 3. GAME OVER SCREEN (Challenge Mode only) */}
-      {gameOver && mode === 'challenge' && (
-        <div className="halo-gameplay-layout animate-fadeInUp" style={{ display: 'flex', justifyContent: 'center' }}>
-          <div className="halo-gameover-panel">
-            <div className="gameover-header">
-              <Trophy className="gameover-warning-icon text-cyan-400" style={{ color: '#06b6d4' }} />
-              <h2 className="gameover-title" style={{ color: '#06b6d4' }}>CHALLENGE COMPLETED</h2>
-              <p className="gameover-subtitle">ปฏิบัติหน้าที่ช่วยเหลือสายด่วนนักเรียนชะเล่ต์เสร็จสิ้น</p>
-            </div>
-
-            <div className="gameover-stats-grid">
-              <div className="gameover-stat-card final-score" style={{ borderColor: 'rgba(6, 182, 212, 0.3)', backgroundColor: 'rgba(6, 182, 212, 0.05)' }}>
-                <span>TOTAL SCORE</span>
-                <h3 style={{ color: '#00e5ff' }}>{score.toLocaleString()}</h3>
-              </div>
-
-              <div className="gameover-stat-card pr-trophy">
-                <span>PERSONAL BEST</span>
-                <h3>{highScore.toLocaleString()}</h3>
-              </div>
-
-              <div className="gameover-stat-card">
-                <span>SUCCESS RATE</span>
-                <h3>{correctAnswersList.length} ตัว</h3>
-              </div>
-            </div>
-
-            {/* Answers Log */}
-            <div className="gameover-answers-log-container">
-              <h4 className="gameover-answers-title">DEBRIEFING DOSSIER (ประวัตินักเรียนที่คุณช่วยสำเร็จในรอบนี้)</h4>
-              {correctAnswersList.length === 0 ? (
-                <div className="gameover-answers-empty">
-                  ไม่พบรายงานภารกิจช่วยเหลือสำเร็จในรอบนี้
-                </div>
-              ) : (
-                <div className="gameover-answers-scroll">
-                  {correctAnswersList.map((item, idx) => (
-                    <div key={idx} className="gameover-answer-row">
-                      <div className="gameover-row-student">
-                        <span className="row-index">#{idx + 1}</span>
-                        <img
-                          src={`/images/student/icon/${item.student.id}.webp`}
-                          alt={item.student.englishName}
-                          className="gameover-row-avatar"
+                    {/* Weapon Clue */}
+                    {unlockedClues.weapon && currentTarget.student.weaponImg && (
+                      <div className="glass-panel" style={{ padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
+                        <span className="profile-label">🔫 WEAPON</span>
+                        <SecureImage 
+                          src={`/images/weapon/${currentTarget.student.weaponImg}.webp`} 
+                          alt="Weapon clue" 
+                          draggable={false}
+                          onDragStart={(e) => e.preventDefault()}
+                          onContextMenu={(e) => e.preventDefault()}
+                          style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = '/images/schoolicon/ETC.png';
                           }}
                         />
-                        <div className="gameover-row-name">
-                          <span className="eng">{item.student.englishName}</span>
-                          <span className="school">{item.student.school}</span>
+                        <span className="text-xs font-bold text-slate-300">
+                          {currentTarget.student.weaponType}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Gear Clue */}
+                    {unlockedClues.gear && (
+                      <div className="glass-panel" style={{ padding: '10px 14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
+                        <span className="profile-label">
+                          ⚙️ UNIQUE GEAR
+                        </span>
+                        {currentTarget.gear ? (
+                          <>
+                            <SecureImage 
+                              src={`/images/gear/icon/${currentTarget.student.id}.webp`} 
+                              alt="Gear Icon clue" 
+                              draggable={false}
+                              onDragStart={(e) => e.preventDefault()}
+                              onContextMenu={(e) => e.preventDefault()}
+                              style={{ width: '42px', height: '42px', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none' }}
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/images/schoolicon/ETC.png';
+                              }}
+                            />
+                            <span className="text-xs text-slate-300 font-bold">
+                              {currentTarget.gear.name}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-xs text-slate-400 font-bold">
+                            ไม่มี Unique Gear สำหรับนักเรียนคนนี้
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info Profiles Row */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                    
+                    {/* Combat Stats clue */}
+                    {unlockedClues.combat && (
+                      <div className="glass-panel" style={{ padding: '12px', borderRadius: '12px', background: 'rgba(6, 182, 212, 0.02)', borderColor: 'rgba(6, 182, 212, 0.1)' }}>
+                        <span className="profile-label" style={{ color: '#06b6d4', marginBottom: '8px', display: 'block' }}>🛡️ COMBAT RECORD (ประวัติฝึกซ้อมรบ)</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          {currentTarget.combat.map((item, index) => (
+                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '3px' }}>
+                              <span className="text-slate-400">{item.label}</span>
+                              <span className="text-slate-200 font-bold">{item.value}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                      
-                      <div className="gameover-row-points">
-                        <span className="points-added">+{item.scoreGained.toLocaleString()} PTS</span>
-                        <span className="points-combo">เหลือ {item.costLeft} Cost (x{item.combo} Combo)</span>
+                    )}
+
+                    {/* Personal details clue */}
+                    {unlockedClues.personal && (
+                      <div className="glass-panel" style={{ padding: '12px', borderRadius: '12px', background: 'rgba(6, 182, 212, 0.02)', borderColor: 'rgba(6, 182, 212, 0.1)' }}>
+                        <span className="profile-label" style={{ color: '#06b6d4', marginBottom: '8px', display: 'block' }}>📝 STUDENT BIO (ข้อมูลส่วนบุคคล)</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          {currentTarget.personal.map((item, index) => (
+                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '3px' }}>
+                              <span className="text-slate-400">{item.label}</span>
+                              <span className="text-slate-200 font-bold" style={{ maxWidth: '180px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', textAlign: 'right' }} title={item.value}>
+                                {item.value}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    )}
 
-            {/* Score submission check */}
-            <div className="gameover-leaderboard-section">
-              {scoreSubmitted ? (
-                <div className="leaderboard-submitted-msg">
-                  <Check className="w-4 h-4" /> บันทึกสถิติคะแนนลง Leaderboard สำเร็จแล้ว!
-                </div>
-              ) : submittingScore ? (
-                <div className="leaderboard-submitted-msg info">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" /> กำลังส่งสถิติคะแนน...
-                </div>
-              ) : null}
-            </div>
+                  </div>
 
-            {/* Buttons */}
-            <div className="gameover-actions">
-              <button onClick={startChallenge} className="gameover-btn-restart" style={{ backgroundColor: '#06b6d4' }}>
-                <RotateCcw className="w-4 h-4" /> เล่นโหมดท้าทายใหม่
-              </button>
-              <button onClick={exitToLobby} className="gameover-btn-exit">
-                กลับล็อบบี้เกม
-              </button>
-            </div>
-          </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Incorrect Guesses History Log */}
+          <AnimatePresence>
+            {guesses.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 15 }}
+                className="halo-guess-logs-container" 
+                style={{ marginTop: '20px', minHeight: 'auto' }}
+              >
+                <h4 className="logs-header-title">HISTORY OF UNSUCCESSFUL TARGET ESTIMATES (ประวัติทายผิดพลาด)</h4>
+                
+                <div className="logs-scroll-area" style={{ maxHeight: '150px' }}>
+                  <AnimatePresence initial={false}>
+                    {guesses.map((g, idx) => (
+                      <motion.div 
+                        key={`${g.id}-${idx}`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="guess-log-row incorrect" 
+                        style={{ padding: '6px 12px' }}
+                      >
+                        <div className="log-student-info">
+                          <img
+                            src={`/images/student/icon/${g.id}.webp`}
+                            alt={g.englishName}
+                            className="log-student-avatar"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/images/schoolicon/ETC.png';
+                            }}
+                          />
+                          <span className="log-student-name">{g.englishName}</span>
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          {g.school}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         </div>
       )}
 
-    </div>
+    </motion.div>
   )
 }
+

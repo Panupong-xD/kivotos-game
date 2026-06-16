@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Autocomplete from '../components/Autocomplete.jsx'
 import LoadingScreen from '../components/LoadingScreen.jsx'
-import Leaderboard from '../components/Leaderboard.jsx'
-import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Check, X, Edit2, Sparkles, HelpCircle } from 'lucide-react'
-
-import { db } from '../firebase.js'
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
+import { ArrowRight, Check, X, Sparkles, Eye } from 'lucide-react'
 import SecureImage from '../components/SecureImage.jsx'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Set of 141 validated chocolate filename identifiers in public/images/item/icon and public/images/item/full
 const VALID_CHOCOLATES = new Set([
@@ -97,178 +94,27 @@ const getChocolateNameForStudent = (student) => {
   return null;
 };
 
-// Reusable translation labels
-const getBulletLabel = (type) => {
-  if (type === 'Explosion') return 'Explosion (ระเบิด)'
-  if (type === 'Pierce') return 'Pierce (ทะลวง)'
-  if (type === 'Mystic') return 'Mystic (ลึกลับ)'
-  if (type === 'Sonic') return 'Sonic (สั่นสะเทือน)'
-  return 'Normal (ปกติ)'
-};
-
-const getArmorLabel = (type) => {
-  if (type === 'LightArmor') return 'Light (เบา)'
-  if (type === 'HeavyArmor') return 'Heavy (หนัก)'
-  if (type === 'Unarmed') return 'Special (พิเศษ)'
-  if (type === 'ElasticArmor') return 'Elastic (ยืดหยุ่น)'
-  return 'Normal (ปกติ)'
-};
-
-const getOrCreatePlayerUuid = () => {
-  let uuid = localStorage.getItem('ba_player_uuid')
-  if (!uuid) {
-    uuid = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
-    localStorage.setItem('ba_player_uuid', uuid)
-  }
-  return uuid
-}
-
-export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAction }) {
+export default function ChocolateGuesser({ soundEnabled, onBack }) {
   const [allStudents, setAllStudents] = useState([]) // For autocomplete suggestions
   const [targetStudents, setTargetStudents] = useState([]) // Pool of students who have chocolates
   const [loading, setLoading] = useState(true)
   const [fadeLoading, setFadeLoading] = useState(true)
 
-  // 'lobby', 'time-attack', 'practice'
-  const [mode, setMode] = useState('lobby')
+  // Game Mode States: 'practice'
+  const [mode] = useState('practice')
 
   // Play States
-  const [currentTarget, setCurrentTarget] = useState(null) // { student, chocolateFile }
+  const [currentTarget, setCurrentTarget] = useState(null) // { student }
   const [previousTargets, setPreviousTargets] = useState([])
   const [guesses, setGuesses] = useState([])
   const [solved, setSolved] = useState(false)
-  const [score, setScore] = useState(0)
-  const [combo, setCombo] = useState(1)
-  const [highScore, setHighScore] = useState(() => {
-    return parseInt(localStorage.getItem('ba_chocolate_high_score') || '0', 10)
-  })
-
-  // Timer (Time Attack)
-  const [timeLeft, setTimeLeft] = useState(60)
-  const [timerActive, setTimerActive] = useState(false)
-  const [gameOver, setGameOver] = useState(false)
-  const [correctAnswersList, setCorrectAnswersList] = useState([])
+  const [isRevealed, setIsRevealed] = useState(false)
 
   // Visual background style
   const [bgStyle, setBgStyle] = useState('slate')
 
   const autocompleteRef = useRef(null)
   const nextRoundTimeoutRef = useRef(null)
-  
-  const lastSavedNameRef = useRef(localStorage.getItem('ba_player_name') || 'Anonymous Sensei')
-
-  // Leaderboard States
-  const [playerName, setPlayerName] = useState(() => {
-    return localStorage.getItem('ba_player_name') || 'Anonymous Sensei'
-  })
-  const [isEditingName, setIsEditingName] = useState(false)
-  const [tempName, setTempName] = useState('')
-  const [submittingScore, setSubmittingScore] = useState(false)
-  const [scoreSubmitted, setScoreSubmitted] = useState(false)
-  const [refreshTrigger, setRefreshTrigger] = useState(0)
-
-  // Sync profile from DB on mount
-  useEffect(() => {
-    const syncProfileWithDb = async () => {
-      if (!db) return
-      const uuid = getOrCreatePlayerUuid()
-      try {
-        const docRef = doc(db, 'chocolate_leaderboard', uuid)
-        const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-          const dbData = docSnap.data()
-          if (dbData.score && dbData.score > highScore) {
-            setHighScore(dbData.score)
-            localStorage.setItem('ba_chocolate_high_score', dbData.score.toString())
-          }
-          if (dbData.name) {
-            lastSavedNameRef.current = dbData.name
-            if (!localStorage.getItem('ba_player_name')) {
-              setPlayerName(dbData.name)
-              localStorage.setItem('ba_player_name', dbData.name)
-            }
-          }
-        }
-      } catch (err) {
-        console.warn("Failed to sync profile with database:", err)
-      }
-    }
-    syncProfileWithDb()
-  }, [])
-
-  // Save Name
-  const handleSaveName = async () => {
-    const finalName = tempName.trim() ? tempName.trim() : "Anonymous Sensei"
-    setPlayerName(finalName)
-    localStorage.setItem('ba_player_name', finalName)
-    setIsEditingName(false)
-
-    if (finalName === lastSavedNameRef.current) return
-
-    if (db && highScore > 0) {
-      setSubmittingScore(true)
-      try {
-        const uuid = getOrCreatePlayerUuid()
-        await setDoc(doc(db, 'chocolate_leaderboard', uuid), {
-          name: finalName
-        }, { merge: true })
-        lastSavedNameRef.current = finalName
-        setRefreshTrigger(prev => prev + 1)
-      } catch (err) {
-        console.warn("Failed to update name in database:", err)
-      } finally {
-        setSubmittingScore(false)
-      }
-    }
-  }
-
-  // Auto-submit high score
-  useEffect(() => {
-    if (gameOver && mode === 'time-attack' && score > 0) {
-      const autoSubmitScore = async () => {
-        let isNewHighScore = false
-        if (score > highScore) {
-          setHighScore(score)
-          localStorage.setItem('ba_chocolate_high_score', score.toString())
-          isNewHighScore = true
-        }
-
-        if (db) {
-          try {
-            const uuid = getOrCreatePlayerUuid()
-            const finalName = playerName.trim() ? playerName.trim() : "Anonymous Sensei"
-            
-            const docRef = doc(db, 'chocolate_leaderboard', uuid)
-            const docSnap = await getDoc(docRef)
-            let shouldWrite = true
-            
-            if (docSnap.exists()) {
-              const currentDbScore = docSnap.data().score || 0
-              if (score <= currentDbScore) {
-                shouldWrite = false
-              }
-            }
-
-            if (shouldWrite) {
-              setSubmittingScore(true)
-              await setDoc(docRef, {
-                name: finalName,
-                score: score,
-                createdAt: serverTimestamp()
-              }, { merge: true })
-              setScoreSubmitted(true)
-              setRefreshTrigger(prev => prev + 1)
-            }
-          } catch (err) {
-            console.error("Error auto-submitting score:", err)
-          } finally {
-            setSubmittingScore(false)
-          }
-        }
-      }
-      autoSubmitScore()
-    }
-  }, [gameOver, score, mode])
 
   // Play Sound Beeps
   const playBeep = (type) => {
@@ -323,20 +169,6 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
             oscC.stop(ctx.currentTime + 0.1)
           }, i * 60)
         })
-      } else if (type === 'gameover') {
-        const notes = [392, 349.23, 311.13, 261.63]
-        notes.forEach((f, i) => {
-          setTimeout(() => {
-            const oscG = ctx.createOscillator()
-            const gainG = ctx.createGain()
-            oscG.connect(gainG)
-            gainG.connect(ctx.destination)
-            oscG.frequency.value = f
-            gainG.gain.setValueAtTime(0.06, ctx.currentTime)
-            oscG.start()
-            oscG.stop(ctx.currentTime + 0.3)
-          }, i * 150)
-        })
       }
     } catch (e) {
       console.warn(e)
@@ -384,6 +216,7 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
 
         setAllStudents(suggestionsList)
         setTargetStudents(targetPool)
+        selectNextTarget(targetPool, [])
         
         const elapsed = Date.now() - startTime
         const delay = Math.max(0, 300 - elapsed)
@@ -406,43 +239,12 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
   useEffect(() => {
     return () => {
       if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-      if (setCustomBackAction) {
-        setCustomBackAction(null)
-      }
     }
-  }, [setCustomBackAction])
-
-  // Timer logic for Time Attack
-  useEffect(() => {
-    let interval = null
-    if (timerActive) {
-      interval = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            setTimerActive(false)
-            setGameOver(true)
-            playBeep('gameover')
-            if (nextRoundTimeoutRef.current) {
-              clearTimeout(nextRoundTimeoutRef.current)
-            }
-            clearInterval(interval)
-            return 0
-          }
-          if (prev <= 11) {
-            playBeep('warning')
-          }
-          return prev - 1
-        })
-      }, 1000)
-    }
-
-    return () => {
-      if (interval) clearInterval(interval)
-    }
-  }, [timerActive])
+  }, [])
 
   // Select next target
   const selectNextTarget = (pool = targetStudents, currentUsed = previousTargets) => {
+    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
     if (pool.length === 0) return
 
     let available = pool.filter(s => !currentUsed.includes(s.id))
@@ -458,6 +260,7 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
     })
     setGuesses([])
     setSolved(false)
+    setIsRevealed(false)
 
     setTimeout(() => {
       if (autocompleteRef.current) {
@@ -466,51 +269,9 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
     }, 50)
   }
 
-  // Mode Initializations
-  const startTimeAttack = () => {
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('time-attack')
-    setTimeLeft(60)
-    setScore(0)
-    setCombo(1)
-    setGameOver(false)
-    setCorrectAnswersList([])
-    setPreviousTargets([])
-    setScoreSubmitted(false)
-    selectNextTarget(targetStudents, [])
-    setTimerActive(true)
-
-    if (setCustomBackAction) {
-      setCustomBackAction(() => exitToLobby)
-    }
-  }
-
-  const startPractice = () => {
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('practice')
-    setGuesses([])
-    setSolved(false)
-    setPreviousTargets([])
-    selectNextTarget(targetStudents, [])
-
-    if (setCustomBackAction) {
-      setCustomBackAction(() => exitToLobby)
-    }
-  }
-
-  const exitToLobby = () => {
-    setTimerActive(false)
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('lobby')
-    setGameOver(false)
-    if (setCustomBackAction) {
-      setCustomBackAction(null)
-    }
-  }
-
   // Handle Guess selection
   const handleGuess = (guessedStudent) => {
-    if (solved || gameOver || !currentTarget) return
+    if (solved || !currentTarget) return
 
     if (guesses.some(g => g.id === guessedStudent.id)) return
 
@@ -528,68 +289,30 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
 
     if (isCorrect) {
       setSolved(true)
-      playBeep(combo >= 3 ? 'combo' : 'success')
-
-      if (mode === 'time-attack') {
-        const addedTime = 5
-        const baseScore = 100
-        const scoreGained = baseScore * combo
-        const newScore = score + scoreGained
-        setScore(newScore)
-
-        if (newScore > highScore) {
-          setHighScore(newScore)
-          localStorage.setItem('ba_chocolate_high_score', newScore.toString())
-        }
-
-        setCorrectAnswersList(prev => [
-          ...prev, 
-          { 
-            student: currentTarget.student, 
-            scoreGained, 
-            combo 
-          }
-        ])
-
-        setTimeLeft(prev => Math.min(prev + addedTime, 99))
-        setCombo(prev => Math.min(prev + 1, 5))
-
-        nextRoundTimeoutRef.current = setTimeout(() => {
-          const newUsed = [...previousTargets, currentTarget.student.id]
-          setPreviousTargets(newUsed)
-          selectNextTarget(targetStudents, newUsed)
-        }, 1000)
-      }
+      playBeep('success')
+      nextRoundTimeoutRef.current = setTimeout(() => {
+        const newUsed = [...previousTargets, currentTarget.student.id]
+        setPreviousTargets(newUsed)
+        selectNextTarget(targetStudents, newUsed)
+      }, 1500)
     } else {
       playBeep('failure')
-      if (mode === 'time-attack') {
-        setCombo(1)
-        setTimeLeft(prev => Math.max(prev - 3, 0))
-      }
     }
   }
 
   // Controls
   const handleSkip = () => {
-    if (gameOver || !currentTarget) return
+    if (!currentTarget) return
     playBeep('failure')
-    
-    if (mode === 'time-attack') {
-      setCombo(1)
-      setTimeLeft(prev => Math.max(prev - 2, 0))
-      const newUsed = [...previousTargets, currentTarget.student.id]
-      setPreviousTargets(newUsed)
-      selectNextTarget(targetStudents, newUsed)
-    } else {
-      const newUsed = [...previousTargets, currentTarget.student.id]
-      setPreviousTargets(newUsed)
-      selectNextTarget(targetStudents, newUsed)
-    }
+    const newUsed = [...previousTargets, currentTarget.student.id]
+    setPreviousTargets(newUsed)
+    selectNextTarget(targetStudents, newUsed)
   }
 
   const handleReveal = () => {
-    if (mode !== 'practice' || solved) return
+    if (solved) return
     setSolved(true)
+    setIsRevealed(true)
     playBeep('failure')
   }
 
@@ -598,338 +321,193 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
   }
 
   return (
-    <div className="halo-guesser-container font-prompt">
-      
-      {/* 1. LOBBY / MODE SELECTION */}
-      {mode === 'lobby' && (
-        <div className="halo-lobby-panel animate-scaleUp">
-          <div className="halo-lobby-header">
-            <span className="halo-lobby-badge" style={{ backgroundColor: 'rgba(244, 63, 94, 0.1)', borderColor: 'rgba(244, 63, 94, 0.2)', color: '#f43f5e' }}>
-              Mini-Game
-            </span>
-            <h2 className="halo-lobby-title" style={{ fontFamily: 'Outfit, sans-serif' }}>VALENTINE CHOCOLATE GUESSER</h2>
-            <p className="halo-lobby-subtitle">ทายช็อกโกแลตสื่อรักวาเลนไทน์ของเหล่านักเรียนแห่งคิโวทอส!</p>
-          </div>
-
-          <div className="lobby-profile-row animate-scaleUp">
-            {/* Personal Best */}
-            <div className="halo-highscore-box" style={{ backgroundColor: 'rgba(244, 63, 94, 0.05)', borderColor: 'rgba(244, 63, 94, 0.2)', color: '#f43f5e' }}>
-              <Trophy className="highscore-trophy-icon animate-pulse" style={{ color: '#f43f5e' }} />
-              <div>
-                <span className="highscore-label" style={{ color: '#f43f5e' }}>PERSONAL BEST SCORE</span>
-                <h4 className="highscore-value">{highScore.toLocaleString()} PTS</h4>
-              </div>
-            </div>
-
-            {/* Profile Setup */}
-            <div className="halo-profile-box">
-              <span className="profile-label">SENSEI NAME (ชื่อของคุณครู)</span>
-              {!isEditingName ? (
-                <div className="profile-display-mode">
-                  <span className="profile-name-text">{playerName}</span>
-                  <button 
-                    onClick={() => {
-                      setTempName(playerName)
-                      setIsEditingName(true)
-                    }}
-                    className="profile-edit-btn"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" /> แก้ไข
-                  </button>
-                </div>
-              ) : (
-                <div className="profile-edit-mode">
-                  <input
-                    type="text"
-                    value={tempName}
-                    onChange={(e) => setTempName(e.target.value.slice(0, 15))}
-                    placeholder="ชื่อของคุณครู..."
-                    className="profile-name-input-edit"
-                    autoFocus
-                  />
-                  <div className="profile-edit-actions">
-                    <button 
-                      onClick={handleSaveName}
-                      disabled={submittingScore}
-                      className="profile-action-btn save"
-                    >
-                      <Check className="w-3 h-3" /> บันทึก
-                    </button>
-                    <button 
-                      onClick={() => setIsEditingName(false)}
-                      className="profile-action-btn cancel"
-                    >
-                      <X className="w-3 h-3" /> ยกเลิก
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Mode Selection */}
-          <div className="halo-mode-grid">
-            <div 
-              className="halo-mode-card time-attack" 
-              onClick={startTimeAttack}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(244, 63, 94, 0.3)';
-                e.currentTarget.style.background = 'linear-gradient(180deg, rgba(28, 28, 30, 0.8) 0%, rgba(244, 63, 94, 0.03) 100%)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '';
-                e.currentTarget.style.background = '';
-              }}
-            >
-              <div className="mode-card-visual" style={{ color: '#f43f5e', backgroundColor: 'rgba(244, 63, 94, 0.05)', borderColor: 'rgba(244, 63, 94, 0.15)' }}>
-                <Timer className="mode-icon" />
-              </div>
-              <div className="mode-card-content">
-                <h3>TIME ATTACK (โหมดจำกัดเวลา)</h3>
-                <p>สุ่มทายช็อกโกแลตปริศนาทำคะแนนแข่งกับเวลา 60 วินาที! ตอบถูกจะได้รับโบนัสเวลาเพิ่ม และรักษาระดับ Combo ทวีคูณแต้ม!</p>
-                <button 
-                  className="mode-start-btn" 
-                  style={{ backgroundColor: 'rgba(244, 63, 94, 0.1)', color: '#f43f5e', border: '1px solid rgba(244, 63, 94, 0.2)' }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = '#f43f5e';
-                    e.target.style.color = '#ffffff';
-                    e.target.style.boxShadow = '0 0 15px rgba(244, 63, 94, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'rgba(244, 63, 94, 0.1)';
-                    e.target.style.color = '#f43f5e';
-                    e.target.style.boxShadow = '';
-                  }}
-                >
-                  START TIME ATTACK
-                </button>
-              </div>
-            </div>
-
-            <div 
-              className="halo-mode-card practice" 
-              onClick={startPractice}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(244, 63, 94, 0.3)';
-                e.currentTarget.style.background = 'linear-gradient(180deg, rgba(28, 28, 30, 0.8) 0%, rgba(244, 63, 94, 0.03) 100%)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '';
-                e.currentTarget.style.background = '';
-              }}
-            >
-              <div className="mode-card-visual" style={{ color: '#f43f5e', backgroundColor: 'rgba(244, 63, 94, 0.05)', borderColor: 'rgba(244, 63, 94, 0.15)' }}>
-                <HelpCircle className="mode-icon" />
-              </div>
-              <div className="mode-card-content">
-                <h3>PRACTICE (โหมดฝึกซ้อม)</h3>
-                <p>ฝึกฝนการวิเคราะห์การ์ดช็อกโกแลตสื่อรักแบบไร้ขีดจำกัดความกดดัน พร้อมวิเคราะห์ตัวตนโรงเรียนและประเภทเกราะ/กระสุน</p>
-                <button 
-                  className="mode-start-btn"
-                  style={{ backgroundColor: 'rgba(244, 63, 94, 0.1)', color: '#f43f5e', border: '1px solid rgba(244, 63, 94, 0.2)' }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = '#f43f5e';
-                    e.target.style.color = '#ffffff';
-                    e.target.style.boxShadow = '0 0 15px rgba(244, 63, 94, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'rgba(244, 63, 94, 0.1)';
-                    e.target.style.color = '#f43f5e';
-                    e.target.style.boxShadow = '';
-                  }}
-                >
-                  START PRACTICE
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Leaderboard */}
-          <Leaderboard db={db} collectionName="chocolate_leaderboard" refreshTrigger={refreshTrigger} />
-
-          <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
-            <button onClick={onBack} className="header-back-btn">
-              กลับหน้าหลัก
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 2. ACTIVE GAMEPLAY INTERFACE */}
-      {mode !== 'lobby' && !gameOver && currentTarget && (
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="halo-guesser-container font-prompt"
+    >
+      {currentTarget && (
         <div className="halo-gameplay-layout animate-fadeInUp">
           
           <div className="halo-gameplay-header">
             <div className="gameplay-title-area">
-              <span className="gameplay-badge" style={{ backgroundColor: 'rgba(244, 63, 94, 0.1)', color: '#f43f5e', borderColor: 'rgba(244, 63, 94, 0.2)', borderWidth: '1px' }}>
-                {mode === 'time-attack' ? 'TIME ATTACK' : 'PRACTICE MODE'}
+              <span 
+                className="gameplay-badge practice-mode" 
+                style={{ backgroundColor: 'rgba(76, 154, 224, 0.1)', color: 'var(--color-accent)', borderColor: 'rgba(76, 154, 224, 0.2)', borderWidth: '1px' }}
+              >
+                PRACTICE MODE (เล่นชิลๆ)
               </span>
-              <button onClick={exitToLobby} className="gameplay-exit-btn">
-                ออกเกม
+              <button onClick={onBack} className="gameplay-exit-btn">
+                กลับหน้าหลัก
               </button>
             </div>
-
-            {mode === 'time-attack' && (
-              <div className="gameplay-hud-stats">
-                <div className="hud-stat-box score">
-                  <span>SCORE</span>
-                  <div className="hud-val">{score}</div>
-                </div>
-                
-                <div className="hud-stat-box combo">
-                  <span>COMBO</span>
-                  <div className={`hud-val combo-glow ${combo > 1 ? 'active' : ''}`}>
-                    {combo}x
-                  </div>
-                </div>
-
-                <div className="hud-stat-box timer">
-                  <span>TIME LEFT</span>
-                  <div className={`hud-val timer-number ${timeLeft <= 10 ? 'timer-danger' : ''}`}>
-                    {timeLeft}s
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
-
-          {mode === 'time-attack' && (
-            <div className="glowing-timer-bar-wrapper">
-              <div 
-                className={`glowing-timer-bar ${timeLeft <= 10 ? 'danger' : ''}`}
-                style={{ 
-                  width: `${(timeLeft / 60) * 100}%`,
-                  background: timeLeft <= 10 ? 'linear-gradient(90deg, #ef4444, #f43f5e)' : 'linear-gradient(90deg, #f43f5e, #ec4899)',
-                  boxShadow: timeLeft <= 10 ? '0 0 10px rgba(239, 68, 68, 0.8)' : '0 0 8px rgba(244, 63, 94, 0.5)'
-                }}
-              ></div>
-            </div>
-          )}
 
           <div className="halo-gameplay-workspace">
             
             {/* Left Column: Chocolate Graphic Viewport */}
             <div className="halo-display-section">
-              <div className="halo-card-wrapper">
+              <div className="halo-card-wrapper" style={{ borderColor: 'rgba(76, 154, 224, 0.3)' }}>
                 
                 {/* Contrast controls */}
                 <div className="halo-contrast-controls">
                   <button 
                     onClick={() => setBgStyle('slate')} 
                     className={`contrast-btn ${bgStyle === 'slate' ? 'active' : ''}`}
+                    style={bgStyle === 'slate' ? { backgroundColor: 'var(--color-accent)' } : {}}
                   >
                     Dark Slate
                   </button>
                   <button 
                     onClick={() => setBgStyle('chess')} 
                     className={`contrast-btn ${bgStyle === 'chess' ? 'active' : ''}`}
+                    style={bgStyle === 'chess' ? { backgroundColor: 'var(--color-accent)' } : {}}
                   >
                     Checker
                   </button>
                   <button 
                     onClick={() => setBgStyle('light')} 
                     className={`contrast-btn ${bgStyle === 'light' ? 'active' : ''}`}
+                    style={bgStyle === 'light' ? { backgroundColor: 'var(--color-accent)' } : {}}
                   >
                     Light
                   </button>
                 </div>
 
                 <div className={`halo-graphic-viewport bg-style-${bgStyle}`} style={{ padding: '20px' }}>
-                  <SecureImage
-                    src={`/images/item/full/${currentTarget.student.chocolateFile}`}
-                    alt="Mystery Valentine Chocolate"
-                    className={`mystery-halo-image ${solved ? 'solved-glow' : ''}`}
-                    draggable={false}
-                    onDragStart={(e) => e.preventDefault()}
-                    onContextMenu={(e) => e.preventDefault()}
-                    style={{ 
-                      maxHeight: '98%', 
-                      maxWidth: '98%', 
-                      objectFit: 'contain', 
-                      filter: solved ? 'drop-shadow(0 2px 20px rgba(244, 63, 94, 0.8))' : 'drop-shadow(0 2px 8px rgba(0,0,0,0.35))', 
-                      pointerEvents: 'none', 
-                      userSelect: 'none', 
-                      WebkitUserDrag: 'none' 
-                    }}
-                    onError={(e) => {
-                      if (e.target.src.includes('/full/')) {
-                        e.target.src = `/images/item/icon/${currentTarget.student.chocolateFile}`;
-                      } else {
-                        e.target.src = '/images/schoolicon/ETC.png';
-                      }
-                    }}
-                  />
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
+                  >
+                    <SecureImage
+                      src={`/images/item/full/${currentTarget.student.chocolateFile}`}
+                      alt="Mystery Valentine Chocolate"
+                      className={`mystery-halo-image ${solved ? 'solved-glow' : ''}`}
+                      draggable={false}
+                      onDragStart={(e) => e.preventDefault()}
+                      onContextMenu={(e) => e.preventDefault()}
+                      style={{ 
+                        maxHeight: '98%', 
+                        maxWidth: '98%', 
+                        objectFit: 'contain', 
+                        filter: solved ? 'drop-shadow(0 2px 20px rgba(76, 154, 224, 0.8))' : 'drop-shadow(0 2px 8px rgba(0,0,0,0.35))', 
+                        pointerEvents: 'none', 
+                        userSelect: 'none', 
+                        WebkitUserDrag: 'none' 
+                      }}
+                      onError={(e) => {
+                        if (e.target.src.includes('/full/')) {
+                          e.target.src = `/images/item/icon/${currentTarget.student.chocolateFile}`;
+                        } else {
+                          e.target.src = '/images/schoolicon/ETC.png';
+                        }
+                      }}
+                    />
+                  </motion.div>
                   
                   {solved && (
-                    <div className="halo-viewport-solved-overlay">
-                      <Sparkles className="solved-sparkle-icon" style={{ color: '#f43f5e' }} />
-                      <span style={{ color: '#f43f5e' }}>CORRECT CHARACTER!</span>
+                    <div className="halo-viewport-solved-overlay" style={isRevealed ? { background: 'rgba(28, 28, 30, 0.85)', borderColor: 'rgba(255, 255, 255, 0.15)' } : {}}>
+                      <Sparkles className="solved-sparkle-icon animate-pulse" style={isRevealed ? { color: '#8e8e93' } : { color: 'var(--color-accent)' }} />
+                      <span style={isRevealed ? { color: '#8e8e93' } : { color: 'var(--color-accent)' }}>{isRevealed ? 'REVEALED!' : 'CORRECT CHARACTER!'}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Target profile preview when solved */}
-                {solved && (
-                  <div className="solved-target-profile-card animate-scaleUp">
-                    <img 
-                      src={`/images/student/icon/${currentTarget.student.id}.webp`}
-                      alt={currentTarget.student.englishName}
-                      className="solved-profile-avatar"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/images/schoolicon/ETC.png';
-                      }}
-                    />
-                    <div className="solved-profile-details">
-                      <h3>{currentTarget.student.englishName}</h3>
-                      <p style={{ color: '#f43f5e', fontWeight: '500', fontSize: '0.8rem', marginTop: '2px' }}>
-                        💝 ช็อกโกแลตของ {currentTarget.student.englishName}
-                      </p>
-                      <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>{currentTarget.student.school}</p>
-                    </div>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {solved && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      className="solved-target-profile-card"
+                      style={{ borderLeftColor: isRevealed ? '#8e8e93' : 'var(--color-accent)' }}
+                    >
+                      <img 
+                        src={`/images/student/icon/${currentTarget.student.id}.webp`}
+                        alt={currentTarget.student.englishName}
+                        className="solved-profile-avatar"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/images/schoolicon/ETC.png';
+                        }}
+                      />
+                      <div className="solved-profile-details">
+                        <h3>{currentTarget.student.englishName}</h3>
+                        <p style={{ color: 'var(--color-accent)', fontWeight: '500', fontSize: '0.8rem', marginTop: '2px' }}>
+                          💝 ช็อกโกแลตของ {currentTarget.student.englishName}
+                        </p>
+                        <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>{currentTarget.student.school}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
             {/* Right Column: Autocomplete Input and Guess log */}
             <div className="halo-guesser-section">
               
-              {!solved ? (
-                <div className="halo-input-container">
-                  <h4 className="guesser-input-title">ป้อนชื่อนักเรียนที่เป็นเจ้าของช็อกโกแลตสื่อรักกล่องนี้:</h4>
-                  <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                    <div style={{ flex: 1 }}>
-                      <Autocomplete
-                        ref={autocompleteRef}
-                        suggestions={allStudents}
-                        onSelect={handleGuess}
-                        guessedIds={guesses.map(g => g.id)}
-                        placeholder="ค้นหาตามชื่อนักเรียน (เช่น Aru, Shiroko, Aris)..."
-                      />
-                    </div>
-                    
-                    <button onClick={handleSkip} className="gameplay-skip-btn">
-                      ข้าม
-                    </button>
-                    {mode === 'practice' && (
-                      <button onClick={handleReveal} className="gameplay-reveal-btn" style={{ backgroundColor: 'rgba(244, 63, 94, 0.1)', color: '#f43f5e', borderColor: 'rgba(244, 63, 94, 0.2)' }}>
+              <AnimatePresence mode="wait">
+                {!solved ? (
+                  <motion.div 
+                    key="input-panel"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="halo-input-container"
+                  >
+                    <h4 className="guesser-input-title" style={{ color: 'var(--color-accent)' }}>ป้อนชื่อนักเรียนที่เป็นเจ้าของช็อกโกแลตสื่อรักกล่องนี้:</h4>
+                    <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                      <div style={{ flex: 1 }}>
+                        <Autocomplete
+                          ref={autocompleteRef}
+                          suggestions={allStudents}
+                          onSelect={handleGuess}
+                          guessedIds={guesses.map(g => g.id)}
+                          placeholder="ค้นหาตามชื่อนักเรียน (เช่น Aru, Shiroko, Aris)..."
+                        />
+                      </div>
+                      
+                      <button onClick={handleSkip} className="gameplay-skip-btn" style={{ borderColor: 'rgba(76, 154, 224, 0.4)' }}>
+                        ข้าม
+                      </button>
+                      <button onClick={handleReveal} className="gameplay-reveal-btn" style={{ backgroundColor: 'var(--color-accent)', color: '#fff' }}>
                         เฉลย
                       </button>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="halo-round-solved-card animate-scaleUp" style={{ backgroundColor: 'rgba(16, 185, 129, 0.05)', borderColor: 'rgba(16, 185, 129, 0.2)' }}>
-                  <div className="round-solved-header">
-                    <Check className="w-5 h-5 text-emerald-400" />
-                    <span>ทายถูกต้อง!</span>
-                  </div>
-                  <p className="round-solved-desc">
-                    การ์ดช็อกโกแลต 💝 <strong style={{ color: '#f43f5e' }}>ช็อกโกแลตสื่อรักของ {currentTarget.student.englishName}</strong> เป็นของ <strong className="text-cyan-400">{currentTarget.student.englishName}</strong>
-                  </p>
-                  
-                  {mode === 'practice' && (
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="solved-panel"
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="halo-round-solved-card" 
+                    style={{ borderLeftColor: isRevealed ? '#8e8e93' : 'var(--color-accent)' }}
+                  >
+                    <div className="round-solved-header">
+                      {isRevealed ? (
+                        <>
+                          <Eye className="w-5 h-5 text-amber-500" />
+                          <span className="text-amber-500">เฉลยคำตอบ</span>
+                        </>
+                      ) : (
+                        <>
+                          <Check className="w-5 h-5 text-emerald-400" />
+                          <span>ทายถูกต้อง!</span>
+                        </>
+                      )}
+                    </div>
+                    <p className="round-solved-desc">
+                      การ์ดช็อกโกแลต 💝 <strong style={{ color: 'var(--color-accent)' }}>ช็อกโกแลตสื่อรักของ {currentTarget.student.englishName}</strong> เป็นของ <strong className="text-cyan-400">{currentTarget.student.englishName}</strong>
+                    </p>
+                    
                     <button 
                       onClick={() => {
                         const newUsed = [...previousTargets, currentTarget.student.id]
@@ -937,13 +515,13 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
                         selectNextTarget(targetStudents, newUsed)
                       }}
                       className="practice-next-btn animate-pulse"
-                      style={{ backgroundColor: '#f43f5e' }}
+                      style={{ backgroundColor: 'var(--color-accent)' }}
                     >
                       ช็อกโกแลตถัดไป <ArrowRight className="w-4 h-4" />
                     </button>
-                  )}
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Guesses Log Column */}
               <div className="halo-guess-logs-container">
@@ -951,26 +529,32 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
                 
                 {guesses.length === 0 ? (
                   <div className="logs-empty-state">
-                    ยังไม่มีข้อมูลการทายสำหรับช็อกโกแลตชิ้นนี้ ป้อนชื่อนักเรียนเพื่อเริ่มทาย!
+                    ยังไม่มีข้อมูลการทายสำหรับช็อกโกแลตสื่อรักกล่องนี้ ป้อนชื่อนักเรียนเพื่อเริ่มทาย!
                   </div>
                 ) : (
                   <div className="logs-scroll-area">
-                    {[...guesses].reverse().map((g, index) => (
-                      <div key={`${g.id}-${index}`} className={`guess-log-row ${g.isCorrect ? 'correct' : 'incorrect'}`}>
-                        <div className="log-student-info">
-                          <img
-                            src={`/images/student/icon/${g.id}.webp`}
-                            alt={g.englishName}
-                            className="log-student-avatar"
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = '/images/schoolicon/ETC.png';
-                            }}
-                          />
-                          <span className="log-student-name">{g.englishName}</span>
-                        </div>
+                    <AnimatePresence initial={false}>
+                      {[...guesses].reverse().map((g, index) => (
+                        <motion.div 
+                          key={`${g.id}-${index}`}
+                          initial={{ opacity: 0, x: -10, y: 5 }}
+                          animate={{ opacity: 1, x: 0, y: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className={`guess-log-row ${g.isCorrect ? 'correct' : 'incorrect'}`}
+                        >
+                          <div className="log-student-info">
+                            <img
+                              src={`/images/student/icon/${g.id}.webp`}
+                              alt={g.englishName}
+                              className="log-student-avatar"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/images/schoolicon/ETC.png';
+                              }}
+                            />
+                            <span className="log-student-name">{g.englishName}</span>
+                          </div>
 
-                        {mode === 'practice' && (
                           <div className="log-pills-row" style={{ flexWrap: 'wrap', justifyContent: 'flex-end', maxWidth: '60%' }}>
                             {/* School Match */}
                             <span className={`log-pill ${g.schoolMatch ? 'match' : 'no-match'}`} title="โรงเรียน">
@@ -982,23 +566,23 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
                               {g.squadTypeMatch ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
                               {g.squadType}
                             </span>
-                            {/* Attack Type Match */}
+                            {/* Attack Type (Bullet Type) Match */}
                             <span className={`log-pill ${g.bulletTypeMatch ? 'match' : 'no-match'}`} title="ประเภทกระสุน" style={g.bulletTypeMatch ? { backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#34d399', borderColor: 'rgba(16, 185, 129, 0.2)' } : { backgroundColor: 'rgba(239, 68, 68, 0.08)', color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.15)' }}>
                               {g.bulletTypeMatch ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
                               {g.bulletType}
                             </span>
                           </div>
-                        )}
 
-                        <div className="log-status-icon-box">
-                          {g.isCorrect ? (
-                            <span className="log-status-text correct">CORRECT</span>
-                          ) : (
-                            <span className="log-status-text incorrect">WRONG</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                          <div className="log-status-icon-box">
+                            {g.isCorrect ? (
+                              <span className="log-status-text correct">CORRECT</span>
+                            ) : (
+                              <span className="log-status-text incorrect">WRONG</span>
+                            )}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
                   </div>
                 )}
               </div>
@@ -1009,103 +593,6 @@ export default function ChocolateGuesser({ soundEnabled, onBack, setCustomBackAc
 
         </div>
       )}
-
-      {/* 3. GAME OVER SCREEN */}
-      {gameOver && (
-        <div className="halo-gameover-panel animate-scaleUp">
-          <div className="gameover-header">
-            <AlertTriangle className="gameover-warning-icon" style={{ color: '#f43f5e' }} />
-            <h2 className="gameover-title">TIME UP!</h2>
-            <p className="gameover-subtitle">หมดเวลากิจกรรมทายช็อกโกแลตวาเลนไทน์</p>
-          </div>
-
-          <div className="gameover-stats-grid">
-            <div className="gameover-stat-card final-score" style={{ borderTopColor: '#f43f5e' }}>
-              <span>FINAL SCORE</span>
-              <h3>{score}</h3>
-            </div>
-            
-            <div className="gameover-stat-card correct-count" style={{ borderTopColor: '#10b981' }}>
-              <span>CORRECT ANSWERS</span>
-              <h3>{correctAnswersList.length}</h3>
-            </div>
-
-            <div className="gameover-stat-card pr-trophy" style={{ borderTopColor: '#f59e0b' }}>
-              <span>HIGH SCORE</span>
-              <h3>{highScore}</h3>
-            </div>
-          </div>
-
-          <div className="gameover-answers-log-container">
-            <h4 className="gameover-answers-title">ช็อกโกแลตที่คุณครูทายถูกในรอบนี้:</h4>
-            
-            {correctAnswersList.length === 0 ? (
-              <div className="gameover-answers-empty">
-                คุณครูยังทายช็อกโกแลตไม่ถูกเลยในรอบนี้... มาพยายามใหม่อีกครั้งนะ! 💝
-              </div>
-            ) : (
-              <div className="gameover-answers-scroll">
-                {correctAnswersList.map((item, idx) => (
-                  <div key={`${item.student.id}-${idx}`} className="gameover-answer-row">
-                    <div className="gameover-row-student">
-                      <span className="row-index">#{idx + 1}</span>
-                      <img 
-                        src={`/images/student/icon/${item.student.id}.webp`}
-                        alt={item.student.englishName}
-                        className="gameover-row-avatar"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/images/schoolicon/ETC.png';
-                        }}
-                      />
-                      <div className="gameover-row-name">
-                        <span className="eng">{item.student.englishName}</span>
-                        <span className="school">{item.student.school} (ช็อกโกแลตวาเลนไทน์)</span>
-                      </div>
-                    </div>
-
-                    <div className="gameover-row-points">
-                      <span className="points-added" style={{ color: '#f43f5e' }}>+{item.scoreGained} PTS</span>
-                      {item.combo > 1 && <span className="points-combo" style={{ backgroundColor: 'rgba(244, 63, 94, 0.1)', color: '#f43f5e' }}>{item.combo}x Combo</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {score > 0 && (
-            <div className="gameover-leaderboard-section">
-              {db ? (
-                scoreSubmitted ? (
-                  <div className="leaderboard-submitted-msg animate-scaleUp">
-                    <Sparkles className="w-4 h-4 text-rose-500 animate-pulse" />
-                    <span>บันทึกคะแนนวาเลนไทน์สูงสุดใหม่ของคุณเรียบร้อยแล้ว! (ครู: {playerName})</span>
-                  </div>
-                ) : (
-                  <div className="leaderboard-submitted-msg info animate-scaleUp">
-                    <span>ทำคะแนนให้มากกว่าคะแนนสูงสุดเดิมของคุณครูเพื่ออัปเดตกระดานผู้นำรวม!</span>
-                  </div>
-                )
-              ) : (
-                <div className="gameover-leaderboard-offline">
-                  <span>⚠️ Leaderboard ออฟไลน์อยู่ (คะแนนของคุณถูกบันทึกเฉพาะในเบราว์เซอร์นี้)</span>
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="gameover-actions">
-            <button onClick={startTimeAttack} className="gameover-btn-restart" style={{ backgroundColor: '#f43f5e' }}>
-              <RotateCcw className="w-4 h-4" /> ท้าทายอีกครั้ง
-            </button>
-            <button onClick={exitToLobby} className="gameover-btn-exit">
-              กลับหน้าเลือกโหมด
-            </button>
-          </div>
-        </div>
-      )}
-
-    </div>
+    </motion.div>
   )
 }

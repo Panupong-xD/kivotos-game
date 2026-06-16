@@ -1203,8 +1203,15 @@ body {
 
 @media (max-width: 820px) {
   .lobby-game-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 10px;
+  }
+  
+  .lobby-card {
+    padding: 16px;
+    border-radius: 16px;
+    gap: 12px;
   }
   
   .lobby-title {
@@ -5547,6 +5554,94 @@ body {
     gap: 12px;
   }
 }
+
+/* ==========================================================================
+   7. TAILWIND UTILITY FALLBACKS
+   ========================================================================== */
+.min-h-screen {
+  min-height: 100vh;
+}
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-1 {
+  flex: 1 1 0%;
+}
+.max-w-6xl {
+  max-width: 72rem;
+}
+.w-full {
+  width: 100%;
+}
+.h-full {
+  height: 100%;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.mt-12 {
+  margin-top: 3rem; /* 48px spacing from navbar */
+}
+.mt-1 {
+  margin-top: 0.25rem; /* 4px */
+}
+.gap-2 {
+  gap: 0.5rem; /* 8px */
+}
+.rounded-full {
+  border-radius: 9999px;
+}
+.border-dashed {
+  border-style: dashed;
+}
+.border-slate-700\/50 {
+  border-color: rgba(51, 65, 85, 0.5);
+}
+
+/* Sizing */
+.w-2\.5 { width: 0.625rem; }
+.h-2\.5 { height: 0.625rem; }
+.w-3 { width: 0.75rem; }
+.h-3 { height: 0.75rem; }
+.w-3\.5 { width: 0.875rem; }
+.h-3\.5 { height: 0.875rem; }
+.w-4 { width: 1rem; }
+.h-4 { height: 1rem; }
+.w-5 { width: 1.25rem; }
+.h-5 { height: 1.25rem; }
+.w-12 { width: 3rem; }
+.h-12 { height: 3rem; }
+.w-16 { width: 4rem; }
+.h-16 { height: 4rem; }
+
+/* Text colors & formatting */
+.text-cyan-200 { color: #a5f3fc; }
+.text-cyan-400 { color: #22d3ee; }
+.text-sky-400 { color: #38bdf8; }
+.text-emerald-400 { color: #34d399; }
+.text-pink-400 { color: #f472b6; }
+.text-amber-400 { color: #fbbf24; }
+.text-yellow-500 { color: #eab308; }
+.text-red-500 { color: #ef4444; }
+.text-rose-500 { color: #f43f5e; }
+.text-slate-200 { color: #e2e8f0; }
+.text-slate-300 { color: #cbd5e1; }
+.text-slate-400 { color: #94a3b8; }
+.text-white { color: #ffffff; }
+.text-muted { color: var(--text-muted); }
+.text-xs { font-size: 0.75rem; }
+
 
 
 

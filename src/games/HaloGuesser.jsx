@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Autocomplete from '../components/Autocomplete.jsx'
 import LoadingScreen from '../components/LoadingScreen.jsx'
-import Leaderboard from '../components/Leaderboard.jsx'
 import { Timer, Trophy, Play, RotateCcw, AlertTriangle, ArrowRight, Eye, Volume2, VolumeX, Sparkles, HelpCircle, RefreshCw, LayoutGrid, Check, X, Edit2 } from 'lucide-react'
-
-import { db } from '../firebase.js'
-import { collection, doc, setDoc, getDoc, getDocs, query, orderBy, limit, serverTimestamp } from 'firebase/firestore'
 import SecureImage from '../components/SecureImage.jsx'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Validated list of 183 halo image filenames in public/images/halos
 const HALO_FILES = [
@@ -243,170 +240,27 @@ const findHaloForStoryCharacter = (char) => {
   return matchedHalo;
 };
 
-// Helper to get or generate persistent player UUID
-const getOrCreatePlayerUuid = () => {
-  let uuid = localStorage.getItem('ba_player_uuid')
-  if (!uuid) {
-    uuid = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
-    localStorage.setItem('ba_player_uuid', uuid)
-  }
-  return uuid
-}
-
-export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction }) {
+export default function HaloGuesser({ soundEnabled, onBack }) {
   // Database States
   const [students, setStudents] = useState([])
   const [loading, setLoading] = useState(true)
   const [fadeLoading, setFadeLoading] = useState(true) // For smooth fade-out transition
 
-  // Game Mode States: 'lobby', 'time-attack', 'practice'
-  const [mode, setMode] = useState('lobby')
+  // Game Mode States: 'practice'
+  const [mode, setMode] = useState('practice')
 
   // Play States
   const [currentTarget, setCurrentTarget] = useState(null) // { student, haloFile }
   const [previousTargets, setPreviousTargets] = useState([]) // list of already answered targets in current session
-  const [guesses, setGuesses] = useState([]) // current round guesses
   const [solved, setSolved] = useState(false)
-  const [score, setScore] = useState(0)
-  const [combo, setCombo] = useState(1)
-  const [highScore, setHighScore] = useState(() => {
-    return parseInt(localStorage.getItem('ba_halo_high_score') || '0', 10)
-  })
-
-  // Timer States (for Time Attack)
-  const [timeLeft, setTimeLeft] = useState(60)
-  const [timerActive, setTimerActive] = useState(false)
-  const [gameOver, setGameOver] = useState(false)
-  const [correctAnswersList, setCorrectAnswersList] = useState([]) // { student, scoreGained, combo }
+  const [isRevealed, setIsRevealed] = useState(false)
+  const [guesses, setGuesses] = useState([])
 
   // Visual customizer: 'slate' | 'chess' | 'light'
   const [bgStyle, setBgStyle] = useState('slate')
 
-  const timerRef = useRef(null)
   const autocompleteRef = useRef(null)
   const nextRoundTimeoutRef = useRef(null)
-  
-  // Anti-spam caching refs
-  const lastFetchTimeRef = useRef(0)
-  const lastSavedNameRef = useRef(localStorage.getItem('ba_player_name') || 'Anonymous Sensei')
-
-  // Leaderboard States
-  const [playerName, setPlayerName] = useState(() => {
-    return localStorage.getItem('ba_player_name') || 'Anonymous Sensei'
-  })
-  const [isEditingName, setIsEditingName] = useState(false)
-  const [tempName, setTempName] = useState('')
-  const [submittingScore, setSubmittingScore] = useState(false)
-  const [scoreSubmitted, setScoreSubmitted] = useState(false)
-  const [refreshTrigger, setRefreshTrigger] = useState(0)
-
-  // Sync player profile & high score from Firestore on mount
-  useEffect(() => {
-    const syncProfileWithDb = async () => {
-      if (!db) return
-      const uuid = getOrCreatePlayerUuid()
-      try {
-        const docRef = doc(db, 'halo_leaderboard', uuid)
-        const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-          const dbData = docSnap.data()
-          if (dbData.score && dbData.score > highScore) {
-            setHighScore(dbData.score)
-            localStorage.setItem('ba_halo_high_score', dbData.score.toString())
-          }
-          if (dbData.name) {
-            lastSavedNameRef.current = dbData.name
-            if (!localStorage.getItem('ba_player_name')) {
-              setPlayerName(dbData.name)
-              localStorage.setItem('ba_player_name', dbData.name)
-            }
-          }
-        }
-      } catch (err) {
-        console.warn("Failed to sync profile with database:", err)
-      }
-    }
-    syncProfileWithDb()
-  }, [db])
-
-  // Save name changes to local storage and Firestore database (with comparison check)
-  const handleSaveName = async () => {
-    const finalName = tempName.trim() ? tempName.trim() : "Anonymous Sensei"
-    setPlayerName(finalName)
-    localStorage.setItem('ba_player_name', finalName)
-    setIsEditingName(false)
-
-    // Skip write if the name has not actually changed
-    if (finalName === lastSavedNameRef.current) return
-
-    if (db && highScore > 0) {
-      setSubmittingScore(true)
-      try {
-        const uuid = getOrCreatePlayerUuid()
-        await setDoc(doc(db, 'halo_leaderboard', uuid), {
-          name: finalName
-        }, { merge: true })
-        lastSavedNameRef.current = finalName
-        setRefreshTrigger(prev => prev + 1)
-      } catch (err) {
-        console.warn("Failed to update name in database:", err)
-      } finally {
-        setSubmittingScore(false)
-      }
-    }
-  }
-
-
-  // Auto-submit score when gameOver is triggered (only if it's a new personal best or database high)
-  useEffect(() => {
-    if (gameOver && mode === 'time-attack' && score > 0) {
-      const autoSubmitScore = async () => {
-        let isNewHighScore = false
-        if (score > highScore) {
-          setHighScore(score)
-          localStorage.setItem('ba_halo_high_score', score.toString())
-          isNewHighScore = true
-        }
-
-        if (db) {
-          try {
-            const uuid = getOrCreatePlayerUuid()
-            const finalName = playerName.trim() ? playerName.trim() : "Anonymous Sensei"
-            
-            // Check if score is higher than current record in DB
-            const docRef = doc(db, 'halo_leaderboard', uuid)
-            const docSnap = await getDoc(docRef)
-            let shouldWrite = true
-            
-            if (docSnap.exists()) {
-              const currentDbScore = docSnap.data().score || 0
-              if (score <= currentDbScore) {
-                shouldWrite = false
-              }
-            }
-
-            if (shouldWrite) {
-              setSubmittingScore(true)
-              await setDoc(docRef, {
-                name: finalName,
-                score: score,
-                createdAt: serverTimestamp()
-              }, { merge: true })
-              setScoreSubmitted(true)
-              setRefreshTrigger(prev => prev + 1)
-            }
-          } catch (err) {
-            console.error("Error auto-submitting score:", err)
-          } finally {
-            setSubmittingScore(false)
-          }
-        }
-      }
-      autoSubmitScore()
-    }
-  }, [gameOver, score, mode, db])
-
-
 
   // Audio Context synth helper
   const playBeep = (type) => {
@@ -461,20 +315,6 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
             oscC.stop(ctx.currentTime + 0.1)
           }, i * 60)
         })
-      } else if (type === 'gameover') {
-        const notes = [392, 349.23, 311.13, 261.63] // G4, F4, Eb4, C4
-        notes.forEach((f, i) => {
-          setTimeout(() => {
-            const oscG = ctx.createOscillator()
-            const gainG = ctx.createGain()
-            oscG.connect(gainG)
-            gainG.connect(ctx.destination)
-            oscG.frequency.value = f
-            gainG.gain.setValueAtTime(0.06, ctx.currentTime)
-            oscG.start()
-            oscG.stop(ctx.currentTime + 0.3)
-          }, i * 150)
-        })
       }
     } catch (e) {
       console.warn(e)
@@ -508,6 +348,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
           }
         }
         setStudents(list)
+        selectNextTarget(list, [])
         
         // Ensure loader is visible for at least 300ms to allow a smooth animation transition
         const elapsed = Date.now() - startTime
@@ -528,48 +369,16 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
     loadData()
   }, [])
 
-  // Cleanup ref timeouts and back action on unmount
+  // Cleanup ref timeouts on unmount
   useEffect(() => {
     return () => {
       if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-      if (setCustomBackAction) {
-        setCustomBackAction(null)
-      }
     }
-  }, [setCustomBackAction])
-
-  // Timer handler for Time Attack
-  useEffect(() => {
-    let interval = null
-    if (timerActive) {
-      interval = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            // End Game immediately
-            setTimerActive(false)
-            setGameOver(true)
-            playBeep('gameover')
-            if (nextRoundTimeoutRef.current) {
-              clearTimeout(nextRoundTimeoutRef.current)
-            }
-            clearInterval(interval)
-            return 0
-          }
-          if (prev <= 11) {
-            playBeep('warning')
-          }
-          return prev - 1
-        })
-      }, 1000)
-    }
-
-    return () => {
-      if (interval) clearInterval(interval)
-    }
-  }, [timerActive])
+  }, [])
 
   // Select next halo
   const selectNextTarget = (studentsPool = students, currentUsed = previousTargets) => {
+    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
     if (studentsPool.length === 0) return
 
     // Try to filter out already answered targets to avoid immediate repeating
@@ -589,6 +398,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
     })
     setGuesses([])
     setSolved(false)
+    setIsRevealed(false)
 
     // Automatically focus the Autocomplete input field
     setTimeout(() => {
@@ -598,53 +408,9 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
     }, 50)
   }
 
-  // Start Time Attack Mode
-  const startTimeAttack = () => {
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('time-attack')
-    setTimeLeft(60)
-    setScore(0)
-    setCombo(1)
-    setGameOver(false)
-    setCorrectAnswersList([])
-    setPreviousTargets([])
-    setScoreSubmitted(false)
-    selectNextTarget(students, [])
-
-    setTimerActive(true)
-    if (setCustomBackAction) {
-      setCustomBackAction(() => exitToLobby)
-    }
-  }
-
-  // Start Practice Mode
-  const startPractice = () => {
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('practice')
-    setGuesses([])
-    setSolved(false)
-    setPreviousTargets([])
-    selectNextTarget(students, [])
-    if (setCustomBackAction) {
-      setCustomBackAction(() => exitToLobby)
-    }
-  }
-
-  // Exit Game back to Halo lobby
-  const exitToLobby = () => {
-    setTimerActive(false)
-    if (timerRef.current) clearInterval(timerRef.current)
-    if (nextRoundTimeoutRef.current) clearTimeout(nextRoundTimeoutRef.current)
-    setMode('lobby')
-    setGameOver(false)
-    if (setCustomBackAction) {
-      setCustomBackAction(null)
-    }
-  }
-
   // Handle Guess selection
   const handleGuess = (guessedStudent) => {
-    if (solved || gameOver || !currentTarget) return
+    if (solved || !currentTarget) return
 
     // Avoid duplicate guesses for same target
     if (guesses.some(g => g.id === guessedStudent.id)) return
@@ -665,84 +431,34 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
     if (isCorrect) {
       // CORRECT ANSWER!
       setSolved(true)
-      playBeep(combo >= 3 ? 'combo' : 'success')
-
-      if (mode === 'time-attack') {
-        const addedTime = 5
-        const baseScore = 100
-        const scoreGained = baseScore * combo
-        const newScore = score + scoreGained
-        setScore(newScore)
-
-        // Save High Score if higher
-        if (newScore > highScore) {
-          setHighScore(newScore)
-          localStorage.setItem('ba_halo_high_score', newScore.toString())
-        }
-
-        // Add correct details
-        setCorrectAnswersList(prev => [
-          ...prev, 
-          { 
-            student: currentTarget.student, 
-            scoreGained, 
-            combo 
-          }
-        ])
-
-        // Add time bonus
-        setTimeLeft(prev => Math.min(prev + addedTime, 99))
-
-        // Increase combo (max 5x)
-        setCombo(prev => Math.min(prev + 1, 5))
-
-        // Auto advance to next halo in Time Attack after brief delay
-        nextRoundTimeoutRef.current = setTimeout(() => {
-          const newUsed = [...previousTargets, currentTarget.haloFile]
-          setPreviousTargets(newUsed)
-          selectNextTarget(students, newUsed)
-        }, 1000)
-      }
+      playBeep('success')
+      nextRoundTimeoutRef.current = setTimeout(() => {
+        const newUsed = [...previousTargets, currentTarget.haloFile]
+        setPreviousTargets(newUsed)
+        selectNextTarget(students, newUsed)
+      }, 1500)
     } else {
       // INCORRECT ANSWER
       playBeep('failure')
-
-      if (mode === 'time-attack') {
-        // Reset Combo
-        setCombo(1)
-        // Time Penalty
-        setTimeLeft(prev => Math.max(prev - 3, 0))
-      }
     }
   }
 
   // Skip the current halo
   const handleSkip = () => {
-    if (gameOver || !currentTarget) return
+    if (!currentTarget) return
 
     playBeep('failure')
     
-    if (mode === 'time-attack') {
-      setCombo(1)
-      // Skip penalty
-      setTimeLeft(prev => Math.max(prev - 2, 0))
-      
-      const newUsed = [...previousTargets, currentTarget.haloFile]
-      setPreviousTargets(newUsed)
-      selectNextTarget(students, newUsed)
-    } else {
-      // In practice mode, we skip directly or let them reveal first.
-      // Let's just advance to the next target.
-      const newUsed = [...previousTargets, currentTarget.haloFile]
-      setPreviousTargets(newUsed)
-      selectNextTarget(students, newUsed)
-    }
+    const newUsed = [...previousTargets, currentTarget.haloFile]
+    setPreviousTargets(newUsed)
+    selectNextTarget(students, newUsed)
   }
 
   // Reveal Answer in Practice Mode
   const handleReveal = () => {
-    if (mode !== 'practice' || solved) return
+    if (solved) return
     setSolved(true)
+    setIsRevealed(true)
     playBeep('failure')
   }
 
@@ -752,178 +468,43 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
   }
 
   return (
-    <div className="halo-guesser-container font-prompt">
-      
-      {/* 1. LOBBY / MODE SELECTION */}
-      {mode === 'lobby' && (
-        <div className="halo-lobby-panel animate-scaleUp">
-          <div className="halo-lobby-header">
-            <span className="halo-lobby-badge">Mini-Game</span>
-            <h2 className="halo-lobby-title">HALO GUESSER</h2>
-            <p className="halo-lobby-subtitle">ทายวงฮาโลปริศนาของเหล่านักเรียนแห่งคิโวทอส!</p>
-          </div>
-
-          {/* Lobby Profile & Score Side-by-Side Row */}
-          <div className="lobby-profile-row animate-scaleUp">
-            {/* High Score Trophy Section */}
-            <div className="halo-highscore-box">
-              <Trophy className="highscore-trophy-icon animate-pulse" />
-              <div>
-                <span className="highscore-label">PERSONAL BEST SCORE</span>
-                <h4 className="highscore-value">{highScore.toLocaleString()} PTS</h4>
-              </div>
-            </div>
-
-            {/* Sensei Profile Setup Box */}
-            <div className="halo-profile-box">
-              <span className="profile-label">SENSEI NAME (ชื่อของคุณครู)</span>
-              {!isEditingName ? (
-                <div className="profile-display-mode">
-                  <span className="profile-name-text">{playerName}</span>
-                  <button 
-                    onClick={() => {
-                      setTempName(playerName)
-                      setIsEditingName(true)
-                    }}
-                    className="profile-edit-btn"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" /> แก้ไข
-                  </button>
-                </div>
-              ) : (
-                <div className="profile-edit-mode">
-                  <input
-                    type="text"
-                    value={tempName}
-                    onChange={(e) => setTempName(e.target.value.slice(0, 15))}
-                    placeholder="ชื่อของคุณครู..."
-                    className="profile-name-input-edit"
-                    autoFocus
-                  />
-                  <div className="profile-edit-actions">
-                    <button 
-                      onClick={handleSaveName}
-                      disabled={submittingScore}
-                      className="profile-action-btn save"
-                      title="บันทึก"
-                    >
-                      <Check className="w-3 h-3" /> บันทึก
-                    </button>
-                    <button 
-                      onClick={() => setIsEditingName(false)}
-                      className="profile-action-btn cancel"
-                      title="ยกเลิก"
-                    >
-                      <X className="w-3 h-3" /> ยกเลิก
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Selection Cards */}
-          <div className="halo-mode-grid">
-            
-            {/* Card 1: Time Attack (Main Mode) */}
-            <div className="halo-mode-card time-attack" onClick={startTimeAttack}>
-              <div className="mode-card-visual">
-                <Timer className="mode-icon" />
-              </div>
-              <div className="mode-card-content">
-                <h3>TIME ATTACK (โหมดจำกัดเวลา)</h3>
-                <p>ทำคะแนนสูงสุดทายฮาโลแข่งกับเวลา 60 วินาที! ตอบถูกเพิ่มเวลา ตอบผิดลดเวลา มีระบบ Combo ทวีคูณคะแนน</p>
-                <button className="mode-start-btn speed-accent">START TIME ATTACK</button>
-              </div>
-            </div>
-
-            {/* Card 2: Practice Mode */}
-            <div className="halo-mode-card practice" onClick={startPractice}>
-              <div className="mode-card-visual">
-                <HelpCircle className="mode-icon" />
-              </div>
-              <div className="mode-card-content">
-                <h3>PRACTICE (โหมดฝึกซ้อม)</h3>
-                <p>ทายฮาโลแบบไร้แรงกดดัน ไม่มีจับเวลา เหมาะสำหรับฝึกฝนจดจำฮาโลพร้อมระบบวิเคราะห์เบาะแสโรงเรียนและชั้นปี</p>
-                <button className="mode-start-btn practice-accent">START PRACTICE</button>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Leaderboard */}
-          <Leaderboard db={db} collectionName="halo_leaderboard" refreshTrigger={refreshTrigger} />
-
-          <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
-            <button onClick={onBack} className="header-back-btn">
-              กลับหน้าหลัก
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 2. ACTIVE GAMEPLAY INTERFACE */}
-      {mode !== 'lobby' && !gameOver && currentTarget && (
-        <div className="halo-gameplay-layout animate-fadeInUp">
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="halo-guesser-container font-prompt"
+    >
+      {currentTarget && (
+        <div className="halo-gameplay-layout">
           
           {/* Top Info Bar */}
           <div className="halo-gameplay-header">
             <div className="gameplay-title-area">
-              <span className={`gameplay-badge ${mode === 'time-attack' ? 'time-attack-mode' : 'practice-mode'}`}>
-                {mode === 'time-attack' ? 'TIME ATTACK' : 'PRACTICE MODE'}
+              <span 
+                className="gameplay-badge practice-mode"
+                style={{ backgroundColor: 'rgba(76, 154, 224, 0.1)', color: 'var(--color-accent)', borderColor: 'rgba(76, 154, 224, 0.2)', borderWidth: '1px' }}
+              >
+                PRACTICE MODE (เล่นชิลๆ)
               </span>
-              <button onClick={exitToLobby} className="gameplay-exit-btn">
-                ออกเกม
+              <button onClick={onBack} className="gameplay-exit-btn">
+                กลับหน้าหลัก
               </button>
             </div>
-
-            {/* Time Attack HUD */}
-            {mode === 'time-attack' && (
-              <div className="gameplay-hud-stats">
-                <div className="hud-stat-box score">
-                  <span>SCORE</span>
-                  <div className="hud-val">{score}</div>
-                </div>
-                
-                <div className="hud-stat-box combo">
-                  <span>COMBO</span>
-                  <div className={`hud-val combo-glow ${combo > 1 ? 'active' : ''}`}>
-                    {combo}x
-                  </div>
-                </div>
-
-                <div className="hud-stat-box timer">
-                  <span>TIME LEFT</span>
-                  <div className={`hud-val timer-number ${timeLeft <= 10 ? 'timer-danger' : ''}`}>
-                    {timeLeft}s
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
-
-          {/* Time Attack Linear Glowing progress bar */}
-          {mode === 'time-attack' && (
-            <div className="glowing-timer-bar-wrapper">
-              <div 
-                className={`glowing-timer-bar ${timeLeft <= 10 ? 'danger' : ''}`}
-                style={{ width: `${(timeLeft / 60) * 100}%` }}
-              ></div>
-            </div>
-          )}
 
           {/* Main Workspace split */}
           <div className="halo-gameplay-workspace">
             
             {/* Left side: Halo Display Card */}
             <div className="halo-display-section">
-              <div className="halo-card-wrapper">
+              <div className="halo-card-wrapper" style={{ borderColor: 'rgba(76, 154, 224, 0.3)' }}>
                 
                 {/* Contrast control toggles */}
                 <div className="halo-contrast-controls">
                   <button 
                     onClick={() => setBgStyle('slate')} 
                     className={`contrast-btn ${bgStyle === 'slate' ? 'active' : ''}`}
+                    style={bgStyle === 'slate' ? { backgroundColor: 'var(--color-accent)' } : {}}
                     title="พื้นหลังสีเข้มหรูหรา"
                   >
                     Dark Slate
@@ -931,6 +512,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                   <button 
                     onClick={() => setBgStyle('chess')} 
                     className={`contrast-btn ${bgStyle === 'chess' ? 'active' : ''}`}
+                    style={bgStyle === 'chess' ? { backgroundColor: 'var(--color-accent)' } : {}}
                     title="พื้นหลังตาหมากรุก"
                   >
                     Checker
@@ -938,6 +520,7 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                   <button 
                     onClick={() => setBgStyle('light')} 
                     className={`contrast-btn ${bgStyle === 'light' ? 'active' : ''}`}
+                    style={bgStyle === 'light' ? { backgroundColor: 'var(--color-accent)' } : {}}
                     title="พื้นหลังสีสว่าง"
                   >
                     Light
@@ -945,7 +528,10 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                 </div>
 
                 {/* Halo graphic display */}
-                <div className={`halo-graphic-viewport bg-style-${bgStyle}`}>
+                <motion.div 
+                  whileHover={{ scale: 1.015 }}
+                  className={`halo-graphic-viewport bg-style-${bgStyle}`}
+                >
                   <SecureImage
                     src={`/images/halos/${currentTarget.haloFile}`}
                     alt="Mystery Halo"
@@ -962,31 +548,39 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                   
                   {/* Solved overlay indicator */}
                   {solved && (
-                    <div className="halo-viewport-solved-overlay">
-                      <Sparkles className="solved-sparkle-icon" />
-                      <span>CORRECT CHARACTER!</span>
+                    <div className="halo-viewport-solved-overlay" style={isRevealed ? { background: 'rgba(28, 28, 30, 0.85)', borderColor: 'rgba(255, 255, 255, 0.15)' } : {}}>
+                      <Sparkles className="solved-sparkle-icon animate-pulse" style={isRevealed ? { color: '#8e8e93' } : { color: 'var(--color-accent)' }} />
+                      <span>{isRevealed ? 'REVEALED!' : 'CORRECT CHARACTER!'}</span>
                     </div>
                   )}
-                </div>
+                </motion.div>
 
                 {/* Target profile preview when solved */}
-                {solved && (
-                  <div className="solved-target-profile-card animate-scaleUp">
-                    <img 
-                      src={currentTarget.student.icon || '/images/schoolicon/ETC.png'}
-                      alt={currentTarget.student.englishName}
-                      className="solved-profile-avatar"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/images/schoolicon/ETC.png';
-                      }}
-                    />
-                    <div className="solved-profile-details">
-                      <h3>{currentTarget.student.englishName}</h3>
-                      <p>{currentTarget.student.name} • {currentTarget.student.school}</p>
-                    </div>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {solved && (
+                    <motion.div 
+                      initial={{ scale: 0.95, opacity: 0, y: 10 }}
+                      animate={{ scale: 1, opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      className="solved-target-profile-card"
+                      style={{ borderLeftColor: isRevealed ? '#8e8e93' : 'var(--color-accent)' }}
+                    >
+                      <img 
+                        src={currentTarget.student.icon || '/images/schoolicon/ETC.png'}
+                        alt={currentTarget.student.englishName}
+                        className="solved-profile-avatar"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/images/schoolicon/ETC.png';
+                        }}
+                      />
+                      <div className="solved-profile-details">
+                        <h3>{currentTarget.student.englishName}</h3>
+                        <p>{currentTarget.student.name} • {currentTarget.student.school}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
@@ -994,43 +588,64 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
             <div className="halo-guesser-section">
               
               {/* Guess Autocomplete Box */}
-              {!solved ? (
-                <div className="halo-input-container">
-                  <h4 className="guesser-input-title">ป้อนชื่อนักเรียนที่เป็นเจ้าของฮาโลนี้:</h4>
-                  <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                    <div style={{ flex: 1 }}>
-                      <Autocomplete
-                        ref={autocompleteRef}
-                        suggestions={students}
-                        onSelect={handleGuess}
-                        guessedIds={guesses.map(g => g.id)}
-                        placeholder="ค้นหาตามชื่อนักเรียน (เช่น Aru, Shiroko, Aris)..."
-                      />
-                    </div>
-                    
-                    {/* Game Controls */}
-                    <button onClick={handleSkip} className="gameplay-skip-btn">
-                      ข้าม
-                    </button>
-                    {mode === 'practice' && (
-                      <button onClick={handleReveal} className="gameplay-reveal-btn">
+              <AnimatePresence mode="wait">
+                {!solved ? (
+                  <motion.div 
+                    key="input-box"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="halo-input-container"
+                  >
+                    <h4 className="guesser-input-title" style={{ color: 'var(--color-accent)' }}>ป้อนชื่อนักเรียนที่เป็นเจ้าของฮาโลนี้:</h4>
+                    <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                      <div style={{ flex: 1 }}>
+                        <Autocomplete
+                          ref={autocompleteRef}
+                          suggestions={students}
+                          onSelect={handleGuess}
+                          guessedIds={guesses.map(g => g.id)}
+                          placeholder="ค้นหาตามชื่อนักเรียน (เช่น Aru, Shiroko, Aris)..."
+                        />
+                      </div>
+                      
+                      {/* Game Controls */}
+                      <button onClick={handleSkip} className="gameplay-skip-btn" style={{ borderColor: 'rgba(76, 154, 224, 0.4)' }}>
+                        ข้าม
+                      </button>
+                      <button onClick={handleReveal} className="gameplay-reveal-btn" style={{ backgroundColor: 'var(--color-accent)', color: '#fff' }}>
                         เฉลย
                       </button>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                /* Next Round Banner */
-                <div className="halo-round-solved-card animate-scaleUp">
-                  <div className="round-solved-header">
-                    <Check className="w-5 h-5 text-emerald-400" />
-                    <span>ทายถูกต้อง!</span>
-                  </div>
-                  <p className="round-solved-desc">
-                    ฮาโลนี้คือของ <strong className="text-cyan-400">{currentTarget.student.englishName}</strong>
-                  </p>
-                  
-                  {mode === 'practice' && (
+                    </div>
+                  </motion.div>
+                ) : (
+                  /* Next Round Banner */
+                  <motion.div 
+                    key="solved-box"
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="halo-round-solved-card"
+                    style={{ borderLeftColor: isRevealed ? '#8e8e93' : 'var(--color-accent)' }}
+                  >
+                    <div className="round-solved-header">
+                      {isRevealed ? (
+                        <>
+                          <Eye className="w-5 h-5 text-amber-500" />
+                          <span className="text-amber-500">เฉลยคำตอบ</span>
+                        </>
+                      ) : (
+                        <>
+                          <Check className="w-5 h-5 text-emerald-400" />
+                          <span>ทายถูกต้อง!</span>
+                        </>
+                      )}
+                    </div>
+                    <p className="round-solved-desc">
+                      ฮาโลนี้คือของ <strong className="text-cyan-400">{currentTarget.student.englishName}</strong>
+                    </p>
+                    
                     <button 
                       onClick={() => {
                         const newUsed = [...previousTargets, currentTarget.haloFile]
@@ -1038,12 +653,13 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                         selectNextTarget(students, newUsed)
                       }}
                       className="practice-next-btn animate-pulse"
+                      style={{ backgroundColor: 'var(--color-accent)' }}
                     >
                       ฮาโลถัดไป <ArrowRight className="w-4 h-4" />
                     </button>
-                  )}
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Guesses Log Column */}
               <div className="halo-guess-logs-container">
@@ -1055,25 +671,30 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                   </div>
                 ) : (
                   <div className="logs-scroll-area">
-                    {/* Guess rows in reverse chronological order */}
-                    {[...guesses].reverse().map((g, index) => (
-                      <div key={`${g.id}-${index}`} className={`guess-log-row ${g.isCorrect ? 'correct' : 'incorrect'}`}>
-                        {/* Avatar & Name */}
-                        <div className="log-student-info">
-                          <img
-                            src={g.icon || '/images/schoolicon/ETC.png'}
-                            alt={g.englishName}
-                            className="log-student-avatar"
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = '/images/schoolicon/ETC.png';
-                            }}
-                          />
-                          <span className="log-student-name">{g.englishName}</span>
-                        </div>
+                    <AnimatePresence initial={false}>
+                      {[...guesses].reverse().map((g, index) => (
+                        <motion.div 
+                          key={`${g.id}-${index}`} 
+                          initial={{ opacity: 0, x: -10, y: 5 }}
+                          animate={{ opacity: 1, x: 0, y: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className={`guess-log-row ${g.isCorrect ? 'correct' : 'incorrect'}`}
+                        >
+                          {/* Avatar & Name */}
+                          <div className="log-student-info">
+                            <img
+                              src={g.icon || '/images/schoolicon/ETC.png'}
+                              alt={g.englishName}
+                              className="log-student-avatar"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/images/schoolicon/ETC.png';
+                              }}
+                            />
+                            <span className="log-student-name">{g.englishName}</span>
+                          </div>
 
-                        {/* Attribute comparison pills (Only shown in Practice Mode for education) */}
-                        {mode === 'practice' && (
+                          {/* Attribute comparison pills */}
                           <div className="log-pills-row">
                             <span className={`log-pill ${g.schoolMatch ? 'match' : 'no-match'}`} title="โรงเรียน">
                               {g.schoolMatch ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
@@ -1084,18 +705,18 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
                               {g.schoolYear === 'N/A' ? 'อายุ: N/A' : `อายุ: ${g.schoolYear} ปี`}
                             </span>
                           </div>
-                        )}
 
-                        {/* Status Icon */}
-                        <div className="log-status-icon-box">
-                          {g.isCorrect ? (
-                            <span className="log-status-text correct">CORRECT</span>
-                          ) : (
-                            <span className="log-status-text incorrect">WRONG</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                          {/* Status Icon */}
+                          <div className="log-status-icon-box">
+                            {g.isCorrect ? (
+                              <span className="log-status-text correct">CORRECT</span>
+                            ) : (
+                              <span className="log-status-text incorrect">WRONG</span>
+                            )}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
                   </div>
                 )}
               </div>
@@ -1103,110 +724,8 @@ export default function HaloGuesser({ soundEnabled, onBack, setCustomBackAction 
             </div>
 
           </div>
-
         </div>
       )}
-
-      {/* 3. TIME ATTACK GAME OVER SCREEN */}
-      {gameOver && (
-        <div className="halo-gameover-panel animate-scaleUp">
-          <div className="gameover-header">
-            <AlertTriangle className="gameover-warning-icon" />
-            <h2 className="gameover-title">TIME UP!</h2>
-            <p className="gameover-subtitle">หมดเวลาการท้าทายคิโวทอสฮาโลสเตชั่น</p>
-          </div>
-
-          {/* Stats Summary cards */}
-          <div className="gameover-stats-grid">
-            <div className="gameover-stat-card final-score">
-              <span>FINAL SCORE</span>
-              <h3>{score}</h3>
-            </div>
-            
-            <div className="gameover-stat-card correct-count">
-              <span>CORRECT ANSWERS</span>
-              <h3>{correctAnswersList.length}</h3>
-            </div>
-
-            <div className="gameover-stat-card pr-trophy">
-              <span>HIGH SCORE</span>
-              <h3>{highScore}</h3>
-            </div>
-          </div>
-
-          {/* List of correct answers encountered */}
-          <div className="gameover-answers-log-container">
-            <h4 className="gameover-answers-title">นักเรียนที่คุณครูทายถูกในรอบนี้:</h4>
-            
-            {correctAnswersList.length === 0 ? (
-              <div className="gameover-answers-empty">
-                คุณครูยังทายไม่ถูกเลยในรอบนี้... มาพยายามใหม่อีกครั้งกันเถอะ!
-              </div>
-            ) : (
-              <div className="gameover-answers-scroll">
-                {correctAnswersList.map((item, idx) => (
-                  <div key={`${item.student.id}-${idx}`} className="gameover-answer-row">
-                    <div className="gameover-row-student">
-                      <span className="row-index">#{idx + 1}</span>
-                      <img 
-                        src={item.student.icon || '/images/schoolicon/ETC.png'}
-                        alt={item.student.englishName}
-                        className="gameover-row-avatar"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/images/schoolicon/ETC.png';
-                        }}
-                      />
-                      <div className="gameover-row-name">
-                        <span className="eng">{item.student.englishName}</span>
-                        <span className="school">{item.student.school}</span>
-                      </div>
-                    </div>
-
-                    <div className="gameover-row-points">
-                      <span className="points-added">+{item.scoreGained} PTS</span>
-                      {item.combo > 1 && <span className="points-combo">{item.combo}x Combo</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Leaderboard Auto-Save Notice */}
-          {score > 0 && (
-            <div className="gameover-leaderboard-section">
-              {db ? (
-                scoreSubmitted ? (
-                  <div className="leaderboard-submitted-msg animate-scaleUp">
-                    <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-                    <span>บันทึกสถิติสูงสุดใหม่ของคุณไปยังบอร์ดคะแนนระดับโลกแล้ว! (ครู: {playerName})</span>
-                  </div>
-                ) : (
-                  <div className="leaderboard-submitted-msg info animate-scaleUp">
-                    <span>ทำคะแนนให้มากกว่าสถิติสูงสุดเดิมของคุณครูเพื่ออัปเดตบอร์ดผู้นำรวม!</span>
-                  </div>
-                )
-              ) : (
-                <div className="gameover-leaderboard-offline">
-                  <span>⚠️ Leaderboard ออฟไลน์อยู่ (คะแนนของคุณถูกบันทึกเฉพาะในเบราว์เซอร์นี้)</span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Buttons to restart or exit */}
-          <div className="gameover-actions">
-            <button onClick={startTimeAttack} className="gameover-btn-restart">
-              <RotateCcw className="w-4 h-4" /> ท้าทายอีกครั้ง
-            </button>
-            <button onClick={exitToLobby} className="gameover-btn-exit">
-              กลับหน้าเลือกโหมด
-            </button>
-          </div>
-        </div>
-      )}
-
-    </div>
+    </motion.div>
   )
 }

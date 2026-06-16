@@ -16,7 +16,6 @@ import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, 
 export default function App() {
   const [activeTab, setActiveTab] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'database', 'about', 'eloRanker'
   const [soundEnabled, setSoundEnabled] = useState(true)
-  const [customBackAction, setCustomBackAction] = useState(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -27,7 +26,6 @@ export default function App() {
           
           {/* Left Side: Brand Logo and Title */}
           <div className="brand-wrapper" onClick={() => {
-            setCustomBackAction(null)
             setMobileMenuOpen(false)
             setActiveTab('lobby')
           }}>
@@ -44,7 +42,6 @@ export default function App() {
           <nav className="desktop-nav-links">
             <button
               onClick={() => {
-                setCustomBackAction(null)
                 setActiveTab('lobby')
               }}
               className={`nav-link-btn ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age') ? 'active' : ''}`}
@@ -54,7 +51,6 @@ export default function App() {
             </button>
             <button
               onClick={() => {
-                setCustomBackAction(null)
                 setActiveTab('eloRanker')
               }}
               className={`nav-link-btn ${activeTab === 'eloRanker' ? 'active' : ''}`}
@@ -64,7 +60,6 @@ export default function App() {
             </button>
             <button
               onClick={() => {
-                setCustomBackAction(null)
                 setActiveTab('database')
               }}
               className={`nav-link-btn ${activeTab === 'database' ? 'active' : ''}`}
@@ -74,7 +69,6 @@ export default function App() {
             </button>
             <button
               onClick={() => {
-                setCustomBackAction(null)
                 setActiveTab('about')
               }}
               className={`nav-link-btn ${activeTab === 'about' ? 'active' : ''}`}
@@ -90,18 +84,12 @@ export default function App() {
             {activeTab !== 'lobby' && activeTab !== 'database' && activeTab !== 'about' && (
               <button
                 onClick={() => {
-                  if (customBackAction) {
-                    customBackAction()
-                  } else {
-                    setActiveTab('lobby')
-                  }
+                  setActiveTab('lobby')
                 }}
                 className="header-back-btn"
               >
                 <ArrowLeft className="w-4 h-4 back-icon" />
-                <span className="back-btn-text">
-                  {(activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age') && customBackAction ? 'ย้อนกลับ' : 'กลับหน้าหลัก'}
-                </span>
+                <span className="back-btn-text">กลับหน้าหลัก</span>
               </button>
             )}
 
@@ -131,7 +119,6 @@ export default function App() {
           <div className="mobile-nav-drawer">
             <button
               onClick={() => {
-                setCustomBackAction(null)
                 setMobileMenuOpen(false)
                 setActiveTab('lobby')
               }}
@@ -142,7 +129,6 @@ export default function App() {
             </button>
             <button
               onClick={() => {
-                setCustomBackAction(null)
                 setMobileMenuOpen(false)
                 setActiveTab('eloRanker')
               }}
@@ -153,7 +139,6 @@ export default function App() {
             </button>
             <button
               onClick={() => {
-                setCustomBackAction(null)
                 setMobileMenuOpen(false)
                 setActiveTab('database')
               }}
@@ -164,7 +149,6 @@ export default function App() {
             </button>
             <button
               onClick={() => {
-                setCustomBackAction(null)
                 setMobileMenuOpen(false)
                 setActiveTab('about')
               }}
@@ -178,7 +162,7 @@ export default function App() {
       </header>
 
       {/* Main App Workspace */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 mt-4">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 mt-12">
         {activeTab === 'lobby' && (
           <div className="lobby-layout">
             
@@ -460,7 +444,6 @@ export default function App() {
           <HaloGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
-            setCustomBackAction={setCustomBackAction}
           />
         )}
 
@@ -468,7 +451,6 @@ export default function App() {
           <WeaponGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
-            setCustomBackAction={setCustomBackAction}
           />
         )}
 
@@ -476,7 +458,6 @@ export default function App() {
           <SkillGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
-            setCustomBackAction={setCustomBackAction}
           />
         )}
 
@@ -484,7 +465,6 @@ export default function App() {
           <GearGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
-            setCustomBackAction={setCustomBackAction}
           />
         )}
 
@@ -492,7 +472,6 @@ export default function App() {
           <ChocolateGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
-            setCustomBackAction={setCustomBackAction}
           />
         )}
 
@@ -500,7 +479,6 @@ export default function App() {
           <VoiceGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
-            setCustomBackAction={setCustomBackAction}
           />
         )}
 
@@ -508,7 +486,6 @@ export default function App() {
           <HeightGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
-            setCustomBackAction={setCustomBackAction}
           />
         )}
 
@@ -516,7 +493,6 @@ export default function App() {
           <AgeGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
-            setCustomBackAction={setCustomBackAction}
           />
         )}
 

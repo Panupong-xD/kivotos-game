@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Autocomplete from '../components/Autocomplete.jsx'
 import WinModal from '../components/WinModal.jsx'
 import LoadingScreen from '../components/LoadingScreen.jsx'
 import { RotateCcw } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Capitalization helper for English names derived from PathName
 const getEnglishName = (pathName, devName) => {
@@ -84,7 +85,7 @@ const calculateMaxAdaptation = (s, terrain) => {
   return base;
 }
 
-export default function StudentGuesser({ soundEnabled }) {
+export default function StudentGuesser({ soundEnabled, onBack }) {
   const [students, setStudents] = useState([])
   const [target, setTarget] = useState(null)
   const [guesses, setGuesses] = useState([])
@@ -92,6 +93,8 @@ export default function StudentGuesser({ soundEnabled }) {
   const [loading, setLoading] = useState(true)
   const [fadeLoading, setFadeLoading] = useState(true) // For smooth fade-out transition
   const [showModal, setShowModal] = useState(true)
+
+  const autocompleteRef = useRef(null)
 
   // Load students data on mount
   useEffect(() => {
@@ -164,7 +167,7 @@ export default function StudentGuesser({ soundEnabled }) {
           localStorage.setItem('ba_guess_status', 'playing')
         }
         
-        // Ensure loader is visible for at least 400ms to allow a smooth animation transition
+        // Ensure loader is visible for at least 300ms to allow a smooth animation transition
         const elapsed = Date.now() - startTime
         const delay = Math.max(0, 300 - elapsed)
         
@@ -172,7 +175,11 @@ export default function StudentGuesser({ soundEnabled }) {
           setFadeLoading(false)
           setTimeout(() => {
             setLoading(false)
-          }, 300) // 300ms matches the fadeOut animation in CSS
+            // Refocus input field
+            setTimeout(() => {
+              if (autocompleteRef.current) autocompleteRef.current.focus()
+            }, 50)
+          }, 300)
         }, delay)
       } catch (err) {
         console.error('Failed to load student data:', err)
@@ -238,7 +245,7 @@ export default function StudentGuesser({ soundEnabled }) {
 
   // Handle Guess Selection
   const handleGuess = (student) => {
-    if (gameStatus !== 'playing') return
+    if (gameStatus !== 'playing' || !target) return
 
     // Check if student already in guesses (avoid duplicate inserts)
     if (guesses.some(g => g.id === student.id)) return;
@@ -257,6 +264,10 @@ export default function StudentGuesser({ soundEnabled }) {
     } else {
       playSound('failure')
     }
+
+    setTimeout(() => {
+      if (autocompleteRef.current) autocompleteRef.current.focus()
+    }, 50)
   }
 
   // Give Up & Reveal target directly in table without full-screen block
@@ -288,6 +299,10 @@ export default function StudentGuesser({ soundEnabled }) {
     localStorage.setItem('ba_guess_target_id', rand.id.toString())
     localStorage.setItem('ba_guess_history_ids', JSON.stringify([]))
     localStorage.setItem('ba_guess_status', 'playing')
+
+    setTimeout(() => {
+      if (autocompleteRef.current) autocompleteRef.current.focus()
+    }, 50)
   }
 
   // Get school icon path (safety fallback mapping)
@@ -379,12 +394,6 @@ export default function StudentGuesser({ soundEnabled }) {
     return role || 'N/A'
   }
 
-  const getRankLabel = (val) => {
-    const ranks = ['D', 'C', 'B', 'A', 'S', 'SS']
-    const capped = Math.min(Math.max(val, 0), ranks.length - 1)
-    return ranks[capped] || 'D'
-  }
-
   const StreetIcon = ({ className }) => (
     <img
       src="/images/ui/Terrain_Street.png"
@@ -444,8 +453,23 @@ export default function StudentGuesser({ soundEnabled }) {
   }
 
   return (
-    <div className="lobby-layout">
-      
+    <motion.div 
+      initial={{ opacity: 0, y: 15 }} 
+      animate={{ opacity: 1, y: 0 }} 
+      transition={{ duration: 0.4 }}
+      className="lobby-layout"
+      style={{ width: '100%' }}
+    >
+      {/* Top Exit Bar */}
+      <div className="halo-gameplay-header" style={{ width: '100%', margin: '0 auto 16px auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span className="gameplay-badge practice-mode">
+          PRACTICE MODE (เล่นชิลๆ)
+        </span>
+        <button onClick={onBack} className="gameplay-exit-btn">
+          กลับหน้าหลัก
+        </button>
+      </div>
+
       {/* Game Overview Banner */}
       <section className="lobby-header">
         <h2 className="lobby-title" style={{ fontFamily: 'Outfit, sans-serif' }}>
@@ -458,9 +482,14 @@ export default function StudentGuesser({ soundEnabled }) {
 
       {/* Input / Control Panel */}
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-        {gameStatus !== 'playing' ? (
+        {gameStatus !== 'playing' && target ? (
           /* Finished game banner (won or revealed) */
-          <div className="solved-banner">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 120 }}
+            className="solved-banner"
+          >
             <div className="solved-banner-text">
               <span className={`solved-banner-tag ${gameStatus === 'won' ? 'won' : 'revealed'}`}>
                 {gameStatus === 'won' ? 'RECRUITMENT SUCCESS' : 'RECRUITMENT REVEALED'}
@@ -487,12 +516,13 @@ export default function StudentGuesser({ soundEnabled }) {
                 เล่นอีกครั้ง
               </button>
             </div>
-          </div>
+          </motion.div>
         ) : (
           /* Active search & autocomplete panel */
           <div className="game-input-wrapper">
             <div style={{ flex: 1 }}>
               <Autocomplete
+                ref={autocompleteRef}
                 suggestions={students}
                 onSelect={handleGuess}
                 guessedIds={guesses.map(g => g.id)}
@@ -519,7 +549,7 @@ export default function StudentGuesser({ soundEnabled }) {
       </div>
 
       {/* Guesses Log Area */}
-      {guesses.length > 0 && (
+      {guesses.length > 0 && target && (
         <div className="guess-table-container">
           <div className="guess-table-scroller">
             {/* Table Header (Hidden on Mobile via CSS) */}
@@ -551,237 +581,244 @@ export default function StudentGuesser({ soundEnabled }) {
 
             {/* List of Guesses in reverse chronological order (newest first) */}
             <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
-              {guesses.map((g, idx) => {
-                const isCorrect = g.id === target.id
-                const isSchoolMatch = g.school === target.school
-                const isSquadMatch = g.squadType === target.squadType
-                const isTacticRoleMatch = g.tacticRole === target.tacticRole
-                const isBulletMatch = g.bulletType === target.bulletType
-                const isArmorMatch = g.armorType === target.armorType
-                const isPosMatch = g.position === target.position
-                const isStarMatch = g.starGrade === target.starGrade
-                const isYearMatch = g.schoolYear === target.schoolYear
-                
-                // Numeric matches
-                const isCostMatch = g.exCost === target.exCost
-                const gHeight = parseInt(g.charHeightMetric) || 0
-                const targetHeight = parseInt(target.charHeightMetric) || 0
-                const isHeightMatch = gHeight === targetHeight && gHeight !== 0
-                const isStreetMatch = g.streetBattleAdaptation === target.streetBattleAdaptation
-                const isOutdoorMatch = g.outdoorBattleAdaptation === target.outdoorBattleAdaptation
-                const isIndoorMatch = g.indoorBattleAdaptation === target.indoorBattleAdaptation
-                
-                return (
-                  <div key={`${g.id}-${idx}`} className="guess-row">
-                    {/* 1. Face Icon & Name */}
-                    <div className={`guess-cell ${isCorrect ? 'success' : 'failure'}`} data-label="นักเรียน">
-                      <img
-                        src={`/images/student/icon/${g.id}.webp`}
-                        alt={g.englishName}
-                        className="cell-icon cell-avatar"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/images/schoolicon/ETC.png';
-                        }}
-                      />
-                      <span className="student-name">
-                        {g.englishName}
-                      </span>
-                    </div>
-
-                    {/* 2. School */}
-                    <div className={`guess-cell ${isSchoolMatch ? 'success' : 'failure'}`} data-label="โรงเรียน">
-                      <div className="cell-school-logo-container">
+              <AnimatePresence initial={false}>
+                {guesses.map((g, idx) => {
+                  const isCorrect = g.id === target.id
+                  const isSchoolMatch = g.school === target.school
+                  const isSquadMatch = g.squadType === target.squadType
+                  const isTacticRoleMatch = g.tacticRole === target.tacticRole
+                  const isBulletMatch = g.bulletType === target.bulletType
+                  const isArmorMatch = g.armorType === target.armorType
+                  const isPosMatch = g.position === target.position
+                  const isStarMatch = g.starGrade === target.starGrade
+                  const isYearMatch = g.schoolYear === target.schoolYear
+                  
+                  // Numeric matches
+                  const isCostMatch = g.exCost === target.exCost
+                  const gHeight = parseInt(g.charHeightMetric) || 0
+                  const targetHeight = parseInt(target.charHeightMetric) || 0
+                  const isHeightMatch = gHeight === targetHeight && gHeight !== 0
+                  const isStreetMatch = g.streetBattleAdaptation === target.streetBattleAdaptation
+                  const isOutdoorMatch = g.outdoorBattleAdaptation === target.outdoorBattleAdaptation
+                  const isIndoorMatch = g.indoorBattleAdaptation === target.indoorBattleAdaptation
+                  
+                  return (
+                    <motion.div 
+                      key={`${g.id}-${idx}`} 
+                      initial={{ opacity: 0, y: 15, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.35, type: "spring", stiffness: 100 }}
+                      className="guess-row"
+                    >
+                      {/* 1. Face Icon & Name */}
+                      <div className={`guess-cell ${isCorrect ? 'success' : 'failure'}`} data-label="นักเรียน">
                         <img
-                          src={getSchoolIcon(g.school)}
-                          alt={g.school}
-                          className="cell-school-img"
+                          src={`/images/student/icon/${g.id}.webp`}
+                          alt={g.englishName}
+                          className="cell-icon cell-avatar"
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = '/images/schoolicon/ETC.png';
                           }}
                         />
-                        <span className="cell-school-name">{g.school}</span>
-                      </div>
-                    </div>
-
-                    {/* 3. SquadType */}
-                    <div className={`guess-cell ${isSquadMatch ? 'success' : 'failure'}`} data-label="ประเภท">
-                      <span className="cell-squad-type">
-                        {g.squadType === 'Main' ? 'STRIKER' : 'SPECIAL'}
-                      </span>
-                    </div>
-
-                    {/* 3b. TacticRole */}
-                    <div className={`guess-cell ${isTacticRoleMatch ? 'success' : 'failure'}`} data-label="บทบาท">
-                      <div className="cell-role-container">
-                        {getTacticRoleIcon(g.tacticRole)}
-                        <span className="cell-role-label">{getTacticRoleLabel(g.tacticRole)}</span>
-                      </div>
-                    </div>
-
-                    {/* 4. BulletType */}
-                    <div className={`guess-cell ${isBulletMatch ? 'success' : 'failure'}`} data-label="ประเภทโจมตี">
-                      <span className={`${getBulletPillClass(g.bulletType)}`}>
-                        {getBulletLabel(g.bulletType).split(' ')[0]}
-                      </span>
-                    </div>
-
-                    {/* 5. ArmorType */}
-                    <div className={`guess-cell ${isArmorMatch ? 'success' : 'failure'}`} data-label="ประเภทป้องกัน">
-                      <span className={`${getArmorPillClass(g.armorType)}`}>
-                        {getArmorLabel(g.armorType).split(' ')[0]}
-                      </span>
-                    </div>
-
-                    {/* 6. Position */}
-                    <div className={`guess-cell ${isPosMatch ? 'success' : 'failure'}`} data-label="ตำแหน่ง">
-                      <span className="cell-position">{g.position}</span>
-                    </div>
-
-                    {/* 7. StarGrade */}
-                    <div className={`guess-cell ${isStarMatch ? 'success' : 'failure'}`} data-label="ระดับดาว">
-                      <div className="star-container">
-                        <div className="star-row">
-                          {Array.from({ length: g.starGrade }).map((_, i) => '★').join('')}
-                        </div>
-                        {!isStarMatch && (
-                          <span className={`arrow-indicator ${g.starGrade < target.starGrade ? 'text-cyan-400' : 'text-rose-400'}`} style={{
-                            color: g.starGrade < target.starGrade ? '#00e5ff' : '#ef4444'
-                          }}>
-                            {g.starGrade < target.starGrade ? '↑' : '↓'}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* 8. SchoolYear */}
-                    <div className={`guess-cell ${isYearMatch ? 'success' : 'failure'}`} data-label="ชั้นปี">
-                      <span className="cell-school-year">
-                        {formatSchoolYear(g.schoolYear).split(' ')[0]}
-                      </span>
-                    </div>
-
-                    {/* 9. Cost EX */}
-                    <div className={`guess-cell ${isCostMatch ? 'success' : ''}`} data-label="Cost (EX)">
-                      <span className="cell-ex-cost">{g.exCost}</span>
-                      {!isCostMatch && (
-                        <span className="arrow-indicator" style={{ color: g.exCost < target.exCost ? '#00e5ff' : '#ef4444' }}>
-                          {g.exCost < target.exCost ? '↑' : '↓'}
+                        <span className="student-name">
+                          {g.englishName}
                         </span>
-                      )}
-                    </div>
+                      </div>
 
-                    {/* 10. Height */}
-                    <div className={`guess-cell ${isHeightMatch ? 'success' : ''}`} data-label="ส่วนสูง">
-                      <span className="cell-height">{g.charHeightMetric}</span>
-                      {!isHeightMatch && gHeight !== 0 && targetHeight !== 0 && (
-                        <span className="arrow-indicator" style={{ color: gHeight < targetHeight ? '#00e5ff' : '#ef4444' }}>
-                          {gHeight < targetHeight ? '↑' : '↓'}
+                      {/* 2. School */}
+                      <div className={`guess-cell ${isSchoolMatch ? 'success' : 'failure'}`} data-label="โรงเรียน">
+                        <div className="cell-school-logo-container">
+                          <img
+                            src={getSchoolIcon(g.school)}
+                            alt={g.school}
+                            className="cell-school-img"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/images/schoolicon/ETC.png';
+                            }}
+                          />
+                          <span className="cell-school-name">{g.school}</span>
+                        </div>
+                      </div>
+
+                      {/* 3. SquadType */}
+                      <div className={`guess-cell ${isSquadMatch ? 'success' : 'failure'}`} data-label="ประเภท">
+                        <span className="cell-squad-type">
+                          {g.squadType === 'Main' ? 'STRIKER' : 'SPECIAL'}
                         </span>
-                      )}
-                    </div>
+                      </div>
 
-                    {/* 10b. Street Adaptation */}
-                    <div className={`guess-cell ${isStreetMatch ? 'success' : 'failure'}`} data-label="สตรีท (Street)">
-                      <div className="adaptation-container">
-                        <div className="adaptation-pill">
-                          <StreetIcon className="adaptation-img" />
-                          {getAdaptationIcon(g.streetBattleAdaptation)}
+                      {/* 3b. TacticRole */}
+                      <div className={`guess-cell ${isTacticRoleMatch ? 'success' : 'failure'}`} data-label="บทบาท">
+                        <div className="cell-role-container">
+                          {getTacticRoleIcon(g.tacticRole)}
+                          <span className="cell-role-label">{getTacticRoleLabel(g.tacticRole)}</span>
                         </div>
-                        {!isStreetMatch && (
-                          <span className="arrow-indicator" style={{ color: g.streetBattleAdaptation < target.streetBattleAdaptation ? '#00e5ff' : '#ef4444' }}>
-                            {g.streetBattleAdaptation < target.streetBattleAdaptation ? '↑' : '↓'}
+                      </div>
+
+                      {/* 4. BulletType */}
+                      <div className={`guess-cell ${isBulletMatch ? 'success' : 'failure'}`} data-label="ประเภทโจมตี">
+                        <span className={`${getBulletPillClass(g.bulletType)}`}>
+                          {getBulletLabel(g.bulletType).split(' ')[0]}
+                        </span>
+                      </div>
+
+                      {/* 5. ArmorType */}
+                      <div className={`guess-cell ${isArmorMatch ? 'success' : 'failure'}`} data-label="ประเภทป้องกัน">
+                        <span className={`${getArmorPillClass(g.armorType)}`}>
+                          {getArmorLabel(g.armorType).split(' ')[0]}
+                        </span>
+                      </div>
+
+                      {/* 6. Position */}
+                      <div className={`guess-cell ${isPosMatch ? 'success' : 'failure'}`} data-label="ตำแหน่ง">
+                        <span className="cell-position">{g.position}</span>
+                      </div>
+
+                      {/* 7. StarGrade */}
+                      <div className={`guess-cell ${isStarMatch ? 'success' : 'failure'}`} data-label="ระดับดาว">
+                        <div className="star-container">
+                          <div className="star-row">
+                            {Array.from({ length: g.starGrade }).map((_, i) => '★').join('')}
+                          </div>
+                          {!isStarMatch && (
+                            <span className={`arrow-indicator ${g.starGrade < target.starGrade ? 'text-cyan-400' : 'text-rose-400'}`} style={{
+                              color: g.starGrade < target.starGrade ? '#00e5ff' : '#ef4444'
+                            }}>
+                              {g.starGrade < target.starGrade ? '↑' : '↓'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 8. SchoolYear */}
+                      <div className={`guess-cell ${isYearMatch ? 'success' : 'failure'}`} data-label="ชั้นปี">
+                        <span className="cell-school-year">
+                          {formatSchoolYear(g.schoolYear).split(' ')[0]}
+                        </span>
+                      </div>
+
+                      {/* 9. Cost EX */}
+                      <div className={`guess-cell ${isCostMatch ? 'success' : ''}`} data-label="Cost (EX)">
+                        <span className="cell-ex-cost">{g.exCost}</span>
+                        {!isCostMatch && (
+                          <span className="arrow-indicator" style={{ color: g.exCost < target.exCost ? '#00e5ff' : '#ef4444' }}>
+                            {g.exCost < target.exCost ? '↑' : '↓'}
                           </span>
                         )}
                       </div>
-                    </div>
 
-                    {/* 10c. Outdoor Adaptation */}
-                    <div className={`guess-cell ${isOutdoorMatch ? 'success' : 'failure'}`} data-label="เอาท์ดอร์ (Outdoor)">
-                      <div className="adaptation-container">
-                        <div className="adaptation-pill">
-                          <OutdoorIcon className="adaptation-img" />
-                          {getAdaptationIcon(g.outdoorBattleAdaptation)}
-                        </div>
-                        {!isOutdoorMatch && (
-                          <span className="arrow-indicator" style={{ color: g.outdoorBattleAdaptation < target.outdoorBattleAdaptation ? '#00e5ff' : '#ef4444' }}>
-                            {g.outdoorBattleAdaptation < target.outdoorBattleAdaptation ? '↑' : '↓'}
+                      {/* 10. Height */}
+                      <div className={`guess-cell ${isHeightMatch ? 'success' : ''}`} data-label="ส่วนสูง">
+                        <span className="cell-height">{g.charHeightMetric}</span>
+                        {!isHeightMatch && gHeight !== 0 && targetHeight !== 0 && (
+                          <span className="arrow-indicator" style={{ color: gHeight < targetHeight ? '#00e5ff' : '#ef4444' }}>
+                            {gHeight < targetHeight ? '↑' : '↓'}
                           </span>
                         )}
                       </div>
-                    </div>
 
-                    {/* 10d. Indoor Adaptation */}
-                    <div className={`guess-cell ${isIndoorMatch ? 'success' : 'failure'}`} data-label="อินดอร์ (Indoor)">
-                      <div className="adaptation-container">
-                        <div className="adaptation-pill">
-                          <IndoorIcon className="adaptation-img" />
-                          {getAdaptationIcon(g.indoorBattleAdaptation)}
+                      {/* 10b. Street Adaptation */}
+                      <div className={`guess-cell ${isStreetMatch ? 'success' : 'failure'}`} data-label="สตรีท (Street)">
+                        <div className="adaptation-container">
+                          <div className="adaptation-pill">
+                            <StreetIcon className="adaptation-img" />
+                            {getAdaptationIcon(g.streetBattleAdaptation)}
+                          </div>
+                          {!isStreetMatch && (
+                            <span className="arrow-indicator" style={{ color: g.streetBattleAdaptation < target.streetBattleAdaptation ? '#00e5ff' : '#ef4444' }}>
+                              {g.streetBattleAdaptation < target.streetBattleAdaptation ? '↑' : '↓'}
+                            </span>
+                          )}
                         </div>
-                        {!isIndoorMatch && (
-                          <span className="arrow-indicator" style={{ color: g.indoorBattleAdaptation < target.indoorBattleAdaptation ? '#00e5ff' : '#ef4444' }}>
-                            {g.indoorBattleAdaptation < target.indoorBattleAdaptation ? '↑' : '↓'}
-                          </span>
+                      </div>
+
+                      {/* 10c. Outdoor Adaptation */}
+                      <div className={`guess-cell ${isOutdoorMatch ? 'success' : 'failure'}`} data-label="เอาท์ดอร์ (Outdoor)">
+                        <div className="adaptation-container">
+                          <div className="adaptation-pill">
+                            <OutdoorIcon className="adaptation-img" />
+                            {getAdaptationIcon(g.outdoorBattleAdaptation)}
+                          </div>
+                          {!isOutdoorMatch && (
+                            <span className="arrow-indicator" style={{ color: g.outdoorBattleAdaptation < target.outdoorBattleAdaptation ? '#00e5ff' : '#ef4444' }}>
+                              {g.outdoorBattleAdaptation < target.outdoorBattleAdaptation ? '↑' : '↓'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 10d. Indoor Adaptation */}
+                      <div className={`guess-cell ${isIndoorMatch ? 'success' : 'failure'}`} data-label="อินดอร์ (Indoor)">
+                        <div className="adaptation-container">
+                          <div className="adaptation-pill">
+                            <IndoorIcon className="adaptation-img" />
+                            {getAdaptationIcon(g.indoorBattleAdaptation)}
+                          </div>
+                          {!isIndoorMatch && (
+                            <span className="arrow-indicator" style={{ color: g.indoorBattleAdaptation < target.indoorBattleAdaptation ? '#00e5ff' : '#ef4444' }}>
+                              {g.indoorBattleAdaptation < target.indoorBattleAdaptation ? '↑' : '↓'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 12. Equipment 1 */}
+                      <div className={`guess-cell ${g.equipment && g.equipment[0] && target.equipment && g.equipment[0] === target.equipment[0] ? 'success' : 'failure'}`} data-label="อุปกรณ์ 1">
+                        {g.equipment && g.equipment[0] ? (
+                          <img
+                            src={`/images/equipment/icon/equipment_icon_${g.equipment[0].toLowerCase()}_tier1.webp`}
+                            alt={g.equipment[0]}
+                            className="cell-equipment-img"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/images/schoolicon/ETC.png';
+                            }}
+                          />
+                        ) : (
+                          <span className="cell-na-text">N/A</span>
                         )}
                       </div>
-                    </div>
 
+                      {/* 10. Equipment 2 */}
+                      <div className={`guess-cell ${g.equipment && g.equipment[1] && target.equipment && g.equipment[1] === target.equipment[1] ? 'success' : 'failure'}`} data-label="อุปกรณ์ 2">
+                        {g.equipment && g.equipment[1] ? (
+                          <img
+                            src={`/images/equipment/icon/equipment_icon_${g.equipment[1].toLowerCase()}_tier1.webp`}
+                            alt={g.equipment[1]}
+                            className="cell-equipment-img"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/images/schoolicon/ETC.png';
+                            }}
+                          />
+                        ) : (
+                          <span className="cell-na-text">N/A</span>
+                        )}
+                      </div>
 
-
-                    {/* 12. Equipment 1 */}
-                    <div className={`guess-cell ${g.equipment && g.equipment[0] && target.equipment && g.equipment[0] === target.equipment[0] ? 'success' : 'failure'}`} data-label="อุปกรณ์ 1">
-                      {g.equipment && g.equipment[0] ? (
-                        <img
-                          src={`/images/equipment/icon/equipment_icon_${g.equipment[0].toLowerCase()}_tier1.webp`}
-                          alt={g.equipment[0]}
-                          className="cell-equipment-img"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = '/images/schoolicon/ETC.png';
-                          }}
-                        />
-                      ) : (
-                        <span className="cell-na-text">N/A</span>
-                      )}
-                    </div>
-
-                    {/* 10. Equipment 2 */}
-                    <div className={`guess-cell ${g.equipment && g.equipment[1] && target.equipment && g.equipment[1] === target.equipment[1] ? 'success' : 'failure'}`} data-label="อุปกรณ์ 2">
-                      {g.equipment && g.equipment[1] ? (
-                        <img
-                          src={`/images/equipment/icon/equipment_icon_${g.equipment[1].toLowerCase()}_tier1.webp`}
-                          alt={g.equipment[1]}
-                          className="cell-equipment-img"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = '/images/schoolicon/ETC.png';
-                          }}
-                        />
-                      ) : (
-                        <span className="cell-na-text">N/A</span>
-                      )}
-                    </div>
-
-                    {/* 11. Equipment 3 */}
-                    <div className={`guess-cell ${g.equipment && g.equipment[2] && target.equipment && g.equipment[2] === target.equipment[2] ? 'success' : 'failure'}`} data-label="อุปกรณ์ 3">
-                      {g.equipment && g.equipment[2] ? (
-                        <img
-                          src={`/images/equipment/icon/equipment_icon_${g.equipment[2].toLowerCase()}_tier1.webp`}
-                          alt={g.equipment[2]}
-                          className="cell-equipment-img"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = '/images/schoolicon/ETC.png';
-                          }}
-                        />
-                      ) : (
-                        <span className="cell-na-text">N/A</span>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
+                      {/* 11. Equipment 3 */}
+                      <div className={`guess-cell ${g.equipment && g.equipment[2] && target.equipment && g.equipment[2] === target.equipment[2] ? 'success' : 'failure'}`} data-label="อุปกรณ์ 3">
+                        {g.equipment && g.equipment[2] ? (
+                          <img
+                            src={`/images/equipment/icon/equipment_icon_${g.equipment[2].toLowerCase()}_tier1.webp`}
+                            alt={g.equipment[2]}
+                            className="cell-equipment-img"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/images/schoolicon/ETC.png';
+                            }}
+                          />
+                        ) : (
+                          <span className="cell-na-text">N/A</span>
+                        )}
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -798,6 +835,6 @@ export default function StudentGuesser({ soundEnabled }) {
         />
       )}
 
-    </div>
+    </motion.div>
   )
 }
