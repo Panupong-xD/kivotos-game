@@ -79,6 +79,7 @@ export default function AgeGuesser({ soundEnabled, onBack, setCustomBackAction }
     return parseInt(localStorage.getItem('ba_age_high_score') || '0', 10)
   })
   const [gameOver, setGameOver] = useState(false)
+  const [nextRightStudent, setNextRightStudent] = useState(null)
 
   // Register custom back action so navbar back button works
   useEffect(() => {
@@ -200,6 +201,20 @@ export default function AgeGuesser({ soundEnabled, onBack, setCustomBackAction }
     }
   }
 
+  const setupNewPairWithNext = (newLeft, newRight, currentScore) => {
+    setLeftStudent(newLeft)
+    setRightStudent(newRight)
+    setRevealedAge(null)
+    setRevealedBirthday(false)
+    setIsRevealing(false)
+    setGuessResult(null)
+    setUserChoice(null)
+    setNextRightStudent(null)
+    if (currentScore !== null) {
+      setScore(currentScore)
+    }
+  }
+
   // Check seniority: B is older (พี่) compared to A
   const isOlder = (a, b) => {
     if (b.age !== a.age) {
@@ -249,8 +264,29 @@ export default function AgeGuesser({ soundEnabled, onBack, setCustomBackAction }
             setHighScore(newScore)
             localStorage.setItem('ba_age_high_score', newScore.toString())
           }
+          // Pre-select the next challenger immediately so it starts loading in background
+          const pool = allStudents.length > 0 ? allStudents : allStudents;
+          const leftKeyForNextRound = rightStudent.key;
+          const availablePool = pool.filter(s => 
+            s.key !== leftKeyForNextRound && 
+            !(s.age === rightStudent.age && s.birthMonth === rightStudent.birthMonth && s.birthDay === rightStudent.birthDay)
+          );
+          let selectedNextRight = null;
+          if (availablePool.length > 0) {
+            selectedNextRight = availablePool[Math.floor(Math.random() * availablePool.length)];
+          } else {
+            selectedNextRight = pool.find(s => s.key !== leftKeyForNextRound);
+          }
+          setNextRightStudent(selectedNextRight);
+          
+          if (selectedNextRight && selectedNextRight.portraitPath) {
+            const img = new Image();
+            img.src = selectedNextRight.portraitPath;
+          }
+
+          // Move to next pair after 1.5s
           setTimeout(() => {
-            setupNewPair(allStudents, rightStudent, newScore)
+            setupNewPairWithNext(rightStudent, selectedNextRight, newScore)
           }, 1500)
         } else {
           setGuessResult('incorrect')

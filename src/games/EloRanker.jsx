@@ -5,20 +5,105 @@ import useEloRanking from '../hooks/useEloRanking.js'
 import LoadingScreen from '../components/LoadingScreen.jsx'
 import './EloRanker.css'
 
-export default function EloRanker({ onBack, soundEnabled }) {
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("EloRanker Error Boundary caught an error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          padding: '24px',
+          background: 'rgba(74, 21, 32, 0.75)',
+          border: '1px solid var(--border-failure, #f87171)',
+          borderRadius: '16px',
+          margin: '24px auto',
+          maxWidth: '600px',
+          color: '#fca5a5',
+          fontFamily: 'Prompt, sans-serif',
+          textAlign: 'center'
+        }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '12px', color: '#f87171' }}>
+            เกิดข้อผิดพลาดในการรันระบบจัดอันดับ (BA Ranker)
+          </h3>
+          <p style={{ fontSize: '0.9rem', marginBottom: '16px', color: '#cbd5e1' }}>
+            ตรวจพบข้อผิดพลาด: <strong>{this.state.error && this.state.error.toString()}</strong>
+          </p>
+          <pre style={{
+            background: 'rgba(0,0,0,0.4)',
+            padding: '12px',
+            borderRadius: '8px',
+            fontSize: '0.75rem',
+            fontFamily: 'monospace',
+            overflow: 'auto',
+            maxHeight: '200px',
+            color: '#94a3b8',
+            border: '1px solid rgba(255,255,255,0.05)',
+            marginBottom: '16px',
+            textAlign: 'left'
+          }}>
+            {this.state.error && this.state.error.stack}
+          </pre>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <button 
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+              style={{
+                padding: '8px 16px',
+                background: '#ef4444',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              ล้างประวัติการโหวตและรีเซ็ตระบบ
+            </button>
+            <button 
+              onClick={() => window.location.reload()}
+              style={{
+                padding: '8px 16px',
+                background: 'rgba(255,255,255,0.1)',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '8px',
+                cursor: 'pointer'
+              }}
+            >
+              รีโหลดหน้าเว็บ
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function EloRankerGame({ onBack, soundEnabled }) {
   const {
     characters,
+    sortedCharactersCount,
+    currentIndex,
+    low,
+    high,
     currentDuel,
     voteCount,
-    consecutivePredictableVotes,
     isFinished,
     canUndo,
-    minVotes,
-    hardCapVotes,
     loading,
     error,
     updateElo,
-    skipMatch,
     resetRatings,
     undoLastVote
   } = useEloRanking()
@@ -55,7 +140,7 @@ export default function EloRanker({ onBack, soundEnabled }) {
 
   // Handle vote outcome
   const handleVote = (outcome) => {
-    if (!currentDuel) return
+    if (!currentDuel || !currentDuel[0] || !currentDuel[1]) return
     playSound('vote')
     const [charA, charB] = currentDuel
     updateElo(charA.key, charB.key, outcome)
@@ -353,11 +438,10 @@ export default function EloRanker({ onBack, soundEnabled }) {
     }
   }
 
-  // Stability Progress Calculations
-  const isPhase1 = voteCount < minVotes
-  const progressPercent = isPhase1 
-    ? Math.min(100, Math.floor((voteCount / minVotes) * 100))
-    : Math.min(100, Math.floor((consecutivePredictableVotes / 30) * 100))
+  // Binary Sort Progress Calculations
+  const progressPercent = characters.length > 0 
+    ? Math.min(100, Math.floor((sortedCharactersCount / characters.length) * 100))
+    : 0
 
   if (loading) {
     return <LoadingScreen message="กำลังโหลดข้อมูลนักเรียนและประวัติการดวล..." />
@@ -449,7 +533,7 @@ export default function EloRanker({ onBack, soundEnabled }) {
             การจัดอันดับนักเรียนเสร็จสมบูรณ์!
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '560px', lineHeight: '1.5' }}>
-            ตารางคะแนนอยู่ในสถานะนิ่ง เสถียรสอดคล้องตามเกณฑ์ประเมินแล้วค่ะ (โหวตสะสมครบ {voteCount} ครั้ง) คุณครูสามารถดาวน์โหลดการ์ดสรุปอันดับเพื่อแชร์ หรือกดส่งออกข้อมูลด้านบนได้เลย!
+            ระบบได้เรียงลำดับความชื่นชอบของนักเรียนครบทุกตัวละคร ({characters.length} คน) ด้วยความแม่นยำ 100% แล้วค่ะ! (โหวตสะสมเปรียบเทียบทั้งหมด {voteCount} ครั้ง) คุณครูสามารถดาวน์โหลดการ์ดสรุปอันดับเพื่อแชร์ หรือกดส่งออกข้อมูลด้านบนได้เลย!
           </p>
           <div style={{ display: 'flex', gap: '12px', marginTop: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
             <button 
@@ -482,8 +566,8 @@ export default function EloRanker({ onBack, soundEnabled }) {
           <div className="elo-stat-box-lbl">จำนวนการตัดสินใจสะสม (โหวต)</div>
         </div>
         <div className="elo-stat-box">
-          <div className="elo-stat-box-val" style={{ color: '#fbbf24' }}>{stats.maxRating}</div>
-          <div className="elo-stat-box-lbl">คะแนน ELO สูงสุดในสถาบัน</div>
+          <div className="elo-stat-box-val" style={{ color: '#fbbf24' }}>{sortedCharactersCount} / {characters.length}</div>
+          <div className="elo-stat-box-lbl">จำนวนนักเรียนที่จัดอันดับแล้ว (คน)</div>
         </div>
         <div className="elo-stat-box">
           <div className="elo-stat-box-val" style={{ color: '#a78bfa' }}>
@@ -507,11 +591,11 @@ export default function EloRanker({ onBack, soundEnabled }) {
             {/* Stability Progress Dashboard */}
             <div className="elo-stability-container">
               <div className="elo-stability-header">
-                <span className="elo-stability-phase">
-                  {isPhase1 ? 'ขั้นตอนที่ 1: กระจายคะแนนโหวต' : 'ขั้นตอนที่ 2: ตรวจสอบความนิ่งตาราง'}
+                <span className="elo-stability-phase" style={{ color: 'var(--color-accent)' }}>
+                  ความคืบหน้าการจัดอันดับ (Binary Insertion Sort)
                 </span>
                 <span style={{ fontSize: '0.8rem', fontWeight: 'bold', fontFamily: 'Outfit, sans-serif' }}>
-                  {isPhase1 ? `${voteCount} / ${minVotes} โหวต` : `${consecutivePredictableVotes} / 30 ครั้ง`}
+                  {sortedCharactersCount} / {characters.length} คน
                 </span>
               </div>
               <div className="elo-stability-bar-bg">
@@ -519,14 +603,14 @@ export default function EloRanker({ onBack, soundEnabled }) {
                   className="elo-stability-bar-fill" 
                   style={{ 
                     width: `${progressPercent}%`, 
-                    background: isPhase1 ? 'var(--color-accent)' : '#fbbf24' 
+                    background: 'var(--color-accent)' 
                   }}
                 />
               </div>
               <p className="elo-stability-desc">
-                {isPhase1 
-                  ? `กรุณาโหวตให้ครบขั้นต่ำ ${minVotes} ครั้งก่อน เพื่อกระจายคะแนน Elo ให้ครอบคลุมทุกตัวละคร` 
-                  : `ประเมินความนิ่ง: โหวตเลือกตัวที่มีคะแนนมากกว่าติดต่อกันให้ครบ 30 ครั้ง (สอดคล้องความรู้สึกนิ่งแล้ว) หรือสูงสุดที่ ${hardCapVotes} โหวต`}
+                {currentDuel 
+                  ? `ระบบกำลังค้นหาตำแหน่งจัดอันดับที่ถูกต้องให้: ${currentDuel[0].nameEn} (${currentIndex + 1}/${characters.length})`
+                  : 'จัดอันดับครบเรียบร้อยแล้วค่ะ'}
               </p>
             </div>
 
@@ -596,14 +680,9 @@ export default function EloRanker({ onBack, soundEnabled }) {
 
                 {/* Action Buttons */}
                 <div className="elo-controls">
-                  <button className="btn-action-draw" onClick={() => handleVote('draw')}>
+                  <button className="btn-action-draw" onClick={() => handleVote('draw')} style={{ gridColumn: 'span 2' }}>
                     <Sparkles className="w-4 h-4" />
-                    <span>เสมอ</span>
-                  </button>
-                  
-                  {/* Skip Match Button */}
-                  <button className="btn-action-skip" onClick={() => { playSound('vote'); skipMatch(); }} title="ข้ามแมตช์นี้ไปยังคู่ถัดไป">
-                    <span>ข้ามรอบนี้</span>
+                    <span>ชื่นชอบพอๆ กัน (เสมอ)</span>
                   </button>
 
                   {/* Undo Button (ย้อนกลับการโหวตล่าสุด) */}
@@ -611,10 +690,11 @@ export default function EloRanker({ onBack, soundEnabled }) {
                     className="btn-action-undo" 
                     disabled={!canUndo} 
                     onClick={undoLastVote}
-                    title={canUndo ? "ย้อนกลับผลการโหวตครั้งล่าสุดในกรณีที่กดผิด" : "ยังไม่มีประวัติการโหวตให้ย้อนกลับ"}
+                    style={{ gridColumn: 'span 2' }}
+                    title={canUndo ? "ย้อนกลับผลการเปรียบเทียบล่าสุดในกรณีที่กดผิด" : "ยังไม่มีประวัติการเปรียบเทียบ"}
                   >
                     <Undo className="w-4 h-4" />
-                    <span>ย้อนกลับตาที่แล้ว</span>
+                    <span>ย้อนกลับขั้นตอนที่แล้ว</span>
                   </button>
                 </div>
               </div>
@@ -627,7 +707,7 @@ export default function EloRanker({ onBack, soundEnabled }) {
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'rgba(255, 255, 255, 0.02)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', marginTop: '8px' }}>
               <Info className="w-4 h-4 text-sky-400" style={{ flexShrink: 0 }} />
               <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
-                <strong>จับคู่ Elo ใกล้เคียงกัน (70%) / สุ่ม (30%):</strong> เมื่อจัดอันดับสะสมครบ {minVotes} ครั้ง และมีคะแนนอันดับที่นิ่งคงเส้นคงวาติดต่อกัน 30 โหวต ระบบจะจบโหมดโหวตให้อัตโนมัติ หากมีข้อสงสัยหรือไม่แน่ใจสามารถกด "ย้อนกลับตาที่แล้ว" เพื่อแก้คะแนนได้ค่ะ
+                <strong>ระบบจัดอันดับ Binary Insertion Sort:</strong> ระบบจะจับคู่นักเรียนมาให้เปรียบเทียบทีละคนและวางอันดับที่ถูกต้องให้ 100% (ตามหลักสัจพจน์ถ่ายทอด) ระบบจะเสร็จสิ้นเมื่อเรียงลำดับครบนักเรียนทั้ง {characters.length} คน คุณครูสามารถกด "ย้อนกลับขั้นตอนที่แล้ว" เพื่อแก้ไขคะแนนได้ค่ะ
               </p>
             </div>
           </div>
@@ -697,8 +777,7 @@ export default function EloRanker({ onBack, soundEnabled }) {
                   return (
                     <motion.div
                       key={char.key}
-                      layoutId={char.key}
-                      layout
+                      layout={globalRank <= 30}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
@@ -736,5 +815,13 @@ export default function EloRanker({ onBack, soundEnabled }) {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function EloRanker(props) {
+  return (
+    <ErrorBoundary>
+      <EloRankerGame {...props} />
+    </ErrorBoundary>
   )
 }

@@ -147,9 +147,41 @@
 
 @media (max-width: 480px) {
   .elo-duel-container {
-    flex-direction: column;
+    flex-direction: row !important;
     min-height: auto;
-    gap: 24px;
+    gap: 8px;
+    align-items: center;
+  }
+  .elo-char-card {
+    max-width: 150px;
+  }
+  .elo-char-overlay {
+    padding: 8px;
+  }
+  .elo-char-school-badge {
+    font-size: 0.55rem;
+    padding: 1px 4px;
+    margin-bottom: 2px;
+  }
+  .elo-char-name-en {
+    font-size: 0.8rem;
+    line-height: 1.1;
+  }
+  .elo-char-name-jp {
+    font-size: 0.6rem;
+    margin-bottom: 4px;
+  }
+  .elo-char-rating-badge {
+    font-size: 0.8rem;
+  }
+  .elo-char-stats-row {
+    font-size: 0.55rem;
+  }
+  .elo-vs-badge {
+    width: 38px;
+    height: 38px;
+    font-size: 0.9rem;
+    border-width: 2px;
   }
 }
 

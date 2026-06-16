@@ -63,6 +63,7 @@ export default function HeightGuesser({ soundEnabled, onBack, setCustomBackActio
     return parseInt(localStorage.getItem('ba_height_high_score') || '0', 10)
   })
   const [gameOver, setGameOver] = useState(false)
+  const [nextRightStudent, setNextRightStudent] = useState(null)
 
   // Register custom back action so navbar back button works
   useEffect(() => {
@@ -176,6 +177,19 @@ export default function HeightGuesser({ soundEnabled, onBack, setCustomBackActio
     }
   }
 
+  const setupNewPairWithNext = (newLeft, newRight, currentScore) => {
+    setLeftStudent(newLeft)
+    setRightStudent(newRight)
+    setRevealedHeight(null)
+    setIsRevealing(false)
+    setGuessResult(null)
+    setUserChoice(null)
+    setNextRightStudent(null)
+    if (currentScore !== null) {
+      setScore(currentScore)
+    }
+  }
+
   // Handle User Guess (Taller or Shorter)
   const handleGuess = (choice) => {
     if (isRevealing || gameOver || !leftStudent || !rightStudent) return
@@ -213,9 +227,27 @@ export default function HeightGuesser({ soundEnabled, onBack, setCustomBackActio
             setHighScore(newScore)
             localStorage.setItem('ba_height_high_score', newScore.toString())
           }
+          // Pre-select the next challenger immediately so it starts loading in background
+          const pool = allStudents.length > 0 ? allStudents : allStudents;
+          const leftKeyForNextRound = rightStudent.key;
+          const leftHeightForNextRound = rightStudent.height;
+          const availablePool = pool.filter(s => s.key !== leftKeyForNextRound && s.height !== leftHeightForNextRound);
+          let selectedNextRight = null;
+          if (availablePool.length > 0) {
+            selectedNextRight = availablePool[Math.floor(Math.random() * availablePool.length)];
+          } else {
+            selectedNextRight = pool.find(s => s.key !== leftKeyForNextRound);
+          }
+          setNextRightStudent(selectedNextRight);
+          
+          if (selectedNextRight && selectedNextRight.portraitPath) {
+            const img = new Image();
+            img.src = selectedNextRight.portraitPath;
+          }
+
           // Move to next pair after 1.5s
           setTimeout(() => {
-            setupNewPair(allStudents, rightStudent, newScore)
+            setupNewPairWithNext(rightStudent, selectedNextRight, newScore)
           }, 1500)
         } else {
           setGuessResult('incorrect')
