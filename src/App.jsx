@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useAnimation } from 'framer-motion'
+import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom'
 import StudentGuesser from './games/StudentGuesser.jsx'
 import SkillGuesser from './games/SkillGuesser.jsx'
 import HaloGuesser from './games/HaloGuesser.jsx'
@@ -14,9 +15,51 @@ import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords } from 'lucide-react'
 
-export default function App() {
-  const [activeTab, setActiveTabVal] = useState('lobby') // 'lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age'
-  const [renderTab, setRenderTab] = useState('lobby')
+const tabToPath = (tab) => {
+  switch (tab) {
+    case 'lobby': return '/'
+    case 'student': return '/student'
+    case 'halo': return '/halo'
+    case 'weapon': return '/weapon'
+    case 'skill': return '/skill'
+    case 'gear': return '/gear'
+    case 'chocolate': return '/chocolate'
+    case 'voice': return '/voice'
+    case 'height': return '/height'
+    case 'age': return '/age'
+    case 'eloRanker': return '/ranker'
+    case 'database': return '/database'
+    case 'about': return '/about'
+    default: return '/'
+  }
+}
+
+const pathToTab = (path) => {
+  switch (path) {
+    case '/': return 'lobby'
+    case '/student': return 'student'
+    case '/halo': return 'halo'
+    case '/weapon': return 'weapon'
+    case '/skill': return 'skill'
+    case '/gear': return 'gear'
+    case '/chocolate': return 'chocolate'
+    case '/voice': return 'voice'
+    case '/height': return 'height'
+    case '/age': return 'age'
+    case '/ranker': return 'eloRanker'
+    case '/database': return 'database'
+    case '/about': return 'about'
+    default: return 'lobby'
+  }
+}
+
+function AppContent() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const initialTab = pathToTab(location.pathname)
+  const [activeTab, setActiveTabVal] = useState(initialTab)
+  const [renderTab, setRenderTab] = useState(initialTab)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isWorkspaceLoading, setIsWorkspaceLoading] = useState(false)
@@ -98,20 +141,39 @@ if (activeBtn) {
     }
   }, [activeTab, controls])
 
-  // A wrapper for switching tabs with a loading screen to prevent UI freeze during rendering
-  const handleTabChange = (tab) => {
-    if (tab === activeTab) return
-    setActiveTabVal(tab) // Start the pill animation immediately
-    setIsWorkspaceLoading(true)
+  // Listen to path changes and manage transition states
+  useEffect(() => {
+    const tab = pathToTab(location.pathname)
     
-    // Defer rendering the actual heavy tab content slightly to allow loading screen to paint
-    setTimeout(() => {
-      setRenderTab(tab)
-      // Hide the loading screen immediately after tab rendering is queued
-      setTimeout(() => {
-        setIsWorkspaceLoading(false)
+    // Redirect if it's an invalid path (e.g. unknown subpath)
+    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/ranker', '/database', '/about']
+    if (!validPaths.includes(location.pathname)) {
+      navigate('/', { replace: true })
+      return
+    }
+
+    if (tab !== renderTab) {
+      setActiveTabVal(tab) // pill animation starts immediately
+      setIsWorkspaceLoading(true)
+      
+      const timer = setTimeout(() => {
+        setRenderTab(tab)
+        const innerTimer = setTimeout(() => {
+          setIsWorkspaceLoading(false)
+        }, 150)
+        return () => clearTimeout(innerTimer)
       }, 150)
-    }, 150)
+      return () => clearTimeout(timer)
+    } else {
+      setActiveTabVal(tab)
+    }
+  }, [location.pathname, renderTab, navigate])
+
+  const handleTabChange = (tab) => {
+    const path = tabToPath(tab)
+    if (path !== location.pathname) {
+      navigate(path)
+    }
   }
 
   const setActiveTab = handleTabChange
@@ -651,6 +713,14 @@ if (activeBtn) {
         )}
       </AnimatePresence>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   )
 }
 
