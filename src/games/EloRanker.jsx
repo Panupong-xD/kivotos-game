@@ -806,7 +806,7 @@ function EloRankerGame({ onBack, soundEnabled }) {
                   <button className="btn-action-draw" onClick={() => handleVote('draw')}>
                     <Sparkles className="w-4 h-4" />
                     <span>
-                      <span className="desktop-only">ชื่นชอบพอๆ กัน (เสมอ)</span>
+                      <span className="desktop-only">พอๆ กัน (เสมอ)</span>
                       <span className="mobile-only">เสมอ</span>
                     </span>
                   </button>
