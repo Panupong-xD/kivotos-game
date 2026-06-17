@@ -150,14 +150,6 @@
   display: none !important;
 }
 
-/* Default state for stats grid */
-.elo-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  width: 100%;
-}
-
 /* Default state for bottom info box */
 .elo-info-box {
   display: flex;
@@ -264,11 +256,6 @@
   .elo-reset-confirmation button {
     width: 100%;
     justify-content: center;
-  }
-
-  .elo-stats-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px !important;
   }
   
   .elo-stat-box {

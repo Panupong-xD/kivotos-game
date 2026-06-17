@@ -715,23 +715,6 @@ function EloRankerGame({ onBack, soundEnabled }) {
         </div>
       )}
 
-      {/* Stats Board */}
-      <div className="elo-stats-grid">
-        <div className="elo-stat-box">
-          <div className="elo-stat-box-val">{voteCount}</div>
-          <div className="elo-stat-box-lbl">จำนวนการตัดสินใจสะสม (โหวต)</div>
-        </div>
-        <div className="elo-stat-box">
-          <div className="elo-stat-box-val" style={{ color: '#fbbf24' }}>{sortedCharactersCount} / {characters.length}</div>
-          <div className="elo-stat-box-lbl">จำนวนนักเรียนที่จัดอันดับแล้ว (คน)</div>
-        </div>
-        <div className="elo-stat-box">
-          <div className="elo-stat-box-val" style={{ color: '#a78bfa' }}>
-            {stats.topStudent ? stats.topStudent.nameEn : 'N/A'}
-          </div>
-          <div className="elo-stat-box-lbl">นักเรียนอันดับหนึ่ง ณ ปัจจุบัน</div>
-        </div>
-      </div>
 
       {/* Split Grid Layout */}
       <div className={`elo-layout-grid ${isFinished ? 'is-finished-layout' : ''}`}>
