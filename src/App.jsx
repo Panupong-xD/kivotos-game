@@ -98,24 +98,20 @@ if (activeBtn) {
     }
   }, [activeTab, controls])
 
-  // A wrapper for switching tabs with a luxurious loading screen & lag prevention
+  // A wrapper for switching tabs with a loading screen to prevent UI freeze during rendering
   const handleTabChange = (tab) => {
     if (tab === activeTab) return
     setActiveTabVal(tab) // Start the pill animation immediately
+    setIsWorkspaceLoading(true)
     
-    // Delay showing the loader so the pill spring animation completes in isolation (lag-free)
+    // Defer rendering the actual heavy tab content slightly to allow loading screen to paint
     setTimeout(() => {
-      setIsWorkspaceLoading(true)
-      
-      // Defer rendering the actual heavy tab content
+      setRenderTab(tab)
+      // Hide the loading screen immediately after tab rendering is queued
       setTimeout(() => {
-        setRenderTab(tab)
-        // Keep the loading screen visible a bit longer for premium feel
-        setTimeout(() => {
-          setIsWorkspaceLoading(false)
-        }, 550) // stays on loading screen to ensure all sub-components render smoothly
-      }, 350) // loading overlay fade-in time
-    }, 180) // 180ms delay before loader mounts (pill completes most of its slide)
+        setIsWorkspaceLoading(false)
+      }, 150)
+    }, 150)
   }
 
   const setActiveTab = handleTabChange

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import LoadingScreen from './LoadingScreen.jsx'
-import { Search, Filter, X, Info, Sparkles, BookOpen } from 'lucide-react'
+import { Search, Filter, X, Info, Sparkles, BookOpen, ChevronDown, GraduationCap, Swords, Flame, Shield } from 'lucide-react'
 
 // Helper to convert school year labels
 const formatSchoolYear = (yr) => {
@@ -82,12 +82,104 @@ const calculateMaxAdaptation = (s, terrain) => {
   return base;
 }
 
+// Custom Dropdown Select Component with Icons/Colors
+function CustomSelect({ value, onChange, options, label, labelIcon }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const selectedOption = options.find(opt => opt.value === value) || options[0]
+
+  return (
+    <div className="db-filter-item" ref={containerRef}>
+      <label className={`db-filter-label ${value !== 'All' ? 'active-label' : ''}`}>
+        {labelIcon}
+        <span>{label}</span>
+      </label>
+      <div className="db-custom-select-container">
+        <button 
+          type="button"
+          className={`db-custom-select-trigger ${value !== 'All' ? 'has-value' : ''}`}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <div className="db-selected-content">
+            {selectedOption.icon && (
+              <img 
+                src={selectedOption.icon} 
+                alt="" 
+                className="db-select-option-icon" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/images/schoolicon/ETC.png';
+                }}
+              />
+            )}
+            {selectedOption.color && (
+              <span 
+                className="db-select-option-dot" 
+                style={{ backgroundColor: selectedOption.color }} 
+              />
+            )}
+            <span className="db-selected-text">{selectedOption.label}</span>
+          </div>
+          <ChevronDown className={`db-select-chevron ${isOpen ? 'open' : ''}`} />
+        </button>
+
+        {isOpen && (
+          <div className="db-custom-dropdown">
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                className={`db-dropdown-option ${opt.value === value ? 'selected' : ''}`}
+                onClick={() => {
+                  onChange(opt.value)
+                  setIsOpen(false)
+                }}
+              >
+                {opt.icon && (
+                  <img 
+                    src={opt.icon} 
+                    alt="" 
+                    className="db-select-option-icon" 
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/schoolicon/ETC.png';
+                    }}
+                  />
+                )}
+                {opt.color && (
+                  <span 
+                    className="db-select-option-dot" 
+                    style={{ backgroundColor: opt.color }} 
+                  />
+                )}
+                <span className="db-option-text">{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function StudentDatabase() {
   const [students, setStudents] = useState([])
   const [filteredStudents, setFilteredStudents] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [visibleCount, setVisibleCount] = useState(24)
+  const [searchFocused, setSearchFocused] = useState(false)
 
   const sentinelRef = useRef(null)
 
@@ -288,6 +380,40 @@ export default function StudentDatabase() {
     return `/images/ui/Ingame_Emo_Adaptresult${rankName}.png`
   }
 
+  const schoolOptions = [
+    { value: 'All', label: 'ทุกโรงเรียน (All Schools)', icon: '/images/schoolicon/ETC.png' },
+    ...schoolsList.map(school => ({
+      value: school,
+      label: school,
+      icon: getSchoolIcon(school)
+    }))
+  ]
+
+  const roleOptions = [
+    { value: 'All', label: 'ทุกบทบาท (All Roles)', icon: '/images/ui/Role_DamageDealer.png' },
+    ...rolesList.map(r => ({
+      value: r.value,
+      label: r.label,
+      icon: getTacticRoleIcon(r.value)
+    }))
+  ]
+
+  const bulletOptions = [
+    { value: 'All', label: 'ทุกโจมตี (All Attacks)', color: 'rgba(255,255,255,0.4)' },
+    { value: 'Explosion', label: 'Explosion (ระเบิด)', color: '#ef4444' },
+    { value: 'Pierce', label: 'Pierce (ทะลวง)', color: '#eab308' },
+    { value: 'Mystic', label: 'Mystic (ลึกลับ)', color: '#3b82f6' },
+    { value: 'Sonic', label: 'Sonic (สั่นสะเทือน)', color: '#a855f7' }
+  ]
+
+  const armorOptions = [
+    { value: 'All', label: 'ทุกเกราะ (All Defenses)', color: 'rgba(255,255,255,0.4)' },
+    { value: 'LightArmor', label: 'Light (เบา)', color: '#ef4444' },
+    { value: 'HeavyArmor', label: 'Heavy (หนัก)', color: '#eab308' },
+    { value: 'Unarmed', label: 'Special (พิเศษ/ลึกลับ)', color: '#3b82f6' },
+    { value: 'ElasticArmor', label: 'Elastic (ยืดหยุ่น)', color: '#a855f7' }
+  ]
+
   const resetFilters = () => {
     setSearchTerm('')
     setSelectedSchool('All')
@@ -315,13 +441,15 @@ export default function StudentDatabase() {
 
       {/* Filter and Search Panel */}
       <div className="db-controls-card">
-        <div className="db-search-bar-wrapper">
+        <div className={`db-search-bar-wrapper ${searchFocused ? 'focused' : ''} ${searchTerm ? 'has-content' : ''}`}>
           <Search className="db-search-icon" />
           <input
             type="text"
             className="db-search-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
             placeholder="ค้นหาด้วยชื่อนักเรียน... (เช่น Aru, Yuuka, Shiroko)"
           />
           {searchTerm && (
@@ -332,51 +460,34 @@ export default function StudentDatabase() {
         </div>
 
         <div className="db-filters-grid">
-          {/* School filter */}
-          <div className="db-filter-item">
-            <label>โรงเรียน (School)</label>
-            <select value={selectedSchool} onChange={(e) => setSelectedSchool(e.target.value)}>
-              <option value="All">ทุกโรงเรียน (All Schools)</option>
-              {schoolsList.map(school => (
-                <option key={school} value={school}>{school}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Role filter */}
-          <div className="db-filter-item">
-            <label>บทบาท (Combat Role)</label>
-            <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
-              <option value="All">ทุกบทบาท (All Roles)</option>
-              {rolesList.map(r => (
-                <option key={r.value} value={r.value}>{r.label}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Bullet Type filter */}
-          <div className="db-filter-item">
-            <label>ประเภทการโจมตี (Attack Type)</label>
-            <select value={selectedBullet} onChange={(e) => setSelectedBullet(e.target.value)}>
-              <option value="All">ทุกโจมตี (All Attacks)</option>
-              <option value="Explosion">Explosion (ระเบิด)</option>
-              <option value="Pierce">Pierce (ทะลวง)</option>
-              <option value="Mystic">Mystic (ลึกลับ)</option>
-              <option value="Sonic">Sonic (สั่นสะเทือน)</option>
-            </select>
-          </div>
-
-          {/* Armor Type filter */}
-          <div className="db-filter-item">
-            <label>ประเภทการป้องกัน (Defense Type)</label>
-            <select value={selectedArmor} onChange={(e) => setSelectedArmor(e.target.value)}>
-              <option value="All">ทุกป้องกัน (All Defenses)</option>
-              <option value="LightArmor">Light (เบา)</option>
-              <option value="HeavyArmor">Heavy (หนัก)</option>
-              <option value="Unarmed">Special (พิเศษ/ลึกลับ)</option>
-              <option value="ElasticArmor">Elastic (ยืดหยุ่น)</option>
-            </select>
-          </div>
+          <CustomSelect 
+            value={selectedSchool} 
+            onChange={setSelectedSchool} 
+            options={schoolOptions} 
+            label="โรงเรียน (School)" 
+            labelIcon={<GraduationCap className="db-filter-label-icon" />} 
+          />
+          <CustomSelect 
+            value={selectedRole} 
+            onChange={setSelectedRole} 
+            options={roleOptions} 
+            label="บทบาท (Combat Role)" 
+            labelIcon={<Swords className="db-filter-label-icon" />} 
+          />
+          <CustomSelect 
+            value={selectedBullet} 
+            onChange={setSelectedBullet} 
+            options={bulletOptions} 
+            label="ประเภทการโจมตี (Attack Type)" 
+            labelIcon={<Flame className="db-filter-label-icon" />} 
+          />
+          <CustomSelect 
+            value={selectedArmor} 
+            onChange={setSelectedArmor} 
+            options={armorOptions} 
+            label="ประเภทเกราะ (Defense Type)" 
+            labelIcon={<Shield className="db-filter-label-icon" />} 
+          />
         </div>
 
         {(searchTerm || selectedSchool !== 'All' || selectedRole !== 'All' || selectedBullet !== 'All' || selectedArmor !== 'All') && (

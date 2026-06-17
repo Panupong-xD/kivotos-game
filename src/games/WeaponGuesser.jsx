@@ -451,7 +451,7 @@ export default function WeaponGuesser({ soundEnabled, onBack }) {
                       draggable={false}
                       onDragStart={(e) => e.preventDefault()}
                       onContextMenu={(e) => e.preventDefault()}
-                      style={{ pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none', objectFit: 'contain', width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', padding: '0px', transform: 'scale(1.18)' }}
+                      style={{ pointerEvents: 'none', userSelect: 'none', WebkitUserDrag: 'none', objectFit: 'contain', maxWidth: '94%', maxHeight: '94%' }}
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = '/images/schoolicon/ETC.png';
