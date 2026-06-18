@@ -104,6 +104,121 @@ const formatCV = (cv) => {
   return cv;
 }
 
+const SCHOOL_THAI = {
+  'Abydos': 'อะบิดอส',
+  'Arius': 'อาริอุส',
+  'Gehenna': 'เกเฮนน่า',
+  'Hyakkiyako': 'เฮียคคิยาโคะ',
+  'Millennium': 'มิลเลนเนียม',
+  'RedWinter': 'เรดวินเทอร์',
+  'Shanhaijing': 'ซานไห่จิง',
+  'SRT': 'เอสอาร์ที',
+  'Trinity': 'ทรินิตี้',
+  'Valkyrie': 'วัลคิรี',
+  'Tokiwadai': 'โทคิวะได',
+  'Sakugawa': 'ซาคุคาวะ',
+  'Highlander': 'ไฮแลนเดอร์',
+  'WildHunt': 'ไวลด์ฮันต์',
+  'ETC': 'อื่นๆ',
+  'Other': 'อื่นๆ'
+};
+
+const formatSchool = (school) => SCHOOL_THAI[school] || school;
+
+const CLUB_THAI = {
+  'Kohshinjo68': 'สำนักงานนักรับจ้างสารพัด 68',
+  'Justice': 'คณะกรรมการความยุติธรรม',
+  'CleanNClearing': 'C&C',
+  'BookClub': 'ชมรมวรรณกรรม',
+  'Countermeasure': 'คณะกรรมการแผนรับมือภัยพิบัติ',
+  'Engineer': 'แผนกวิศวกรรม',
+  'FoodService': 'ชมรมอาหารกลางวัน',
+  'Fuuki': 'คณะกรรมการวินัย',
+  'GourmetClub': 'สมาคมวิจัยอาหาร',
+  'HoukagoDessert': 'ชมรมขนมหวานหลังเลิกเรียน',
+  'KnightsHospitaller': 'สมาคมอัศวินบรรเทาทุกข์',
+  'MatsuriOffice': 'คณะกรรมการจัดงานเทศกาล',
+  'Meihuayuan': 'สวนเหมยฮวา',
+  'Onmyobu': 'ชมรมองเมียว',
+  'RemedialClass': 'ชมรมเสริมการเรียน',
+  'SPTF': 'แผนกสืบสวนปรากฏการณ์พิเศษ',
+  'Shugyobu': 'ชมรมฝึกฝนตนเอง',
+  'Endanbou': 'สมาคมวิจัยเล่นแร่แปรธาตุ',
+  'TheSeminar': 'เซมินาร์',
+  'TrainingClub': 'ชมรมกีฬา',
+  'TrinityVigilance': 'กองกำลังป้องกันตนเองทรินิตี้',
+  'Veritas': 'เวอริทัส',
+  'NinpoKenkyubu': 'ชมรมวิจัยวิชานินจา',
+  'GameDev': 'ชมรมพัฒนาเกม',
+  'RedwinterSecretary': 'สำนักเลขาธิการเรดวินเทอร์',
+  'anzenkyoku': 'สำนักงานรักษาความปลอดภัยสาธารณะ',
+  'SisterHood': 'ซิสเตอร์ฮูด',
+  'Class227': 'ห้องเรียนพิเศษ 227',
+  'Emergentology': 'ชมรมเวชศาสตร์ฉุกเฉิน',
+  'RabbitPlatoon': 'หน่วยย่อยกระต่าย (RABBIT Platoon)',
+  'PandemoniumSociety': 'สภาเกเฮนน่า (Pandemonium Society)',
+  'AriusSqud': 'หน่วยอาริอุส (Arius Squad)',
+  'HotSpringsDepartment': 'แผนกพัฒนาบ่อน้ำร้อน',
+  'TeaParty': 'ทีปาร์ตี้',
+  'PublicPeaceBureau': 'สำนักรักษาความสงบสาธารณะ',
+  'BlackTortoisePromenade': 'สมาคมเต่าดำ',
+  'Genryumon': 'เจนริวมอน',
+  'LaborParty': 'แผนกก่อสร้าง',
+  'KnowledgeLiberationFront': 'แนวร่วมปลดแอกความรู้',
+  'Hyakkayouran': 'คณะกรรมการไกล่เกลี่ยข้อพิพาทเฮียคคะโยรัน',
+  'ShinySparkleSociety': 'ชมรมส่องประกาย',
+  'AbydosStudentCouncil': 'สภานักเรียนอะบิดอส',
+  'EmptyClub': 'ไม่มีสังกัด',
+  '無し': 'ไม่มีสังกัด',
+  'CentralControlCenter': 'ศูนย์ควบคุมกลาง',
+  'FreightLogisticsDepartment': 'แผนกการขนส่งสินค้า',
+  'OccultClub': 'ชมรมเรื่องลี้ลับ',
+  'FreeTradeCartel': 'สมาคมการค้าเสรี',
+  'NicomediasTroop': 'หน่วยนิโคมีเดีย',
+  'PublishingDepartment': 'แผนกสิ่งพิมพ์',
+  'FoxSquad': 'หน่วยย่อยสุนัขจิ้งจอก (FOX Platoon)',
+  'N/A': 'ไม่มีสังกัด'
+};
+
+const formatClub = (club) => CLUB_THAI[club] || club;
+
+const formatSquadType = (type) => {
+  if (type === 'Main') return 'Striker (กองหน้า)';
+  if (type === 'Support') return 'Special (สนับสนุน)';
+  return type;
+};
+
+const getBulletColor = (type) => {
+  if (type === 'Explosion') return '#ef4444'; // Red
+  if (type === 'Pierce') return '#fbbf24';    // Yellow/Amber
+  if (type === 'Mystic') return '#38bdf8';    // Sky Blue
+  if (type === 'Sonic') return '#a855f7';     // Purple
+  return '#cbd5e1';
+};
+
+const getArmorColor = (type) => {
+  if (type === 'LightArmor') return '#ef4444';  // Red
+  if (type === 'HeavyArmor') return '#fbbf24';  // Yellow/Amber
+  if (type === 'Unarmed') return '#38bdf8';     // Sky Blue
+  if (type === 'ElasticArmor') return '#a855f7';// Purple
+  return '#cbd5e1';
+};
+
+const translateToThai = async (text) => {
+  if (!text) return '';
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=th&dt=t&q=${encodeURIComponent(text)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data && data[0]) {
+      return data[0].map(item => item[0]).join('');
+    }
+  } catch (error) {
+    console.error("Translation error:", error);
+  }
+  return '';
+};
+
 export default function VoiceGuesser({ soundEnabled, onBack }) {
   // DB & Loading States
   const [allStudents, setAllStudents] = useState([])
@@ -121,6 +236,9 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
   const [solved, setSolved] = useState(false)
   const [isRevealed, setIsRevealed] = useState(false)
   const [attempts, setAttempts] = useState(0)
+  const [translatedTranscription, setTranslatedTranscription] = useState('')
+  const [translatedHobby, setTranslatedHobby] = useState('')
+  const [isTranslating, setIsTranslating] = useState(false)
 
   // Audio Streaming Player States
   const [isPlaying, setIsPlaying] = useState(false)
@@ -509,6 +627,50 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
     return `[ไม่มีบทพูดบันทึกในระบบ] (หมวดหมู่เสียง: ${currentTarget.primaryVoice.category})`
   }
 
+  useEffect(() => {
+    if (!currentTarget) {
+      setTranslatedTranscription('')
+      setTranslatedHobby('')
+      return
+    }
+
+    let active = true
+
+    const fetchTranslations = async () => {
+      setIsTranslating(true)
+      
+      // Get raw transcription clue
+      const rawClue = getRedactedTranscriptClue()
+      
+      // Get raw hobby
+      const rawHobby = currentTarget.student.hobby || ''
+
+      // Translate rawClue (if it has actual Japanese transcription text)
+      let thaiClue = ''
+      if (rawClue && !rawClue.startsWith('[ไม่มีบทพูด')) {
+        thaiClue = await translateToThai(rawClue)
+      }
+
+      // Translate rawHobby
+      let thaiHobby = ''
+      if (rawHobby && rawHobby !== 'N/A' && rawHobby !== '無し') {
+        thaiHobby = await translateToThai(rawHobby)
+      }
+
+      if (active) {
+        setTranslatedTranscription(thaiClue || rawClue)
+        setTranslatedHobby(thaiHobby || rawHobby)
+        setIsTranslating(false)
+      }
+    }
+
+    fetchTranslations()
+
+    return () => {
+      active = false
+    }
+  }, [currentTarget])
+
   // Main Guess submit handler
   const handleGuess = (guessedStudent) => {
     if (solved || !currentTarget) return
@@ -542,8 +704,8 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
       }, 1500)
     } else {
       playBeep('failure')
-      // Practice Mode: check if failed completely (5 attempts max)
-      if (newAttempt >= 5) {
+      // Practice Mode: check if failed completely (6 attempts max)
+      if (newAttempt >= 6) {
         setSolved(true)
         stopAudio()
         stopHintAudio()
@@ -784,7 +946,7 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
             <div className="gameplay-hud-stats">
               <div className="hud-stat-box score">
                 <span>ATTEMPTS</span>
-                <div className="hud-val">{attempts} / 5</div>
+                <div className="hud-val">{attempts} / 6</div>
               </div>
               <div className="hud-stat-box timer">
                 <span>CLIPS POOL</span>
@@ -912,7 +1074,7 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
                         <p style={{ color: 'var(--color-accent)', fontWeight: '500', fontSize: '0.8rem', marginTop: '2px' }}>
                           🔊 ผู้พากย์ (CV): {formatCV(currentTarget.student.cv)}
                         </p>
-                        <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>{currentTarget.student.school} | {currentTarget.student.club}</p>
+                        <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>{formatSchool(currentTarget.student.school)} | {formatClub(currentTarget.student.club)}</p>
                       </div>
                     </motion.div>
                   )}
@@ -926,7 +1088,7 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
                   <span className="label">คำใบ้ 1</span>
                   <div className="content">
                     {attempts >= 1 || solved ? (
-                      <span>โรงเรียน: <strong className="text-cyan-400">{currentTarget.student.school}</strong> | ชมรม/สังกัด: <strong className="text-slate-300">{currentTarget.student.club}</strong></span>
+                      <span>โรงเรียน: <strong className="text-cyan-400">{formatSchool(currentTarget.student.school)}</strong> | ชมรม/สังกัด: <strong className="text-slate-300">{formatClub(currentTarget.student.club)}</strong></span>
                     ) : (
                       <span className="locked"><Lock className="w-3.5 h-3.5" /> ปลดล็อคเมื่อทายผิด 1 ครั้ง</span>
                     )}
@@ -957,9 +1119,9 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
                   <div className="content">
                     {attempts >= 3 || solved ? (
                       <div className="flex flex-wrap gap-x-4 text-xs">
-                        <span>ตำแหน่งรบ: <strong className="text-emerald-400">{currentTarget.student.squadType}</strong></span>
-                        <span>ประเภทกระสุน: <strong className="text-yellow-500">{getBulletLabel(currentTarget.student.bulletType)}</strong></span>
-                        <span>เกราะหลัก: <strong className="text-sky-400">{getArmorLabel(currentTarget.student.armorType)}</strong></span>
+                        <span>ตำแหน่งรบ: <strong className="text-emerald-400">{formatSquadType(currentTarget.student.squadType)}</strong></span>
+                        <span>ประเภทกระสุน: <strong style={{ color: getBulletColor(currentTarget.student.bulletType) }}>{getBulletLabel(currentTarget.student.bulletType)}</strong></span>
+                        <span>เกราะหลัก: <strong style={{ color: getArmorColor(currentTarget.student.armorType) }}>{getArmorLabel(currentTarget.student.armorType)}</strong></span>
                       </div>
                     ) : (
                       <span className="locked"><Lock className="w-3.5 h-3.5" /> ปลดล็อคเมื่อทายผิด 3 ครั้ง</span>
@@ -972,7 +1134,12 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
                   <span className="label">คำใบ้ 4</span>
                   <div className="content">
                     {attempts >= 4 || solved ? (
-                      <span className="italic text-cyan-200 text-xs">“ {getRedactedTranscriptClue()} ”</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="italic text-cyan-200 text-xs font-semibold">“ {translatedTranscription || getRedactedTranscriptClue()} ”</span>
+                        {translatedTranscription && translatedTranscription !== getRedactedTranscriptClue() && (
+                          <span className="text-[10px] text-slate-400 italic">ต้นฉบับ (ญี่ปุ่น): {getRedactedTranscriptClue()}</span>
+                        )}
+                      </div>
                     ) : (
                       <span className="locked"><Lock className="w-3.5 h-3.5" /> ปลดล็อคเมื่อทายผิด 4 ครั้ง</span>
                     )}
@@ -987,7 +1154,7 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
                       <div className="flex flex-wrap gap-x-4 text-xs">
                         <span>ชั้นปี: <strong className="text-white">{formatSchoolYear(currentTarget.student.schoolYear)}</strong></span>
                         <span>อายุ: <strong className="text-pink-400">{formatAge(currentTarget.student.age)}</strong></span>
-                        <span>งานอดิเรก: <strong className="text-slate-300">{currentTarget.student.hobby}</strong></span>
+                        <span>งานอดิเรก: <strong className="text-slate-300">{translatedHobby || currentTarget.student.hobby}</strong></span>
                       </div>
                     ) : (
                       <span className="locked"><Lock className="w-3.5 h-3.5" /> ปลดล็อคเมื่อทายผิด 5 ครั้ง</span>
@@ -1037,17 +1204,17 @@ export default function VoiceGuesser({ soundEnabled, onBack }) {
                       initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                      className={`halo-round-solved-card ${attempts >= 5 && guesses.every(g => !g.isCorrect) ? 'failed' : ''}`} 
-                      style={{ borderLeftColor: attempts >= 5 && guesses.every(g => !g.isCorrect) ? '#ef4444' : isRevealed ? '#8e8e93' : 'var(--color-accent)' }}
+                      className={`halo-round-solved-card ${attempts >= 6 && guesses.every(g => !g.isCorrect) ? 'failed' : ''}`} 
+                      style={{ borderLeftColor: attempts >= 6 && guesses.every(g => !g.isCorrect) ? '#ef4444' : isRevealed ? '#8e8e93' : 'var(--color-accent)' }}
                     >
-                      {attempts >= 5 && guesses.every(g => !g.isCorrect) ? (
+                      {attempts >= 6 && guesses.every(g => !g.isCorrect) ? (
                         <>
                           <div className="round-solved-header">
                             <X className="w-5 h-5 text-red-500" />
                             <span className="text-red-500">หมดโอกาสทาย!</span>
                           </div>
                           <p className="round-solved-desc">
-                            คุณครูใช้สิทธิ์เดาครบ 5 ครั้งแล้ว คำตอบที่ถูกต้องคือ: <strong className="text-cyan-400">{currentTarget.student.englishName}</strong>
+                            คุณครูใช้สิทธิ์เดาครบ 6 ครั้งแล้ว คำตอบที่ถูกต้องคือ: <strong className="text-cyan-400">{currentTarget.student.englishName}</strong>
                           </p>
                         </>
                       ) : isRevealed ? (
