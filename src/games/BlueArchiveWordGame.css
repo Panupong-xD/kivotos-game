@@ -1,0 +1,1102 @@
+/* ==========================================================================
+   BLUE ARCHIVE WORD GAME (SWU AI CONTEXTO) - PREMIUM UI OVERHAUL
+   ========================================================================== */
+
+.word-game-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Glassmorphic Panel Layout */
+.word-game-header {
+  background: rgba(20, 20, 25, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.word-game-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.word-game-title-area h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+
+.word-game-title-area p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.word-game-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icon Buttons with Hover Glow */
+.word-game-icon-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.word-game-icon-btn:hover {
+  background: rgba(76, 154, 224, 0.1);
+  border-color: rgba(6, 182, 212, 0.4);
+  color: #22d3ee;
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
+}
+
+/* Mode Select Slider Switcher */
+.word-game-modes {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.word-game-mode-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.word-game-mode-btn.active {
+  background: rgba(34, 211, 238, 0.12);
+  color: #22d3ee;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  box-shadow: 0 2px 10px rgba(34, 211, 238, 0.05);
+}
+
+/* Stats dashboard */
+.word-game-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.word-game-stat-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  transition: border 0.3s ease;
+}
+
+.word-game-stat-card:hover {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.word-game-stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.word-game-stat-value {
+  font-size: 1.25rem;
+  font-weight: 750;
+  color: #fff;
+  font-family: monospace;
+}
+
+/* Inputs and Forms */
+.word-game-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.word-game-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.word-game-input-wrapper {
+  flex: 1;
+  position: relative;
+  width: 100%;
+}
+
+.word-game-input {
+  width: 100%;
+  background: rgba(10, 10, 12, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px 18px;
+  color: #fff;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.word-game-input:focus {
+  border-color: rgba(6, 182, 212, 0.6);
+  outline: none;
+  background: rgba(10, 10, 12, 0.9);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+}
+
+.word-game-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.word-game-submit-btn {
+  background: #06b6d4;
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  padding: 0 28px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+
+.word-game-submit-btn:hover:not(:disabled) {
+  background: #22d3ee;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+}
+
+.word-game-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.word-game-submit-btn:disabled {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Generic Button Styles */
+.word-game-btn-primary {
+  background: #06b6d4;
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  border-radius: 12px;
+  color: #fff;
+  padding: 10px 22px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.25);
+}
+
+.word-game-btn-primary:hover:not(:disabled) {
+  background: #22d3ee;
+  border-color: rgba(34, 211, 238, 0.8);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+}
+
+.word-game-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.word-game-btn-primary:disabled {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.word-game-btn-secondary {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  padding: 10px 22px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.word-game-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.word-game-btn-secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.word-game-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Premium Shuffle Button - Cyber Cyan Theme with Spin & Shimmer */
+.word-game-shuffle-btn {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(6, 182, 212, 0.2) 100%);
+  border: 1.5px solid rgba(6, 182, 212, 0.35);
+  color: #22d3ee;
+  font-weight: 750;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.1), inset 0 0 8px rgba(6, 182, 212, 0.05);
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+.word-game-shuffle-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(34, 211, 238, 0.2),
+    transparent
+  );
+  transition: 0.6s ease;
+}
+
+.word-game-shuffle-btn:hover::after {
+  left: 100%;
+}
+
+.word-game-shuffle-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(6, 182, 212, 0.3) 100%);
+  border-color: #22d3ee;
+  color: #ffffff;
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.55), inset 0 0 12px rgba(6, 182, 212, 0.25);
+  transform: translateY(-2px);
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+.word-game-shuffle-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+/* Spin animation for the RotateCcw icon inside shuffle button */
+.word-game-shuffle-btn svg {
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.word-game-shuffle-btn:hover svg {
+  transform: rotate(-360deg);
+}
+
+.word-game-shuffle-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Contextual variants for Shuffle Button */
+.word-game-header-actions .word-game-shuffle-btn {
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  border-radius: 8px;
+}
+
+.word-game-victory-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.word-game-victory-actions button {
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  border-radius: 14px;
+  flex: 1;
+  max-width: 200px;
+}
+
+/* Guess card styling - Clean Contexto layout */
+.word-game-guess-card {
+  background: rgba(28, 28, 30, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.word-game-guess-card:hover {
+  background: rgba(28, 28, 30, 0.55);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Full-width elegant card fill overlay */
+.word-game-card-bg-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  opacity: 0.15;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 0 4px 4px 0;
+}
+
+.word-game-guess-word-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+}
+
+.word-game-guess-index {
+  font-size: 0.72rem;
+  font-family: monospace;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 3px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.word-game-guess-word {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.2px;
+}
+
+.word-game-guess-score-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.word-game-guess-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.word-game-guess-score {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: monospace;
+  width: 40px;
+  text-align: right;
+}
+
+/* Closeness progress bar (integrated overlay bgs) */
+.word-game-card-bg-fill.exact,
+.word-game-card-indicator.exact {
+  background: linear-gradient(90deg, #06b6d4, #22d3ee);
+  box-shadow: inset -5px 0 15px rgba(6, 182, 212, 0.5);
+  opacity: 0.25;
+}
+.word-game-card-bg-fill.hot,
+.word-game-card-indicator.hot {
+  background: linear-gradient(90deg, #ef4444, #f97316);
+}
+.word-game-card-bg-fill.warm,
+.word-game-card-indicator.warm {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+.word-game-card-bg-fill.cool,
+.word-game-card-indicator.cool {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+.word-game-card-bg-fill.cold,
+.word-game-card-indicator.cold {
+  background: rgba(142, 142, 147, 0.25);
+}
+
+/* Subtle edge indicator for fallback */
+.word-game-card-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  z-index: 3;
+}
+
+/* Lists and Sorting controls */
+.word-game-list-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding: 0 4px;
+}
+
+.word-game-list-count {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.word-game-sort-btn-group {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.word-game-sort-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.word-game-sort-btn.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* Guesses List container */
+.word-game-guesses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* Empty state styling */
+.word-game-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  border: 1px dashed rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  color: var(--text-secondary);
+  text-align: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.word-game-empty-icon {
+  width: 44px;
+  height: 44px;
+  color: rgba(255, 255, 255, 0.15);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Victory overlay box */
+.word-game-victory-box {
+  background: rgba(6, 182, 212, 0.07);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  box-shadow: 0 10px 40px rgba(6, 182, 212, 0.1);
+  border-radius: 20px;
+  padding: 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.word-game-victory-logo {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: #22d3ee;
+}
+
+.word-game-victory-title {
+  font-size: 1.45rem;
+  font-weight: 850;
+  color: #22d3ee;
+  letter-spacing: 0.5px;
+}
+
+.word-game-victory-subtitle {
+  font-size: 0.95rem;
+  color: #fff;
+  line-height: 1.6;
+  max-width: 420px;
+}
+
+/* Custom Action Bar for Hints and Reveal buttons */
+.word-game-action-bar {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.word-game-action-bar-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 550;
+}
+
+.word-game-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Hint Button - Luxury Amber Theme */
+.word-game-hint-action-btn {
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.word-game-hint-action-btn:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #fbbf24;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+  transform: translateY(-1px);
+}
+
+.word-game-hint-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Reveal Button - Warning Red/Rose Theme */
+.word-game-reveal-action-btn {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.word-game-reveal-action-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #f87171;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+  transform: translateY(-1px);
+}
+
+.word-game-reveal-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Search Dropdown Selector Styling */
+.word-game-search-box {
+  position: relative;
+  width: 100%;
+}
+
+.word-game-dropdown-list {
+  background: rgba(18, 18, 22, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  max-height: 240px;
+  overflow-y: auto;
+  width: 100%;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.word-game-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: #fff;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.word-game-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.word-game-dropdown-item:hover {
+  background: rgba(6, 182, 212, 0.12);
+  color: #22d3ee;
+}
+
+.word-game-dropdown-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.word-game-dropdown-item-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.word-game-dropdown-item-name {
+  font-weight: 650;
+  font-size: 0.92rem;
+}
+
+.word-game-dropdown-item-school {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.word-game-copy-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 15, 20, 0.95);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 2000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Help Modal Styles */
+.word-game-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.25s ease;
+}
+
+.word-game-modal {
+  background: rgba(18, 18, 22, 0.95);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(6, 182, 212, 0.1);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.word-game-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.word-game-modal-header h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #22d3ee;
+  margin: 0;
+}
+
+.word-game-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.word-game-modal-body p {
+  margin-bottom: 16px;
+}
+
+.word-game-modal-body h4 {
+  font-size: 0.95rem;
+  font-weight: 750;
+  color: #fff;
+  margin: 20px 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.word-game-modal-body ul {
+  margin-bottom: 16px;
+  padding-left: 20px;
+}
+
+.word-game-modal-body li {
+  margin-bottom: 8px;
+}
+
+.word-game-color-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.word-game-guide-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+.word-game-guide-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN & MOBILE OPTIMIZATIONS (Max-width: 600px)
+   ========================================================================== */
+@media (max-width: 600px) {
+  .word-game-container {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .word-game-header {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .word-game-title-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .word-game-title-area {
+    text-align: center;
+  }
+
+  .word-game-title-area h2 {
+    font-size: 1.1rem;
+    justify-content: center;
+  }
+
+  .word-game-title-area p {
+    font-size: 0.72rem;
+  }
+
+  .word-game-header-actions {
+    justify-content: center;
+  }
+
+  .word-game-stats-row {
+    gap: 8px;
+  }
+
+  .word-game-stat-card {
+    padding: 8px;
+  }
+
+  .word-game-stat-label {
+    font-size: 0.62rem;
+    margin-bottom: 4px;
+  }
+
+  .word-game-stat-value {
+    font-size: 0.95rem;
+  }
+
+  .word-game-input {
+    padding: 12px 14px;
+    font-size: 0.82rem;
+  }
+
+  .word-game-submit-btn {
+    padding: 0 16px;
+    font-size: 0.82rem;
+    border-radius: 12px;
+  }
+
+  .word-game-guess-card {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .word-game-guess-word-box {
+    gap: 8px;
+  }
+
+  .word-game-guess-index {
+    font-size: 0.62rem;
+    padding: 2px 5px;
+  }
+
+  .word-game-guess-word {
+    font-size: 0.85rem;
+  }
+
+  .word-game-guess-score-box {
+    gap: 8px;
+  }
+
+  .word-game-guess-label {
+    font-size: 0.62rem;
+  }
+
+  .word-game-guess-score {
+    font-size: 0.9rem;
+  }
+
+  .word-game-card-indicator {
+    width: 24px;
+    height: 24px;
+    font-size: 0.65rem;
+  }
+
+  .word-game-victory-box {
+    padding: 20px;
+    gap: 14px;
+  }
+
+  .word-game-victory-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .word-game-victory-logo svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .word-game-victory-title {
+    font-size: 1.15rem;
+  }
+
+  .word-game-victory-subtitle {
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .word-game-victory-actions {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .word-game-victory-actions button,
+  .word-game-victory-actions .word-game-shuffle-btn {
+    max-width: none;
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+  }
+
+  .word-game-action-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .word-game-action-bar-label {
+    text-align: center;
+    font-size: 0.72rem;
+  }
+
+  .word-game-action-buttons {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .word-game-action-buttons button {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    border-radius: 10px;
+    justify-content: center;
+  }
+
+  .word-game-list-controls {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .word-game-list-count {
+    font-size: 0.72rem;
+  }
+
+  .word-game-sort-btn {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+  }
+
+  /* Modal Mobile adjustments */
+  .word-game-modal-overlay {
+    padding: 12px;
+  }
+  
+  .word-game-modal {
+    max-height: 85vh;
+    border-radius: 16px;
+  }
+
+  .word-game-modal-header {
+    padding: 14px 18px;
+  }
+
+  .word-game-modal-body {
+    padding: 16px 18px;
+    font-size: 0.78rem;
+  }
+
+  .word-game-modal-body h4 {
+    font-size: 0.82rem;
+  }
+}

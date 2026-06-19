@@ -11,9 +11,10 @@ import VoiceGuesser from './games/VoiceGuesser.jsx'
 import HeightGuesser from './games/HeightGuesser.jsx'
 import AgeGuesser from './games/AgeGuesser.jsx'
 import EloRanker from './games/EloRanker.jsx'
+import BlueArchiveWordGame from './games/BlueArchiveWordGame.jsx'
 import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
-import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords } from 'lucide-react'
+import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords, Compass } from 'lucide-react'
 
 const tabToPath = (tab) => {
   switch (tab) {
@@ -27,6 +28,7 @@ const tabToPath = (tab) => {
     case 'voice': return '/voice'
     case 'height': return '/height'
     case 'age': return '/age'
+    case 'word': return '/word'
     case 'eloRanker': return '/ranker'
     case 'database': return '/database'
     case 'about': return '/about'
@@ -46,6 +48,7 @@ const pathToTab = (path) => {
     case '/voice': return 'voice'
     case '/height': return 'height'
     case '/age': return 'age'
+    case '/word': return 'word'
     case '/ranker': return 'eloRanker'
     case '/database': return 'database'
     case '/about': return 'about'
@@ -146,7 +149,7 @@ if (activeBtn) {
     const tab = pathToTab(location.pathname)
     
     // Redirect if it's an invalid path (e.g. unknown subpath)
-    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/ranker', '/database', '/about']
+    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/word', '/ranker', '/database', '/about']
     if (!validPaths.includes(location.pathname)) {
       navigate('/', { replace: true })
       return
@@ -207,7 +210,7 @@ if (activeBtn) {
             />
             <button
               onClick={() => handleTabChange('lobby')}
-              className={`nav-link-btn ${['lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age'].includes(activeTab) ? 'active' : ''}`}
+              className={`nav-link-btn ${['lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age', 'word'].includes(activeTab) ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4 nav-link-icon" />
               <span>Arcade</span>
@@ -279,7 +282,7 @@ if (activeBtn) {
                 setMobileMenuOpen(false)
                 setActiveTab('lobby')
               }}
-              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age') ? 'active' : ''}`}
+              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age' || activeTab === 'word') ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4" />
               <span>Arcade (ห้องเกม)</span>
@@ -589,6 +592,40 @@ if (activeBtn) {
                 </button>
               </div>
 
+              {/* Card 10: Word Association (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('word')}
+                className="lobby-card"
+              >
+                <div className="lobby-card-preview" style={{ position: 'relative' }}>
+                  <div className="collage-grid">
+                    <img src="/images/student/icon/10005.webp" alt="Hoshino" className="collage-img" />
+                    <img src="/images/student/icon/20059.webp" alt="Aru" className="collage-img" />
+                    <img src="/images/student/icon/10015.webp" alt="Mika" className="collage-img" />
+                    <img src="/images/student/icon/10012.webp" alt="Shiroko" className="collage-img" />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Compass style={{ width: '48px', height: '48px', color: '#22d3ee', filter: 'drop-shadow(0 0 8px rgba(34,211,238,0.8))' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">เดาคำความเกี่ยวข้อง</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY WORD MODE
+                </button>
+              </div>
+
             </div>
           </div>
         )}
@@ -648,6 +685,13 @@ if (activeBtn) {
 
         {renderTab === 'age' && (
           <AgeGuesser 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+          />
+        )}
+
+        {renderTab === 'word' && (
+          <BlueArchiveWordGame 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
