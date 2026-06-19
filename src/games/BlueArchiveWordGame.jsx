@@ -348,18 +348,42 @@ Guiding Instruction: You have access to Google Search grounding. If the provided
 
 The user's guess is "${userInput}".
 
-Your task is to analyze the relationship between the guess and the secret word/concept.
-Rules:
-1. If the guess is the secret word's name in Thai, English, or Japanese (transliterated, partial, or full name, e.g. "คิโวทอส", "Kivotos", "ชิโรโกะ", "Shiroko"), return a score of 100.
-2. If the guess is closely related (e.g., school, club, related characters, items, memes, story events, traits, or elements mentioned in the context / Google Search results), return a score between 50 and 99. The closer, the higher.
-3. If it is tangentially related, return a score between 10 and 49.
-4. If it is completely unrelated, return a random score between 1 and 8.
+Your task is to analyze the relationship between the guess and the secret word/concept, returning a score strictly based on the following hierarchy to prevent score flattening:
+
+SCORING HIERARCHY RULES:
+1. Exact Match (100 points):
+   - If the guess is the secret word/concept itself (transliterated, partial, or full name, in Thai, English, or Japanese, e.g., "คิโวทอส", "Kivotos", "ชิโรโกะ", "Shiroko").
+
+2. Unique Core Tags (90 - 99 points):
+   - Reserved ONLY for the absolute unique core elements of the secret target.
+   - For characters: Their own specific club, their unique signature item, their highly specific personal traits, or legendary memes unique to them (e.g., "roll cake" or "gorilla" for Mika; "calculator" or "thighs" for Yuuka; "bank robbery" for Shiroko; "dork outlaw" for Aru).
+
+3. Sub-factions, Clubs & Direct Squads (65 - 75 points):
+   - The name of their club or direct sub-faction (e.g., "Tea Party", "คณะกรรมการวินัย" / "Disciplinary Committee", "Supplementary Lessons Department", "C&C").
+
+4. School & Academy Level (55 - 65 points):
+   - The name of their school or academy (e.g., "Trinity", "Gehenna", "Millennium", "Hyakkiyako", "Red Winter", etc.).
+
+5. Related Characters / Friends / Rivals (55 - 85 points with Offsetting):
+   - Do NOT give related characters a flat score. Dynamically offset/differentiate their score based on their closeness in the storyline or relationship lore:
+     * Best friend / partner / direct helper (e.g., Ako for Hina; Momoi/Midori for each other; Nagisa for Mika) -> 80 - 85 points.
+     * Close club mates / main story allies -> 70 - 79 points.
+     * Loose acquaintances, rivals, or other students at the same school with minor interaction -> 55 - 69 points.
+
+6. Broad Terms (25 - 40 points):
+   - Very broad terms of the world of Kivotos (e.g., "นักเรียน" (student), "ปืน" (gun), "ผู้หญิง" (girl), "อาวุธ" (weapon), "กระสุน" (bullet), "Halo").
+
+7. Tangential Connections (10 - 49 points):
+   - Words that are only indirectly connected to the character or concept in general lore.
+
+8. Completely Unrelated (1 - 8 points):
+   - No logical or lore connection. Return a random score between 1 and 8.
 
 Response MUST be a valid JSON object with this exact schema:
 {
-  "score": number, // integer 1-100
+  "score": number, // integer 1-100 following the rules above
   "matchedTag": "string", // keyword matched (or empty)
-  "reason": "string" // explanation
+  "reason": "string" // brief explanation in Thai of the score relationship
 }
 `
         })
