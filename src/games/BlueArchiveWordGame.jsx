@@ -359,10 +359,12 @@ SCORING HIERARCHY RULES:
    - For characters: Their own specific club, their unique signature item, their highly specific personal traits, or legendary memes unique to them (e.g., "roll cake" or "gorilla" for Mika; "calculator" or "thighs" for Yuuka; "bank robbery" for Shiroko; "dork outlaw" for Aru).
 
 3. Sub-factions, Clubs & Direct Squads (65 - 75 points):
-   - The name of their club or direct sub-faction (e.g., "Tea Party", "คณะกรรมการวินัย" / "Disciplinary Committee", "Supplementary Lessons Department", "C&C").
+   - The actual name of their specific club or sub-faction (e.g., "Plum Blossom Garden", "Tea Party", "คณะกรรมการวินัย" / "Disciplinary Committee", "Supplementary Lessons Department", "C&C").
+   - Note: The generic word "ชมรม" (club) or "กลุ่ม" (group) themselves are NOT specific clubs and must be treated as Broad Terms (25 - 40 points).
 
 4. School & Academy Level (55 - 65 points):
-   - The name of their school or academy (e.g., "Trinity", "Gehenna", "Millennium", "Hyakkiyako", "Red Winter", etc.).
+   - The actual name of their specific school or academy (e.g., "Shanhaijing", "Trinity", "Gehenna", "Millennium", "Hyakkiyako", "Red Winter", etc.).
+   - Note: The generic word "โรงเรียน" (school) or "สถาบัน" (academy) themselves are NOT specific schools and must be treated as Broad Terms (25 - 40 points).
 
 5. Related Characters / Friends / Rivals (55 - 85 points with Offsetting):
    - Do NOT give related characters a flat score. Dynamically offset/differentiate their score based on their closeness in the storyline or relationship lore:
@@ -371,7 +373,7 @@ SCORING HIERARCHY RULES:
      * Loose acquaintances, rivals, or other students at the same school with minor interaction -> 55 - 69 points.
 
 6. Broad Terms (25 - 40 points):
-   - Very broad terms of the world of Kivotos (e.g., "นักเรียน" (student), "ปืน" (gun), "ผู้หญิง" (girl), "อาวุธ" (weapon), "กระสุน" (bullet), "Halo").
+   - Very broad/generic terms of the world of Kivotos (e.g., "นักเรียน" (student), "ชมรม" (club), "โรงเรียน" (school), "กลุ่ม" (group), "ปืน" (gun), "ผู้หญิง" (girl), "อาวุธ" (weapon), "กระสุน" (bullet), "Halo", "ตัวละคร" (character), "อาจารย์" / "ครู" (Sensei/teacher)).
 
 7. Tangential Connections (10 - 49 points):
    - Words that are only indirectly connected to the character or concept in general lore.
