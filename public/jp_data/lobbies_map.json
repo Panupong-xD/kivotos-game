@@ -1,0 +1,2369 @@
+[
+  {
+    "file": "Aikiyo_Fuuka.jpg",
+    "studentId": 23001,
+    "baseName": "aikiyo_fuuka",
+    "name": "フウカ",
+    "englishName": "Fuuka",
+    "pathName": "fuuka",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Aikiyo_Fuuka_New_Year.jpg",
+    "studentId": 20022,
+    "baseName": "aikiyo_fuuka",
+    "name": "フウカ（正月）",
+    "englishName": "Fuuka (New Year)",
+    "pathName": "fuuka_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Ajitani_Hifumi.jpg",
+    "studentId": 10003,
+    "baseName": "ajitani_hifumi",
+    "name": "ヒフミ",
+    "englishName": "Hifumi",
+    "pathName": "hifumi",
+    "school": "Trinity"
+  },
+  {
+    "file": "Ajitani_Hifumi_Swimsuit.jpg",
+    "studentId": 20005,
+    "baseName": "ajitani_hifumi",
+    "name": "ヒフミ（水着）",
+    "englishName": "Hifumi (Swimsuit)",
+    "pathName": "hifumi_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Akashi_Junko.jpg",
+    "studentId": 13007,
+    "baseName": "akashi_junko",
+    "name": "ジュンコ",
+    "englishName": "Junko",
+    "pathName": "junko",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Akashi_Junko_New_Year.jpg",
+    "studentId": 16012,
+    "baseName": "akashi_junko",
+    "name": "ジュンコ（正月）",
+    "englishName": "Junko (New Year)",
+    "pathName": "junko_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Akeboshi_Himari.jpg",
+    "studentId": 20020,
+    "baseName": "akeboshi_himari",
+    "name": "ヒマリ",
+    "englishName": "Himari",
+    "pathName": "himari",
+    "school": "Millennium"
+  },
+  {
+    "file": "Akeboshi_Himari_Battle.png",
+    "studentId": 20054,
+    "baseName": "akeboshi_himari",
+    "name": "ヒマリ（臨戦）",
+    "englishName": "Himari (Battle)",
+    "pathName": "himari_battle",
+    "school": "Millennium"
+  },
+  {
+    "file": "Akeshiro_Rumi.png",
+    "studentId": 10069,
+    "baseName": "akeshiro_rumi",
+    "name": "ルミ",
+    "englishName": "Rumi",
+    "pathName": "rumi",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Akiizumi_Momiji.png",
+    "studentId": 13013,
+    "baseName": "akiizumi_momiji",
+    "name": "モミジ",
+    "englishName": "Momiji",
+    "pathName": "momiji",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Amachi_Niya.png",
+    "studentId": 20046,
+    "baseName": "amachi_niya",
+    "name": "ニヤ",
+    "englishName": "Niya",
+    "pathName": "niya",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Amami_Nodoka.jpg",
+    "studentId": 26006,
+    "baseName": "amami_nodoka",
+    "name": "ノドカ",
+    "englishName": "Nodoka",
+    "pathName": "nodoka",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Amami_Nodoka_Hot_Spring.jpg",
+    "studentId": 20010,
+    "baseName": "amami_nodoka",
+    "name": "ノドカ（温泉）",
+    "englishName": "Nodoka (Hot Spring)",
+    "pathName": "nodoka_onsen",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Amau_Ako.jpg",
+    "studentId": 20008,
+    "baseName": "amau_ako",
+    "name": "アコ",
+    "englishName": "Ako",
+    "pathName": "ako",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Amau_Ako_Dress.jpg",
+    "studentId": 10087,
+    "baseName": "amau_ako",
+    "name": "アコ（ドレス）",
+    "englishName": "Ako (Dress)",
+    "pathName": "ako_dress",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Aomori_Mine.jpg",
+    "studentId": 10058,
+    "baseName": "aomori_mine",
+    "name": "ミネ",
+    "englishName": "Mine",
+    "pathName": "mine",
+    "school": "Trinity"
+  },
+  {
+    "file": "Aomori_Mine_Idol.png",
+    "studentId": 16016,
+    "baseName": "aomori_mine",
+    "name": "ミネ（アイドル）",
+    "englishName": "Mine (Idol)",
+    "pathName": "mine_idol",
+    "school": "Trinity"
+  },
+  {
+    "file": "Aramaki_Yakumo.png",
+    "studentId": 20052,
+    "baseName": "aramaki_yakumo",
+    "name": "ヤクモ",
+    "englishName": "Yakumo",
+    "pathName": "yakumo",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Asagao_Hanae.jpg",
+    "studentId": 23002,
+    "baseName": "asagao_hanae",
+    "name": "ハナエ",
+    "englishName": "Hanae",
+    "pathName": "hanae",
+    "school": "Trinity"
+  },
+  {
+    "file": "Asagao_Hanae_Christmas.jpg",
+    "studentId": 20021,
+    "baseName": "asagao_hanae",
+    "name": "ハナエ（クリスマス）",
+    "englishName": "Hanae (Christmas)",
+    "pathName": "hanae_christmas",
+    "school": "Trinity"
+  },
+  {
+    "file": "Asagi_Mutsuki.jpg",
+    "studentId": 13006,
+    "baseName": "asagi_mutsuki",
+    "name": "ムツキ",
+    "englishName": "Mutsuki",
+    "pathName": "mutsuki",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Asagi_Mutsuki_Dress.png",
+    "studentId": 20059,
+    "baseName": "asagi_mutsuki",
+    "name": "ムツキ（ドレス）",
+    "englishName": "Mutsuki (Dress)",
+    "pathName": "mutsuki_dress",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Asagi_Mutsuki_New_Year.jpg",
+    "studentId": 10032,
+    "baseName": "asagi_mutsuki",
+    "name": "ムツキ（正月）",
+    "englishName": "Mutsuki (New Year)",
+    "pathName": "mutsuki_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Asahina_Pina.jpg",
+    "studentId": 16004,
+    "baseName": "asahina_pina",
+    "name": "フィーナ",
+    "englishName": "Pina",
+    "pathName": "pina",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Asahina_Pina_Guide.png",
+    "studentId": 20045,
+    "baseName": "asahina_pina",
+    "name": "フィーナ（ガイド）",
+    "englishName": "Pina (Guide)",
+    "pathName": "pina_guide",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Asuma_Toki.png",
+    "studentId": 10062,
+    "baseName": "asuma_toki",
+    "name": "トキ",
+    "englishName": "Toki",
+    "pathName": "toki",
+    "school": "Millennium"
+  },
+  {
+    "file": "Asuma_Toki_Battle.png",
+    "studentId": 16019,
+    "baseName": "asuma_toki",
+    "name": "トキ（臨戦）",
+    "englishName": "Toki (Battle)",
+    "pathName": "toki_battle",
+    "school": "Millennium"
+  },
+  {
+    "file": "Asuma_Toki_Bunny_Girl.png",
+    "studentId": 10067,
+    "baseName": "asuma_toki",
+    "name": "トキ（バニーガール）",
+    "englishName": "Toki (Bunny)",
+    "pathName": "toki_bunnygirl",
+    "school": "Millennium"
+  },
+  {
+    "file": "Chidori_Michiru.jpg",
+    "studentId": 16009,
+    "baseName": "chidori_michiru",
+    "name": "ミチル",
+    "englishName": "Michiru",
+    "pathName": "michiru",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Chidori_Michiru_Dress.png",
+    "studentId": 20053,
+    "baseName": "chidori_michiru",
+    "name": "ミチル（ドレス）",
+    "englishName": "Michiru (Dress)",
+    "pathName": "michiru_dress",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Endo_Shimiko.jpg",
+    "studentId": 26004,
+    "baseName": "endo_shimiko",
+    "name": "シミコ",
+    "englishName": "Shimiko",
+    "pathName": "shimiko",
+    "school": "Trinity"
+  },
+  {
+    "file": "Fuwa_Renge.png",
+    "studentId": 10082,
+    "baseName": "fuwa_renge",
+    "name": "レンゲ",
+    "englishName": "Renge",
+    "pathName": "renge",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Fuwa_Renge_Swimsuit.png",
+    "studentId": 13014,
+    "baseName": "fuwa_renge",
+    "name": "レンゲ（水着）",
+    "englishName": "Renge (Swimsuit)",
+    "pathName": "renge_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Goryou_Nagusa.png",
+    "studentId": 10119,
+    "baseName": "goryou_nagusa",
+    "name": "ナグサ",
+    "englishName": "Nagusa",
+    "pathName": "nagusa",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Goryou_Nagusa_Swimsuit.png",
+    "studentId": 10142,
+    "baseName": "goryou_nagusa",
+    "name": "ナグサ（水着）",
+    "englishName": "Nagusa (Swimsuit)",
+    "pathName": "nagusa_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Hakari_Atsuko.jpg",
+    "studentId": 10042,
+    "baseName": "hakari_atsuko",
+    "name": "アツコ",
+    "englishName": "Atsuko",
+    "pathName": "atsuko",
+    "school": "Arius"
+  },
+  {
+    "file": "Hakari_Atsuko_Swimsuit.png",
+    "studentId": 26013,
+    "baseName": "hakari_atsuko",
+    "name": "アツコ（水着）",
+    "englishName": "Atsuko (Swimsuit)",
+    "pathName": "atsuko_swimsuit",
+    "school": "Arius"
+  },
+  {
+    "file": "Hanaoka_Yuzu.jpg",
+    "studentId": 10018,
+    "baseName": "hanaoka_yuzu",
+    "name": "ユズ",
+    "englishName": "Yuzu",
+    "pathName": "yuzu",
+    "school": "Millennium"
+  },
+  {
+    "file": "Hanaoka_Yuzu_Battle.png",
+    "studentId": 20055,
+    "baseName": "hanaoka_yuzu",
+    "name": "ユズ（臨戦）",
+    "englishName": "Yuzu (Battle)",
+    "pathName": "yuzu_battle",
+    "school": "Millennium"
+  },
+  {
+    "file": "Hanaoka_Yuzu_Maid.png",
+    "studentId": 26009,
+    "baseName": "hanaoka_yuzu",
+    "name": "ユズ（メイド）",
+    "englishName": "Yuzu Maid",
+    "pathName": "yuzu_maid",
+    "school": "Millennium"
+  },
+  {
+    "file": "Hanekawa_Hasumi.jpg",
+    "studentId": 13003,
+    "baseName": "hanekawa_hasumi",
+    "name": "ハスミ",
+    "englishName": "Hasumi",
+    "pathName": "hasumi",
+    "school": "Trinity"
+  },
+  {
+    "file": "Hanekawa_Hasumi_Sportswear.jpg",
+    "studentId": 16011,
+    "baseName": "hanekawa_hasumi",
+    "name": "ハスミ（体操服）",
+    "englishName": "Hasumi (Track)",
+    "pathName": "hasumi_track",
+    "school": "Trinity"
+  },
+  {
+    "file": "Hanekawa_Hasumi_Swimsuit.png",
+    "studentId": 10124,
+    "baseName": "hanekawa_hasumi",
+    "name": "ハスミ（水着）",
+    "englishName": "Hasumi (Swimsuit)",
+    "pathName": "hasumi_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Hanuma_Makoto.jpg",
+    "studentId": 20033,
+    "baseName": "hanuma_makoto",
+    "name": "マコト",
+    "englishName": "Makoto",
+    "pathName": "makoto",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Hatami_Erika.png",
+    "studentId": 20058,
+    "baseName": "hatami_erika",
+    "name": "エリカ",
+    "englishName": "Erika",
+    "pathName": "erika",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Hatsune_Miku.png",
+    "studentId": 20007,
+    "baseName": "hatsune_miku",
+    "name": "初音ミク",
+    "englishName": "Hatsune Miku",
+    "pathName": "hatsune_miku",
+    "school": "ETC"
+  },
+  {
+    "file": "Hayase_Yuuka.jpg",
+    "studentId": 13010,
+    "baseName": "hayase_yuuka",
+    "name": "ユウカ",
+    "englishName": "Yuuka",
+    "pathName": "yuuka",
+    "school": "Millennium"
+  },
+  {
+    "file": "Hayase_Yuuka_Pajama.png",
+    "studentId": 10108,
+    "baseName": "hayase_yuuka",
+    "name": "ユウカ（パジャマ）",
+    "englishName": "Yuuka (Pajama)",
+    "pathName": "yuuka_pajama",
+    "school": "Millennium"
+  },
+  {
+    "file": "Hayase_Yuuka_Sportswear.jpg",
+    "studentId": 10053,
+    "baseName": "hayase_yuuka",
+    "name": "ユウカ（体操服）",
+    "englishName": "Yuuka (Track)",
+    "pathName": "yuuka_track",
+    "school": "Millennium"
+  },
+  {
+    "file": "Himeki_Meru.png",
+    "studentId": 10075,
+    "baseName": "himeki_meru",
+    "name": "メル",
+    "englishName": "Meru",
+    "pathName": "meru",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Himuro_Sena.jpg",
+    "studentId": 20012,
+    "baseName": "himuro_sena",
+    "name": "セナ",
+    "englishName": "Sena",
+    "pathName": "sena",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Himuro_Sena_Casual.png",
+    "studentId": 10113,
+    "baseName": "himuro_sena",
+    "name": "セナ（私服）",
+    "englishName": "Sena (Casual)",
+    "pathName": "sena_casual",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Hinomiya_Chinatsu.jpg",
+    "studentId": 26000,
+    "baseName": "hinomiya_chinatsu",
+    "name": "チナツ",
+    "englishName": "Chinatsu",
+    "pathName": "chinatsu",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Hinomiya_Chinatsu_Hot_Spring.jpg",
+    "studentId": 10030,
+    "baseName": "hinomiya_chinatsu",
+    "name": "チナツ（温泉）",
+    "englishName": "Chinatsu (Hot Spring)",
+    "pathName": "chinatsu_onsen",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Ibaragi_Yoshimi.jpg",
+    "studentId": 26005,
+    "baseName": "ibaragi_yoshimi",
+    "name": "ヨシミ",
+    "englishName": "Yoshimi",
+    "pathName": "yoshimi",
+    "school": "Trinity"
+  },
+  {
+    "file": "Ibaragi_Yoshimi_Band.png",
+    "studentId": 10092,
+    "baseName": "ibaragi_yoshimi",
+    "name": "ヨシミ（バンド）",
+    "englishName": "Yoshimi (Band)",
+    "pathName": "yoshimi_band",
+    "school": "Trinity"
+  },
+  {
+    "file": "Ichinose_Asuna.jpg",
+    "studentId": 16001,
+    "baseName": "ichinose_asuna",
+    "name": "アスナ",
+    "englishName": "Asuna",
+    "pathName": "asuna",
+    "school": "Millennium"
+  },
+  {
+    "file": "Ichinose_Asuna_Bunny_Girl.jpg",
+    "studentId": 10028,
+    "baseName": "ichinose_asuna",
+    "name": "アスナ（バニーガール）",
+    "englishName": "Asuna (Bunny)",
+    "pathName": "asuna_bunnygirl",
+    "school": "Millennium"
+  },
+  {
+    "file": "Ichinose_Asuna_School_Uniform.png",
+    "studentId": 10112,
+    "baseName": "ichinose_asuna",
+    "name": "アスナ（制服）",
+    "englishName": "Asuna (Uniform)",
+    "pathName": "asuna_uniform",
+    "school": "Millennium"
+  },
+  {
+    "file": "Igusa_Haruka.jpg",
+    "studentId": 16000,
+    "baseName": "igusa_haruka",
+    "name": "ハルカ",
+    "englishName": "Haruka",
+    "pathName": "haruka",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Igusa_Haruka_Dress.png",
+    "studentId": 10141,
+    "baseName": "igusa_haruka",
+    "name": "ハルカ（ドレス）",
+    "englishName": "Haruka (Dress)",
+    "pathName": "haruka_dress",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Igusa_Haruka_New_Year.png",
+    "studentId": 20025,
+    "baseName": "igusa_haruka",
+    "name": "ハルカ（正月）",
+    "englishName": "Haruka (New Year)",
+    "pathName": "haruka_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Ikekura_Marina.jpg",
+    "studentId": 10037,
+    "baseName": "ikekura_marina",
+    "name": "マリナ",
+    "englishName": "Marina",
+    "pathName": "marina",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Ikekura_Marina_Qipao.png",
+    "studentId": 10103,
+    "baseName": "ikekura_marina",
+    "name": "マリナ（チーパオ）",
+    "englishName": "Marina (Qipao)",
+    "pathName": "marina_qipao",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Imashino_Misaki.jpg",
+    "studentId": 10041,
+    "baseName": "imashino_misaki",
+    "name": "ミサキ",
+    "englishName": "Misaki",
+    "pathName": "misaki",
+    "school": "Arius"
+  },
+  {
+    "file": "Imashino_Misaki_Swimsuit.png",
+    "studentId": 20049,
+    "baseName": "imashino_misaki",
+    "name": "ミサキ（水着）",
+    "englishName": "Misaki (Swimsuit)",
+    "pathName": "misaki_swimsuit",
+    "school": "Arius"
+  },
+  {
+    "file": "Iochi_Mari.jpg",
+    "studentId": 23008,
+    "baseName": "iochi_mari",
+    "name": "マリー",
+    "englishName": "Mari",
+    "pathName": "mari",
+    "school": "Trinity"
+  },
+  {
+    "file": "Iochi_Mari_Idol.png",
+    "studentId": 10105,
+    "baseName": "iochi_mari",
+    "name": "マリー（アイドル）",
+    "englishName": "Mari (Idol)",
+    "pathName": "mari_idol",
+    "school": "Trinity"
+  },
+  {
+    "file": "Iochi_Mari_Sportswear.jpg",
+    "studentId": 10054,
+    "baseName": "iochi_mari",
+    "name": "マリー（体操服）",
+    "englishName": "Mari (Track)",
+    "pathName": "mari_track",
+    "school": "Trinity"
+  },
+  {
+    "file": "Isami_Kaede.jpg",
+    "studentId": 20015,
+    "baseName": "isami_kaede",
+    "name": "カエデ",
+    "englishName": "Kaede",
+    "pathName": "kaede",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Itagaki_Kanoe.png",
+    "studentId": 10126,
+    "baseName": "itagaki_kanoe",
+    "name": "カノエ",
+    "englishName": "Kanoe",
+    "pathName": "kanoe",
+    "school": "WildHunt"
+  },
+  {
+    "file": "Izayoi_Nonomi.jpg",
+    "studentId": 13004,
+    "baseName": "izayoi_nonomi",
+    "name": "ノノミ",
+    "englishName": "Nonomi",
+    "pathName": "nonomi",
+    "school": "Abydos"
+  },
+  {
+    "file": "Izayoi_Nonomi_Swimsuit.jpg",
+    "studentId": 10044,
+    "baseName": "izayoi_nonomi",
+    "name": "ノノミ（水着）",
+    "englishName": "Nonomi (Swimsuit)",
+    "pathName": "nonomi_swimsuit",
+    "school": "Abydos"
+  },
+  {
+    "file": "Izumimoto_Eimi.jpg",
+    "studentId": 10001,
+    "baseName": "izumimoto_eimi",
+    "name": "エイミ",
+    "englishName": "Eimi",
+    "pathName": "eimi",
+    "school": "Millennium"
+  },
+  {
+    "file": "Izumimoto_Eimi_Battle.png",
+    "studentId": 10136,
+    "baseName": "izumimoto_eimi",
+    "name": "エイミ（臨戦）",
+    "englishName": "Eimi (Battle)",
+    "pathName": "eimi_battle",
+    "school": "Millennium"
+  },
+  {
+    "file": "Izumimoto_Eimi_Swimsuit.png",
+    "studentId": 20032,
+    "baseName": "izumimoto_eimi",
+    "name": "エイミ（水着）",
+    "englishName": "Eimi (Swimsuit)",
+    "pathName": "eimi_swimsuit",
+    "school": "Millennium"
+  },
+  {
+    "file": "Joumae_Saori.jpg",
+    "studentId": 10048,
+    "baseName": "joumae_saori",
+    "name": "サオリ",
+    "englishName": "Saori",
+    "pathName": "saori",
+    "school": "Arius"
+  },
+  {
+    "file": "Joumae_Saori_Dress.png",
+    "studentId": 10116,
+    "baseName": "joumae_saori",
+    "name": "サオリ（ドレス）",
+    "englishName": "Saori (Dress)",
+    "pathName": "saori_dress",
+    "school": "Arius"
+  },
+  {
+    "file": "Joumae_Saori_Swimsuit.png",
+    "studentId": 10101,
+    "baseName": "joumae_saori",
+    "name": "サオリ（水着）",
+    "englishName": "Saori (Swimsuit)",
+    "pathName": "saori_swimsuit",
+    "school": "Arius"
+  },
+  {
+    "file": "Kadenokouji_Yukari.png",
+    "studentId": 10081,
+    "baseName": "kadenokouji_yukari",
+    "name": "ユカリ",
+    "englishName": "Yukari",
+    "pathName": "yukari",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kadenokouji_Yukari_Swimsuit.png",
+    "studentId": 10121,
+    "baseName": "kadenokouji_yukari",
+    "name": "ユカリ（水着）",
+    "englishName": "Yukari (Swimsuit)",
+    "pathName": "yukari_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kagami_Chihiro.jpg",
+    "studentId": 20013,
+    "baseName": "kagami_chihiro",
+    "name": "チヒロ",
+    "englishName": "Chihiro",
+    "pathName": "chihiro",
+    "school": "Millennium"
+  },
+  {
+    "file": "Kakehashi_Subaru.png",
+    "studentId": 10130,
+    "baseName": "kakehashi_subaru",
+    "name": "スバル",
+    "englishName": "Subaru",
+    "pathName": "subaru",
+    "school": "Arius"
+  },
+  {
+    "file": "Kakudate_Karin.jpg",
+    "studentId": 20001,
+    "baseName": "kakudate_karin",
+    "name": "カリン",
+    "englishName": "Karin",
+    "pathName": "karin",
+    "school": "Millennium"
+  },
+  {
+    "file": "Kakudate_Karin_Bunny_Girl.jpg",
+    "studentId": 10027,
+    "baseName": "kakudate_karin",
+    "name": "カリン（バニーガール）",
+    "englishName": "Karin (Bunny)",
+    "pathName": "karin_bunnygirl",
+    "school": "Millennium"
+  },
+  {
+    "file": "Kakudate_Karin_School_Uniform.png",
+    "studentId": 26014,
+    "baseName": "kakudate_karin",
+    "name": "カリン（制服）",
+    "englishName": "Karin (Uniform)",
+    "pathName": "karin_uniform",
+    "school": "Millennium"
+  },
+  {
+    "file": "Kasuga_Tsubaki.jpg",
+    "studentId": 13009,
+    "baseName": "kasuga_tsubaki",
+    "name": "ツバキ",
+    "englishName": "Tsubaki",
+    "pathName": "tsubaki",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kasuga_Tsubaki_Guide.png",
+    "studentId": 20035,
+    "baseName": "kasuga_tsubaki",
+    "name": "ツバキ（ガイド）",
+    "englishName": "Tsubaki (Guide)",
+    "pathName": "tsubaki_guide",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kasumizawa_Miyu.jpg",
+    "studentId": 10039,
+    "baseName": "kasumizawa_miyu",
+    "name": "ミユ",
+    "englishName": "Miyu",
+    "pathName": "miyu",
+    "school": "SRT"
+  },
+  {
+    "file": "Kasumizawa_Miyu_Swimsuit.png",
+    "studentId": 26010,
+    "baseName": "kasumizawa_miyu",
+    "name": "ミユ（水着）",
+    "englishName": "Miyu (Swimsuit)",
+    "pathName": "miyu_swimsuit",
+    "school": "SRT"
+  },
+  {
+    "file": "Kawawa_Shizuko.jpg",
+    "studentId": 23006,
+    "baseName": "kawawa_shizuko",
+    "name": "シズコ",
+    "englishName": "Shizuko",
+    "pathName": "shizuko",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kawawa_Shizuko_Swimsuit.jpg",
+    "studentId": 26008,
+    "baseName": "kawawa_shizuko",
+    "name": "シズコ（水着）",
+    "englishName": "Shizuko (Swimsuit)",
+    "pathName": "shizuko_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kayama_Reijo.png",
+    "studentId": 10104,
+    "baseName": "kayama_reijo",
+    "name": "レイジョ",
+    "englishName": "Reijo",
+    "pathName": "reijo",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Kazekura_Moe.jpg",
+    "studentId": 20018,
+    "baseName": "kazekura_moe",
+    "name": "モエ",
+    "englishName": "Moe",
+    "pathName": "moe",
+    "school": "SRT"
+  },
+  {
+    "file": "Kazekura_Moe_Swimsuit.png",
+    "studentId": 10097,
+    "baseName": "kazekura_moe",
+    "name": "モエ（水着）",
+    "englishName": "Moe (Swimsuit)",
+    "pathName": "moe_swimsuit",
+    "school": "SRT"
+  },
+  {
+    "file": "Kenzaki_Tsurugi.jpg",
+    "studentId": 10013,
+    "baseName": "kenzaki_tsurugi",
+    "name": "ツルギ",
+    "englishName": "Tsurugi",
+    "pathName": "tsurugi",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kenzaki_Tsurugi_Swimsuit.jpg",
+    "studentId": 16005,
+    "baseName": "kenzaki_tsurugi",
+    "name": "ツルギ（水着）",
+    "englishName": "Tsurugi (Swimsuit)",
+    "pathName": "tsurugi_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kinugawa_Kasumi.png",
+    "studentId": 10078,
+    "baseName": "kinugawa_kasumi",
+    "name": "カスミ",
+    "englishName": "Kasumi",
+    "pathName": "kasumi",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Kinui_Rena.png",
+    "studentId": 10138,
+    "baseName": "kinui_rena",
+    "name": "レナ",
+    "englishName": "Rena",
+    "pathName": "rena",
+    "school": "WildHunt"
+  },
+  {
+    "file": "Kirifuji_Nagisa.jpg",
+    "studentId": 20024,
+    "baseName": "kirifuji_nagisa",
+    "name": "ナギサ",
+    "englishName": "Nagisa",
+    "pathName": "nagisa",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kirifuji_Nagisa_Swimsuit.png",
+    "studentId": 20048,
+    "baseName": "kirifuji_nagisa",
+    "name": "ナギサ（水着）",
+    "englishName": "Nagisa (Swimsuit)",
+    "pathName": "nagisa_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kiryuu_Kikyou.png",
+    "studentId": 10083,
+    "baseName": "kiryuu_kikyou",
+    "name": "キキョウ",
+    "englishName": "Kikyou",
+    "pathName": "kikyou",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kiryuu_Kikyou_Swimsuit.png",
+    "studentId": 20047,
+    "baseName": "kiryuu_kikyou",
+    "name": "キキョウ（水着）",
+    "englishName": "Kikyou (Swimsuit)",
+    "pathName": "kikyou_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Komakaze_Rabu.png",
+    "studentId": 16018,
+    "baseName": "komakaze_rabu",
+    "name": "ラブ",
+    "englishName": "Rabu",
+    "pathName": "rabu",
+    "school": "Trinity"
+  },
+  {
+    "file": "Konoe_Mina.png",
+    "studentId": 10070,
+    "baseName": "konoe_mina",
+    "name": "ミナ",
+    "englishName": "Mina",
+    "pathName": "mina",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Konuri_Maki.jpg",
+    "studentId": 10007,
+    "baseName": "konuri_maki",
+    "name": "マキ",
+    "englishName": "Maki",
+    "pathName": "maki",
+    "school": "Millennium"
+  },
+  {
+    "file": "Konuri_Maki_Camping.png",
+    "studentId": 20042,
+    "baseName": "konuri_maki",
+    "name": "マキ（キャンプ）",
+    "englishName": "Maki (Camp)",
+    "pathName": "maki_camp",
+    "school": "Millennium"
+  },
+  {
+    "file": "Kosaka_Wakamo.jpg",
+    "studentId": 10033,
+    "baseName": "kosaka_wakamo",
+    "name": "ワカモ",
+    "englishName": "Wakamo",
+    "pathName": "wakamo",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kosaka_Wakamo_Swimsuit.jpg",
+    "studentId": 10043,
+    "baseName": "kosaka_wakamo",
+    "name": "ワカモ（水着）",
+    "englishName": "Wakamo (Swimsuit)",
+    "pathName": "wakamo_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kozeki_Ui.jpg",
+    "studentId": 10035,
+    "baseName": "kozeki_ui",
+    "name": "ウイ",
+    "englishName": "Ui",
+    "pathName": "ui",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kozeki_Ui_Swimsuit.png",
+    "studentId": 10073,
+    "baseName": "kozeki_ui",
+    "name": "ウイ（水着）",
+    "englishName": "Ui (Swimsuit)",
+    "pathName": "ui_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kuda_Izuna.jpg",
+    "studentId": 10014,
+    "baseName": "kuda_izuna",
+    "name": "イズナ",
+    "englishName": "Izuna",
+    "pathName": "izuna",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kuda_Izuna_Swimsuit.jpg",
+    "studentId": 10046,
+    "baseName": "kuda_izuna",
+    "name": "イズナ（水着）",
+    "englishName": "Izuna (Swimsuit)",
+    "pathName": "izuna_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kurimura_Airi.jpg",
+    "studentId": 23000,
+    "baseName": "kurimura_airi",
+    "name": "アイリ",
+    "englishName": "Airi",
+    "pathName": "airi",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kurimura_Airi_Band.png",
+    "studentId": 16015,
+    "baseName": "kurimura_airi",
+    "name": "アイリ（バンド）",
+    "englishName": "Airi (Band)",
+    "pathName": "airi_band",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kurodate_Haruna.jpg",
+    "studentId": 10002,
+    "baseName": "kurodate_haruna",
+    "name": "ハルナ",
+    "englishName": "Haruna",
+    "pathName": "haruna",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Kurodate_Haruna_New_Year.jpg",
+    "studentId": 10057,
+    "baseName": "kurodate_haruna",
+    "name": "ハルナ（正月）",
+    "englishName": "Haruna (New Year)",
+    "pathName": "haruna_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Kurodate_Haruna_Sportswear.png",
+    "studentId": 20030,
+    "baseName": "kurodate_haruna",
+    "name": "ハルナ（体操服）",
+    "englishName": "Haruna (Track)",
+    "pathName": "haruna_track",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Kuromi_Serika.jpg",
+    "studentId": 13008,
+    "baseName": "kuromi_serika",
+    "name": "セリカ",
+    "englishName": "Serika",
+    "pathName": "serika",
+    "school": "Abydos"
+  },
+  {
+    "file": "Kuromi_Serika_New_Year.jpg",
+    "studentId": 20011,
+    "baseName": "kuromi_serika",
+    "name": "セリカ（正月）",
+    "englishName": "Serika (New Year)",
+    "pathName": "serika_newyear",
+    "school": "Abydos"
+  },
+  {
+    "file": "Kuromi_Serika_Swimsuit.png",
+    "studentId": 20036,
+    "baseName": "kuromi_serika",
+    "name": "セリカ（水着）",
+    "englishName": "Serika (Swimsuit)",
+    "pathName": "serika_swimsuit",
+    "school": "Abydos"
+  },
+  {
+    "file": "Kurosaki_Koyuki.png",
+    "studentId": 10063,
+    "baseName": "kurosaki_koyuki",
+    "name": "コユキ",
+    "englishName": "Koyuki",
+    "pathName": "koyuki",
+    "school": "Millennium"
+  },
+  {
+    "file": "Kurosaki_Koyuki_Pajama.png",
+    "studentId": 20056,
+    "baseName": "kurosaki_koyuki",
+    "name": "コユキ（パジャマ）",
+    "englishName": "Koyuki (Pajama)",
+    "pathName": "koyuki_pajama",
+    "school": "Millennium"
+  },
+  {
+    "file": "Kuwakami_Kaho.png",
+    "studentId": 10065,
+    "baseName": "kuwakami_kaho",
+    "name": "カホ",
+    "englishName": "Kaho",
+    "pathName": "kaho",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Kyougoku_Satsuki.png",
+    "studentId": 20040,
+    "baseName": "kyougoku_satsuki",
+    "name": "サツキ",
+    "englishName": "Satsuki",
+    "pathName": "satsuki",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Kyouyama_Kazusa.jpg",
+    "studentId": 10049,
+    "baseName": "kyouyama_kazusa",
+    "name": "カズサ",
+    "englishName": "Kazusa",
+    "pathName": "kazusa",
+    "school": "Trinity"
+  },
+  {
+    "file": "Kyouyama_Kazusa_Band.png",
+    "studentId": 10091,
+    "baseName": "kyouyama_kazusa",
+    "name": "カズサ（バンド）",
+    "englishName": "Kazusa (Band)",
+    "pathName": "kazusa_band",
+    "school": "Trinity"
+  },
+  {
+    "file": "Mayoi_Shigure.jpg",
+    "studentId": 10055,
+    "baseName": "mayoi_shigure",
+    "name": "シグレ",
+    "englishName": "Shigure",
+    "pathName": "shigure",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Mayoi_Shigure_Hot_Spring.png",
+    "studentId": 20031,
+    "baseName": "mayoi_shigure",
+    "name": "シグレ（温泉）",
+    "englishName": "Shigure (Hot Spring)",
+    "pathName": "shigure_onsen",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Mikamo_Neru.jpg",
+    "studentId": 10008,
+    "baseName": "mikamo_neru",
+    "name": "ネル",
+    "englishName": "Neru",
+    "pathName": "neru",
+    "school": "Millennium"
+  },
+  {
+    "file": "Mikamo_Neru_Bunny_Girl.jpg",
+    "studentId": 10026,
+    "baseName": "mikamo_neru",
+    "name": "ネル（バニーガール）",
+    "englishName": "Neru (Bunny)",
+    "pathName": "neru_bunnygirl",
+    "school": "Millennium"
+  },
+  {
+    "file": "Mikamo_Neru_School_Uniform.png",
+    "studentId": 10111,
+    "baseName": "mikamo_neru",
+    "name": "ネル（制服）",
+    "englishName": "Neru (Uniform)",
+    "pathName": "neru_uniform",
+    "school": "Millennium"
+  },
+  {
+    "file": "Misaka_Mikoto.png",
+    "studentId": 10079,
+    "baseName": "misaka_mikoto",
+    "name": "御坂美琴",
+    "englishName": "Misaka Mikoto",
+    "pathName": "misaka_mikoto",
+    "school": "Tokiwadai"
+  },
+  {
+    "file": "Misono_Mika.jpg",
+    "studentId": 10059,
+    "baseName": "misono_mika",
+    "name": "ミカ",
+    "englishName": "Mika",
+    "pathName": "mika",
+    "school": "Trinity"
+  },
+  {
+    "file": "Misono_Mika_Swimsuit.png",
+    "studentId": 10122,
+    "baseName": "misono_mika",
+    "name": "ミカ（水着）",
+    "englishName": "Mika (Swimsuit)",
+    "pathName": "mika_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Miyoshi_Takane.png",
+    "studentId": 10131,
+    "baseName": "miyoshi_takane",
+    "name": "タカネ",
+    "englishName": "Takane",
+    "pathName": "takane",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Mizuha_Mimori.jpg",
+    "studentId": 10034,
+    "baseName": "mizuha_mimori",
+    "name": "ミモリ",
+    "englishName": "Mimori",
+    "pathName": "mimori",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Mizuha_Mimori_Swimsuit.png",
+    "studentId": 20029,
+    "baseName": "mizuha_mimori",
+    "name": "ミモリ（水着）",
+    "englishName": "Mimori (Swimsuit)",
+    "pathName": "mimori_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Morizuki_Suzumi.jpg",
+    "studentId": 16003,
+    "baseName": "morizuki_suzumi",
+    "name": "スズミ",
+    "englishName": "Suzumi",
+    "pathName": "suzumi",
+    "school": "Trinity"
+  },
+  {
+    "file": "Morizuki_Suzumi_Magical.png",
+    "studentId": 10129,
+    "baseName": "morizuki_suzumi",
+    "name": "スズミ（マジカル）",
+    "englishName": "Suzumi Magical",
+    "pathName": "suzumi_magical",
+    "school": "Trinity"
+  },
+  {
+    "file": "Motomiya_Chiaki.png",
+    "studentId": 10107,
+    "baseName": "motomiya_chiaki",
+    "name": "チアキ",
+    "englishName": "Chiaki",
+    "pathName": "chiaki",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Murokasa_Akane.jpg",
+    "studentId": 13000,
+    "baseName": "murokasa_akane",
+    "name": "アカネ",
+    "englishName": "Akane",
+    "pathName": "akane",
+    "school": "Millennium"
+  },
+  {
+    "file": "Murokasa_Akane_Bunny_Girl.jpg",
+    "studentId": 20019,
+    "baseName": "murokasa_akane",
+    "name": "アカネ（バニーガール）",
+    "englishName": "Akane (Bunny)",
+    "pathName": "akane_bunnygirl",
+    "school": "Millennium"
+  },
+  {
+    "file": "Murokasa_Akane_School_Uniform.png",
+    "studentId": 20057,
+    "baseName": "murokasa_akane",
+    "name": "アカネ（制服）",
+    "englishName": "Akane (Uniform)",
+    "pathName": "akane_uniform",
+    "school": "Millennium"
+  },
+  {
+    "file": "Nakamasa_Ichika.png",
+    "studentId": 10077,
+    "baseName": "nakamasa_ichika",
+    "name": "イチカ",
+    "englishName": "Ichika",
+    "pathName": "ichika",
+    "school": "Trinity"
+  },
+  {
+    "file": "Nakamasa_Ichika_Swimsuit.png",
+    "studentId": 26015,
+    "baseName": "nakamasa_ichika",
+    "name": "イチカ（水着）",
+    "englishName": "Ichika (Swimsuit)",
+    "pathName": "ichika_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Nakatsukasa_Kirino.jpg",
+    "studentId": 13012,
+    "baseName": "nakatsukasa_kirino",
+    "name": "キリノ",
+    "englishName": "Kirino",
+    "pathName": "kirino",
+    "school": "Valkyrie"
+  },
+  {
+    "file": "Nakatsukasa_Kirino_Swimsuit.png",
+    "studentId": 26012,
+    "baseName": "nakatsukasa_kirino",
+    "name": "キリノ（水着）",
+    "englishName": "Kirino (Swimsuit)",
+    "pathName": "kirino_swimsuit",
+    "school": "Valkyrie"
+  },
+  {
+    "file": "Natsume_Iroha.jpg",
+    "studentId": 20016,
+    "baseName": "natsume_iroha",
+    "name": "イロハ",
+    "englishName": "Iroha",
+    "pathName": "iroha",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Nekozuka_Hibiki.jpg",
+    "studentId": 20000,
+    "baseName": "nekozuka_hibiki",
+    "name": "ヒビキ",
+    "englishName": "Hibiki",
+    "pathName": "hibiki",
+    "school": "Millennium"
+  },
+  {
+    "file": "Nekozuka_Hibiki_Cheerleader.jpg",
+    "studentId": 16010,
+    "baseName": "nekozuka_hibiki",
+    "name": "ヒビキ（応援団）",
+    "englishName": "Hibiki (Cheerleader)",
+    "pathName": "hibiki_cheerleader",
+    "school": "Millennium"
+  },
+  {
+    "file": "Nemugaki_Fubuki.jpg",
+    "studentId": 16008,
+    "baseName": "nemugaki_fubuki",
+    "name": "フブキ",
+    "englishName": "Fubuki",
+    "pathName": "fubuki",
+    "school": "Valkyrie"
+  },
+  {
+    "file": "Nemugaki_Fubuki_Swimsuit.png",
+    "studentId": 20037,
+    "baseName": "nemugaki_fubuki",
+    "name": "フブキ（水着）",
+    "englishName": "Fubuki (Swimsuit)",
+    "pathName": "fubuki_swimsuit",
+    "school": "Valkyrie"
+  },
+  {
+    "file": "Nomasa_Rei.png",
+    "studentId": 10115,
+    "baseName": "nomasa_rei",
+    "name": "レイ",
+    "englishName": "Rei",
+    "pathName": "rei",
+    "school": "Millennium"
+  },
+  {
+    "file": "Ogata_Kanna.jpg",
+    "studentId": 20023,
+    "baseName": "ogata_kanna",
+    "name": "カンナ",
+    "englishName": "Kanna",
+    "pathName": "kanna",
+    "school": "Valkyrie"
+  },
+  {
+    "file": "Ogata_Kanna_Swimsuit.png",
+    "studentId": 10096,
+    "baseName": "ogata_kanna",
+    "name": "カンナ（水着）",
+    "englishName": "Kanna (Swimsuit)",
+    "pathName": "kanna_swimsuit",
+    "school": "Valkyrie"
+  },
+  {
+    "file": "Okusora_Ayane.jpg",
+    "studentId": 23005,
+    "baseName": "okusora_ayane",
+    "name": "アヤネ",
+    "englishName": "Ayane",
+    "pathName": "ayane",
+    "school": "Abydos"
+  },
+  {
+    "file": "Okusora_Ayane_Swimsuit.jpg",
+    "studentId": 26007,
+    "baseName": "okusora_ayane",
+    "name": "アヤネ（水着）",
+    "englishName": "Ayane (Swimsuit)",
+    "pathName": "ayane_swimsuit",
+    "school": "Abydos"
+  },
+  {
+    "file": "Omagari_Hare.jpg",
+    "studentId": 23003,
+    "baseName": "omagari_hare",
+    "name": "ハレ",
+    "englishName": "Hare",
+    "pathName": "hare",
+    "school": "Millennium"
+  },
+  {
+    "file": "Omagari_Hare_Camping.png",
+    "studentId": 10085,
+    "baseName": "omagari_hare",
+    "name": "ハレ（キャンプ）",
+    "englishName": "Hare (Camp)",
+    "pathName": "hare_camp",
+    "school": "Millennium"
+  },
+  {
+    "file": "Onikata_Kayoko.jpg",
+    "studentId": 13005,
+    "baseName": "onikata_kayoko",
+    "name": "カヨコ",
+    "englishName": "Kayoko",
+    "pathName": "kayoko",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Onikata_Kayoko_Dress.jpg",
+    "studentId": 10088,
+    "baseName": "onikata_kayoko",
+    "name": "カヨコ（ドレス）",
+    "englishName": "Kayoko (Dress)",
+    "pathName": "kayoko_dress",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Onikata_Kayoko_New_Year.png",
+    "studentId": 10064,
+    "baseName": "onikata_kayoko",
+    "name": "カヨコ（正月）",
+    "englishName": "Kayoko (New Year)",
+    "pathName": "kayoko_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Oono_Tsukuyo.jpg",
+    "studentId": 10040,
+    "baseName": "oono_tsukuyo",
+    "name": "ツクヨ",
+    "englishName": "Tsukuyo",
+    "pathName": "tsukuyo",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Oono_Tsukuyo_Dress.png",
+    "studentId": 10132,
+    "baseName": "oono_tsukuyo",
+    "name": "ツクヨ（ドレス）",
+    "englishName": "Tsukuyo (Dress)",
+    "pathName": "tsukuyo_dress",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Otohana_Sumire.jpg",
+    "studentId": 10012,
+    "baseName": "otohana_sumire",
+    "name": "スミレ",
+    "englishName": "Sumire",
+    "pathName": "sumire",
+    "school": "Millennium"
+  },
+  {
+    "file": "Otohana_Sumire_Part-Timer.png",
+    "studentId": 20044,
+    "baseName": "otohana_sumire",
+    "name": "スミレ（アルバイト）",
+    "englishName": "Sumire (Part-time)",
+    "pathName": "sumire_parttime",
+    "school": "Millennium"
+  },
+  {
+    "file": "Otose_Kotama.jpg",
+    "studentId": 26001,
+    "baseName": "otose_kotama",
+    "name": "コタマ",
+    "englishName": "Kotama",
+    "pathName": "kotama",
+    "school": "Millennium"
+  },
+  {
+    "file": "Otose_Kotama_Camping.png",
+    "studentId": 10084,
+    "baseName": "otose_kotama",
+    "name": "コタマ（キャンプ）",
+    "englishName": "Kotama (Camp)",
+    "pathName": "kotama_camp",
+    "school": "Millennium"
+  },
+  {
+    "file": "Renkawa_Cherino.jpg",
+    "studentId": 10017,
+    "baseName": "renkawa_cherino",
+    "name": "チェリノ",
+    "englishName": "Cherino",
+    "pathName": "cherino",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Renkawa_Cherino_Hot_Spring.jpg",
+    "studentId": 20009,
+    "baseName": "renkawa_cherino",
+    "name": "チェリノ（温泉）",
+    "englishName": "Cherino (Hot Spring)",
+    "pathName": "cherino_onsen",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Rikuhachima_Aru.jpg",
+    "studentId": 10000,
+    "baseName": "rikuhachima_aru",
+    "name": "アル",
+    "englishName": "Aru",
+    "pathName": "aru",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Rikuhachima_Aru_Dress.jpg",
+    "studentId": 10089,
+    "baseName": "rikuhachima_aru",
+    "name": "アル（ドレス）",
+    "englishName": "Aru (Dress)",
+    "pathName": "aru_dress",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Rikuhachima_Aru_New_Year.jpg",
+    "studentId": 10031,
+    "baseName": "rikuhachima_aru",
+    "name": "アル（正月）",
+    "englishName": "Aru (New Year)",
+    "pathName": "aru_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Ryuuge_Kisaki.png",
+    "studentId": 20039,
+    "baseName": "ryuuge_kisaki",
+    "name": "キサキ",
+    "englishName": "Kisaki",
+    "pathName": "kisaki",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Saiba_Midori.jpg",
+    "studentId": 10016,
+    "baseName": "saiba_midori",
+    "name": "ミドリ",
+    "englishName": "Midori",
+    "pathName": "midori",
+    "school": "Millennium"
+  },
+  {
+    "file": "Saiba_Midori_Maid.png",
+    "studentId": 10095,
+    "baseName": "saiba_midori",
+    "name": "ミドリ（メイド）",
+    "englishName": "Midori Maid",
+    "pathName": "midori_maid",
+    "school": "Millennium"
+  },
+  {
+    "file": "Saiba_Momoi.jpg",
+    "studentId": 13011,
+    "baseName": "saiba_momoi",
+    "name": "モモイ",
+    "englishName": "Momoi",
+    "pathName": "momoi",
+    "school": "Millennium"
+  },
+  {
+    "file": "Saiba_Momoi_Maid.png",
+    "studentId": 10094,
+    "baseName": "saiba_momoi",
+    "name": "モモイ（メイド）",
+    "englishName": "Momoi Maid",
+    "pathName": "momoi_maid",
+    "school": "Millennium"
+  },
+  {
+    "file": "Sakurai_Miyo.png",
+    "studentId": 10127,
+    "baseName": "sakurai_miyo",
+    "name": "ミヨ",
+    "englishName": "Miyo",
+    "pathName": "miyo",
+    "school": "WildHunt"
+  },
+  {
+    "file": "Sashiro_Tomoe.jpg",
+    "studentId": 16007,
+    "baseName": "sashiro_tomoe",
+    "name": "トモエ",
+    "englishName": "Tomoe",
+    "pathName": "tomoe",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Sashiro_Tomoe_Qipao.png",
+    "studentId": 20038,
+    "baseName": "sashiro_tomoe",
+    "name": "トモエ（チーパオ）",
+    "englishName": "Tomoe (Qipao)",
+    "pathName": "tomoe_qipao",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Saten_Ruiko.png",
+    "studentId": 26011,
+    "baseName": "saten_ruiko",
+    "name": "佐天涙子",
+    "englishName": "Saten Ruiko",
+    "pathName": "saten_ruiko",
+    "school": "Sakugawa"
+  },
+  {
+    "file": "Satohama_Umika.png",
+    "studentId": 10090,
+    "baseName": "satohama_umika",
+    "name": "ウミカ",
+    "englishName": "Umika",
+    "pathName": "umika",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Shima_Konoka.png",
+    "studentId": 10137,
+    "baseName": "shima_konoka",
+    "name": "コノカ",
+    "englishName": "Konoka",
+    "pathName": "konoka",
+    "school": "Valkyrie"
+  },
+  {
+    "file": "Shimoe_Koharu.jpg",
+    "studentId": 10020,
+    "baseName": "shimoe_koharu",
+    "name": "コハル",
+    "englishName": "Koharu",
+    "pathName": "koharu",
+    "school": "Trinity"
+  },
+  {
+    "file": "Shimoe_Koharu_Swimsuit.png",
+    "studentId": 16013,
+    "baseName": "shimoe_koharu",
+    "name": "コハル（水着）",
+    "englishName": "Koharu (Swimsuit)",
+    "pathName": "koharu_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Shimokura_Megu.jpg",
+    "studentId": 10060,
+    "baseName": "shimokura_megu",
+    "name": "メグ",
+    "englishName": "Megu",
+    "pathName": "megu",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Shiraishi_Utaha.jpg",
+    "studentId": 23004,
+    "baseName": "shiraishi_utaha",
+    "name": "ウタハ",
+    "englishName": "Utaha",
+    "pathName": "utaha",
+    "school": "Millennium"
+  },
+  {
+    "file": "Shiraishi_Utaha_Cheerleader.jpg",
+    "studentId": 10051,
+    "baseName": "shiraishi_utaha",
+    "name": "ウタハ（応援団）",
+    "englishName": "Utaha (Cheerleader)",
+    "pathName": "utaha_cheerleader",
+    "school": "Millennium"
+  },
+  {
+    "file": "Shirao_Eri.png",
+    "studentId": 10125,
+    "baseName": "shirao_eri",
+    "name": "エリ",
+    "englishName": "Eri",
+    "pathName": "eri",
+    "school": "WildHunt"
+  },
+  {
+    "file": "Shirasu_Azusa.jpg",
+    "studentId": 10019,
+    "baseName": "shirasu_azusa",
+    "name": "アズサ",
+    "englishName": "Azusa",
+    "pathName": "azusa",
+    "school": "Trinity"
+  },
+  {
+    "file": "Shirasu_Azusa_Swimsuit.jpg",
+    "studentId": 10021,
+    "baseName": "shirasu_azusa",
+    "name": "アズサ（水着）",
+    "englishName": "Azusa (Swimsuit)",
+    "pathName": "azusa_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Shiroko_Terror.png",
+    "studentId": 10100,
+    "baseName": "shiroko_terror",
+    "name": "シロコ＊テラー",
+    "englishName": "Shiroko Terror",
+    "pathName": "shiroko_terror",
+    "school": "Abydos"
+  },
+  {
+    "file": "Shiromi_Iori.jpg",
+    "studentId": 10006,
+    "baseName": "shiromi_iori",
+    "name": "イオリ",
+    "englishName": "Iori",
+    "pathName": "iori",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Shiromi_Iori_Swimsuit.jpg",
+    "studentId": 10023,
+    "baseName": "shiromi_iori",
+    "name": "イオリ（水着）",
+    "englishName": "Iori (Swimsuit)",
+    "pathName": "iori_swimsuit",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Shishidou_Izumi.jpg",
+    "studentId": 10009,
+    "baseName": "shishidou_izumi",
+    "name": "イズミ",
+    "englishName": "Izumi",
+    "pathName": "izumi",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Shishidou_Izumi_New_Year.png",
+    "studentId": 20043,
+    "baseName": "shishidou_izumi",
+    "name": "イズミ（正月）",
+    "englishName": "Izumi (New Year)",
+    "pathName": "izumi_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Shishidou_Izumi_Swimsuit.jpg",
+    "studentId": 16006,
+    "baseName": "shishidou_izumi",
+    "name": "イズミ（水着）",
+    "englishName": "Izumi (Swimsuit)",
+    "pathName": "izumi_swimsuit",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Shizuyama_Mashiro.jpg",
+    "studentId": 20003,
+    "baseName": "shizuyama_mashiro",
+    "name": "マシロ",
+    "englishName": "Mashiro",
+    "pathName": "mashiro",
+    "school": "Trinity"
+  },
+  {
+    "file": "Shizuyama_Mashiro_Swimsuit.jpg",
+    "studentId": 20004,
+    "baseName": "shizuyama_mashiro",
+    "name": "マシロ（水着）",
+    "englishName": "Mashiro (Swimsuit)",
+    "pathName": "mashiro_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Shokuhou_Misaki.png",
+    "studentId": 10080,
+    "baseName": "shokuhou_misaki",
+    "name": "食蜂操祈",
+    "englishName": "Shokuhou Misaki",
+    "pathName": "shokuhou_misaki",
+    "school": "Tokiwadai"
+  },
+  {
+    "file": "Sorai_Saki.jpg",
+    "studentId": 20014,
+    "baseName": "sorai_saki",
+    "name": "サキ",
+    "englishName": "Saki",
+    "pathName": "saki",
+    "school": "SRT"
+  },
+  {
+    "file": "Sorai_Saki_Swimsuit.png",
+    "studentId": 10072,
+    "baseName": "sorai_saki",
+    "name": "サキ（水着）",
+    "englishName": "Saki (Swimsuit)",
+    "pathName": "saki_swimsuit",
+    "school": "SRT"
+  },
+  {
+    "file": "Sorasaki_Hina.jpg",
+    "studentId": 10004,
+    "baseName": "sorasaki_hina",
+    "name": "ヒナ",
+    "englishName": "Hina",
+    "pathName": "hina",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Sorasaki_Hina_Dress.jpg",
+    "studentId": 10086,
+    "baseName": "sorasaki_hina",
+    "name": "ヒナ（ドレス）",
+    "englishName": "Hina (Dress)",
+    "pathName": "hina_dress",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Sorasaki_Hina_Swimsuit.jpg",
+    "studentId": 10022,
+    "baseName": "sorasaki_hina",
+    "name": "ヒナ（水着）",
+    "englishName": "Hina (Swimsuit)",
+    "pathName": "hina_swimsuit",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Sumi_Serina.jpg",
+    "studentId": 26003,
+    "baseName": "sumi_serina",
+    "name": "セリナ",
+    "englishName": "Serina",
+    "pathName": "serina",
+    "school": "Trinity"
+  },
+  {
+    "file": "Sumi_Serina_Christmas.jpg",
+    "studentId": 10056,
+    "baseName": "sumi_serina",
+    "name": "セリナ（クリスマス）",
+    "englishName": "Serina (Christmas)",
+    "pathName": "serina_christmas",
+    "school": "Trinity"
+  },
+  {
+    "file": "Sunaookami_Shiroko.jpg",
+    "studentId": 10010,
+    "baseName": "sunaookami_shiroko",
+    "name": "シロコ",
+    "englishName": "Shiroko",
+    "pathName": "shiroko",
+    "school": "Abydos"
+  },
+  {
+    "file": "Sunaookami_Shiroko_Riding.jpg",
+    "studentId": 10024,
+    "baseName": "sunaookami_shiroko",
+    "name": "シロコ（ライディング）",
+    "englishName": "Shiroko (Cycling)",
+    "pathName": "shiroko_cycling",
+    "school": "Abydos"
+  },
+  {
+    "file": "Sunaookami_Shiroko_Swimsuit.png",
+    "studentId": 20027,
+    "baseName": "sunaookami_shiroko",
+    "name": "シロコ（水着）",
+    "englishName": "Shiroko (Swimsuit)",
+    "pathName": "shiroko_swimsuit",
+    "school": "Abydos"
+  },
+  {
+    "file": "Sunohara_Kokona.jpg",
+    "studentId": 10050,
+    "baseName": "sunohara_kokona",
+    "name": "ココナ",
+    "englishName": "Kokona",
+    "pathName": "kokona",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Sunohara_Shun.jpg",
+    "studentId": 10011,
+    "baseName": "sunohara_shun",
+    "name": "シュン",
+    "englishName": "Shun",
+    "pathName": "shun",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Sunohara_Shun_Kid.jpg",
+    "studentId": 10025,
+    "baseName": "sunohara_shun",
+    "name": "シュン（幼女）",
+    "englishName": "Shun (Kid)",
+    "pathName": "shun_small",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Tachibana_Hikari.png",
+    "studentId": 10117,
+    "baseName": "tachibana_hikari",
+    "name": "ヒカリ",
+    "englishName": "Hikari",
+    "pathName": "hikari",
+    "school": "Highlander"
+  },
+  {
+    "file": "Tachibana_Nozomi.png",
+    "studentId": 10118,
+    "baseName": "tachibana_nozomi",
+    "name": "ノゾミ",
+    "englishName": "Nozomi",
+    "pathName": "nozomi",
+    "school": "Highlander"
+  },
+  {
+    "file": "Takakura_Kurumi.png",
+    "studentId": 10140,
+    "baseName": "takakura_kurumi",
+    "name": "クルミ",
+    "englishName": "Kurumi",
+    "pathName": "kurumi",
+    "school": "SRT"
+  },
+  {
+    "file": "Takanashi_Hoshino.jpg",
+    "studentId": 10005,
+    "baseName": "takanashi_hoshino",
+    "name": "ホシノ",
+    "englishName": "Hoshino",
+    "pathName": "hoshino",
+    "school": "Abydos"
+  },
+  {
+    "file": "Takanashi_Hoshino_Battle.png",
+    "studentId": 10099,
+    "baseName": "takanashi_hoshino",
+    "name": "ホシノ（臨戦）",
+    "englishName": "Hoshino Battle Dealer",
+    "pathName": "hoshino_battle_dealer",
+    "school": "Abydos"
+  },
+  {
+    "file": "Takanashi_Hoshino_Swimsuit.jpg",
+    "studentId": 10045,
+    "baseName": "takanashi_hoshino",
+    "name": "ホシノ（水着）",
+    "englishName": "Hoshino (Swimsuit)",
+    "pathName": "hoshino_swimsuit",
+    "school": "Abydos"
+  },
+  {
+    "file": "Tanga_Ibuki.jpg",
+    "studentId": 16014,
+    "baseName": "tanga_ibuki",
+    "name": "イブキ",
+    "englishName": "Ibuki",
+    "pathName": "ibuki",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Tendou_Alice.jpg",
+    "studentId": 10015,
+    "baseName": "tendou_aris",
+    "name": "アリス",
+    "englishName": "Aris",
+    "pathName": "aris",
+    "school": "Millennium"
+  },
+  {
+    "file": "Tendou_Alice_Battle.png",
+    "studentId": 10134,
+    "baseName": "tendou_aris",
+    "name": "アリス（臨戦）",
+    "englishName": "Aris (Battle)",
+    "pathName": "aris_battle",
+    "school": "Millennium"
+  },
+  {
+    "file": "Tendou_Alice_Maid.png",
+    "studentId": 10066,
+    "baseName": "tendou_aris",
+    "name": "アリス（メイド）",
+    "englishName": "Aris Maid",
+    "pathName": "aris_maid",
+    "school": "Millennium"
+  },
+  {
+    "file": "Tendou_Kei.png",
+    "studentId": 10135,
+    "baseName": "tendou_kei",
+    "name": "ケイ",
+    "englishName": "Kei",
+    "pathName": "kei",
+    "school": "Millennium"
+  },
+  {
+    "file": "Tenjinyama_Otogi.png",
+    "studentId": 16020,
+    "baseName": "tenjinyama_otogi",
+    "name": "オトギ",
+    "englishName": "Otogi",
+    "pathName": "otogi",
+    "school": "SRT"
+  },
+  {
+    "file": "Toyomi_Kotori.jpg",
+    "studentId": 16002,
+    "baseName": "toyomi_kotori",
+    "name": "コトリ",
+    "englishName": "Kotori",
+    "pathName": "kotori",
+    "school": "Millennium"
+  },
+  {
+    "file": "Toyomi_Kotori_Cheerleader.png",
+    "studentId": 10076,
+    "baseName": "toyomi_kotori",
+    "name": "コトリ（応援団）",
+    "englishName": "Kotori (Cheerleader)",
+    "pathName": "kotori_cheerleader",
+    "school": "Millennium"
+  },
+  {
+    "file": "Tsuchinaga_Hiyori.jpg",
+    "studentId": 20017,
+    "baseName": "tsuchinaga_hiyori",
+    "name": "ヒヨリ",
+    "englishName": "Hiyori",
+    "pathName": "hiyori",
+    "school": "Arius"
+  },
+  {
+    "file": "Tsuchinaga_Hiyori_Swimsuit.png",
+    "studentId": 10102,
+    "baseName": "tsuchinaga_hiyori",
+    "name": "ヒヨリ（水着）",
+    "englishName": "Hiyori (Swimsuit)",
+    "pathName": "hiyori_swimsuit",
+    "school": "Arius"
+  },
+  {
+    "file": "Tsukatsuki_Rio.png",
+    "studentId": 20041,
+    "baseName": "tsukatsuki_rio",
+    "name": "リオ",
+    "englishName": "Rio",
+    "pathName": "rio",
+    "school": "Millennium"
+  },
+  {
+    "file": "Tsukatsuki_Rio_Battle.png",
+    "studentId": 10133,
+    "baseName": "tsukatsuki_rio",
+    "name": "リオ（臨戦）",
+    "englishName": "Rio (Battle)",
+    "pathName": "rio_battle",
+    "school": "Millennium"
+  },
+  {
+    "file": "Tsukiyuki_Miyako.jpg",
+    "studentId": 10038,
+    "baseName": "tsukiyuki_miyako",
+    "name": "ミヤコ",
+    "englishName": "Miyako",
+    "pathName": "miyako",
+    "school": "SRT"
+  },
+  {
+    "file": "Tsukiyuki_Miyako_Swimsuit.png",
+    "studentId": 10071,
+    "baseName": "tsukiyuki_miyako",
+    "name": "ミヤコ（水着）",
+    "englishName": "Miyako (Swimsuit)",
+    "pathName": "miyako_swimsuit",
+    "school": "SRT"
+  },
+  {
+    "file": "Urawa_Hanako.jpg",
+    "studentId": 23007,
+    "baseName": "urawa_hanako",
+    "name": "ハナコ",
+    "englishName": "Hanako",
+    "pathName": "hanako",
+    "school": "Trinity"
+  },
+  {
+    "file": "Urawa_Hanako_Swimsuit.png",
+    "studentId": 10074,
+    "baseName": "urawa_hanako",
+    "name": "ハナコ（水着）",
+    "englishName": "Hanako (Swimsuit)",
+    "pathName": "hanako_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Ushimaki_Juri.jpg",
+    "studentId": 26002,
+    "baseName": "ushimaki_juri",
+    "name": "ジュリ",
+    "englishName": "Juri",
+    "pathName": "juri",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Ushimaki_Juri_Part-Timer.png",
+    "studentId": 10114,
+    "baseName": "ushimaki_juri",
+    "name": "ジュリ（アルバイト）",
+    "englishName": "Juri (Part-time)",
+    "pathName": "juri_parttime",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Ushio_Noa.jpg",
+    "studentId": 10052,
+    "baseName": "ushio_noa",
+    "name": "ノア",
+    "englishName": "Noa",
+    "pathName": "noa",
+    "school": "Millennium"
+  },
+  {
+    "file": "Ushio_Noa_Pajama.png",
+    "studentId": 10109,
+    "baseName": "ushio_noa",
+    "name": "ノア（パジャマ）",
+    "englishName": "Noa (Pajama)",
+    "pathName": "noa_pajama",
+    "school": "Millennium"
+  },
+  {
+    "file": "Usuba_Ritsu.png",
+    "studentId": 20050,
+    "baseName": "usuba_ritsu",
+    "name": "リツ",
+    "englishName": "Ritsu",
+    "pathName": "ritsu",
+    "school": "WildHunt"
+  },
+  {
+    "file": "Utazumi_Sakurako.jpg",
+    "studentId": 10061,
+    "baseName": "utazumi_sakurako",
+    "name": "サクラコ",
+    "englishName": "Sakurako",
+    "pathName": "sakurako",
+    "school": "Trinity"
+  },
+  {
+    "file": "Utazumi_Sakurako_Idol.png",
+    "studentId": 10106,
+    "baseName": "utazumi_sakurako",
+    "name": "サクラコ（アイドル）",
+    "englishName": "Sakurako (Idol)",
+    "pathName": "sakurako_idol",
+    "school": "Trinity"
+  },
+  {
+    "file": "Utsumi_Aoba.png",
+    "studentId": 16017,
+    "baseName": "utsumi_aoba",
+    "name": "アオバ",
+    "englishName": "Aoba",
+    "pathName": "aoba",
+    "school": "Highlander"
+  },
+  {
+    "file": "Uzawa_Reisa.png",
+    "studentId": 10068,
+    "baseName": "uzawa_reisa",
+    "name": "レイサ",
+    "englishName": "Reisa",
+    "pathName": "reisa",
+    "school": "Trinity"
+  },
+  {
+    "file": "Uzawa_Reisa_Magical.png",
+    "studentId": 20051,
+    "baseName": "uzawa_reisa",
+    "name": "レイサ（マジカル）",
+    "englishName": "Reisa Magical",
+    "pathName": "reisa_magical",
+    "school": "Trinity"
+  },
+  {
+    "file": "Wakaba_Hinata.jpg",
+    "studentId": 10036,
+    "baseName": "wakaba_hinata",
+    "name": "ヒナタ",
+    "englishName": "Hinata",
+    "pathName": "hinata",
+    "school": "Trinity"
+  },
+  {
+    "file": "Wakaba_Hinata_Swimsuit.png",
+    "studentId": 20028,
+    "baseName": "wakaba_hinata",
+    "name": "ヒナタ（水着）",
+    "englishName": "Hinata (Swimsuit)",
+    "pathName": "hinata_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Wakasa_Fuyu.png",
+    "studentId": 10128,
+    "baseName": "wakasa_fuyu",
+    "name": "フユ",
+    "englishName": "Fuyu",
+    "pathName": "fuyu",
+    "school": "WildHunt"
+  },
+  {
+    "file": "Wanibuchi_Akari.jpg",
+    "studentId": 13002,
+    "baseName": "wanibuchi_akari",
+    "name": "アカリ",
+    "englishName": "Akari",
+    "pathName": "akari",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Wanibuchi_Akari_New_Year.png",
+    "studentId": 20034,
+    "baseName": "wanibuchi_akari",
+    "name": "アカリ（正月）",
+    "englishName": "Akari (New Year)",
+    "pathName": "akari_newyear",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Waraku_Chise.jpg",
+    "studentId": 13001,
+    "baseName": "waraku_chise",
+    "name": "チセ",
+    "englishName": "Chise",
+    "pathName": "chise",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Waraku_Chise_Swimsuit.jpg",
+    "studentId": 10047,
+    "baseName": "waraku_chise",
+    "name": "チセ（水着）",
+    "englishName": "Chise (Swimsuit)",
+    "pathName": "chise_swimsuit",
+    "school": "Hyakkiyako"
+  },
+  {
+    "file": "Yakushi_Saya.jpg",
+    "studentId": 20002,
+    "baseName": "yakushi_saya",
+    "name": "サヤ",
+    "englishName": "Saya",
+    "pathName": "saya",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Yakushi_Saya_Casual.jpg",
+    "studentId": 20006,
+    "baseName": "yakushi_saya",
+    "name": "サヤ（私服）",
+    "englishName": "Saya (Casual)",
+    "pathName": "saya_casual",
+    "school": "Shanhaijing"
+  },
+  {
+    "file": "Yasumori_Minori.png",
+    "studentId": 20026,
+    "baseName": "yasumori_minori",
+    "name": "ミノリ",
+    "englishName": "Minori",
+    "pathName": "minori",
+    "school": "RedWinter"
+  },
+  {
+    "file": "Yoshino_Niko.png",
+    "studentId": 10139,
+    "baseName": "yoshino_niko",
+    "name": "ニコ",
+    "englishName": "Niko",
+    "pathName": "niko",
+    "school": "SRT"
+  },
+  {
+    "file": "Yozakura_Kirara.png",
+    "studentId": 10093,
+    "baseName": "yozakura_kirara",
+    "name": "キララ",
+    "englishName": "Kirara",
+    "pathName": "kirara",
+    "school": "Gehenna"
+  },
+  {
+    "file": "Yurizono_Seia.jpg",
+    "studentId": 10110,
+    "baseName": "yurizono_seia",
+    "name": "セイア",
+    "englishName": "Seia",
+    "pathName": "seia",
+    "school": "Trinity"
+  },
+  {
+    "file": "Yurizono_Seia_Swimsuit.png",
+    "studentId": 10123,
+    "baseName": "yurizono_seia",
+    "name": "セイア（水着）",
+    "englishName": "Seia (Swimsuit)",
+    "pathName": "seia_swimsuit",
+    "school": "Trinity"
+  },
+  {
+    "file": "Yutori_Natsu.jpg",
+    "studentId": 10029,
+    "baseName": "yutori_natsu",
+    "name": "ナツ",
+    "englishName": "Natsu",
+    "pathName": "natsu",
+    "school": "Trinity"
+  },
+  {
+    "file": "Yutori_Natsu_Band.png",
+    "studentId": 10120,
+    "baseName": "yutori_natsu",
+    "name": "ナツ（バンド）",
+    "englishName": "Natsu (Band)",
+    "pathName": "natsu_band",
+    "school": "Trinity"
+  }
+]

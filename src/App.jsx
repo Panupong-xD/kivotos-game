@@ -12,9 +12,10 @@ import HeightGuesser from './games/HeightGuesser.jsx'
 import AgeGuesser from './games/AgeGuesser.jsx'
 import EloRanker from './games/EloRanker.jsx'
 import BlueArchiveWordGame from './games/BlueArchiveWordGame.jsx'
+import LobbyGuesser from './games/LobbyGuesser.jsx'
 import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
-import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords, Compass } from 'lucide-react'
+import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords, Compass, Camera } from 'lucide-react'
 
 const tabToPath = (tab) => {
   switch (tab) {
@@ -29,6 +30,7 @@ const tabToPath = (tab) => {
     case 'height': return '/height'
     case 'age': return '/age'
     case 'word': return '/word'
+    case 'lobbyGuess': return '/lobby-guess'
     case 'eloRanker': return '/ranker'
     case 'database': return '/database'
     case 'about': return '/about'
@@ -49,6 +51,7 @@ const pathToTab = (path) => {
     case '/height': return 'height'
     case '/age': return 'age'
     case '/word': return 'word'
+    case '/lobby-guess': return 'lobbyGuess'
     case '/ranker': return 'eloRanker'
     case '/database': return 'database'
     case '/about': return 'about'
@@ -149,7 +152,7 @@ if (activeBtn) {
     const tab = pathToTab(location.pathname)
     
     // Redirect if it's an invalid path (e.g. unknown subpath)
-    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/word', '/ranker', '/database', '/about']
+    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/word', '/lobby-guess', '/ranker', '/database', '/about']
     if (!validPaths.includes(location.pathname)) {
       navigate('/', { replace: true })
       return
@@ -210,7 +213,7 @@ if (activeBtn) {
             />
             <button
               onClick={() => handleTabChange('lobby')}
-              className={`nav-link-btn ${['lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age', 'word'].includes(activeTab) ? 'active' : ''}`}
+              className={`nav-link-btn ${['lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age', 'word', 'lobbyGuess'].includes(activeTab) ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4 nav-link-icon" />
               <span>Arcade</span>
@@ -626,6 +629,40 @@ if (activeBtn) {
                 </button>
               </div>
 
+              {/* Card 11: Lobby Guess (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('lobbyGuess')}
+                className="lobby-card"
+              >
+                <div className="lobby-card-preview" style={{ position: 'relative' }}>
+                  <div className="collage-grid">
+                    <img src="/images/student/icon/10000.webp" alt="Aru" className="collage-img" />
+                    <img src="/images/student/icon/10004.webp" alt="Hina" className="collage-img" />
+                    <img src="/images/student/icon/10005.webp" alt="Hoshino" className="collage-img" />
+                    <img src="/images/student/icon/10015.webp" alt="Aris" className="collage-img" />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Camera style={{ width: '48px', height: '48px', color: '#a855f7', filter: 'drop-shadow(0 0 8px rgba(168,85,247,0.8))' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">ทายภาพล็อบบี้ L2D</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY LOBBY MODE
+                </button>
+              </div>
+
             </div>
           </div>
         )}
@@ -692,6 +729,13 @@ if (activeBtn) {
 
         {renderTab === 'word' && (
           <BlueArchiveWordGame 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+          />
+        )}
+
+        {renderTab === 'lobbyGuess' && (
+          <LobbyGuesser 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
