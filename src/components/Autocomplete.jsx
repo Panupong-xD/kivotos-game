@@ -52,10 +52,10 @@ const Autocomplete = forwardRef(({ suggestions, onSelect, guessedIds = [], place
              school.includes(cleanQuery)
     })
 
-    // Sort by relevance before slicing (e.g. prioritize exact/starts-with name matches over school matches)
+    // Sort by relevance before slicing (e.g. prioritize exact name / exact word matches)
     matches.sort((a, b) => {
-      const aEng = a.englishName.toLowerCase()
-      const bEng = b.englishName.toLowerCase()
+      const aEng = a.englishName.toLowerCase().trim()
+      const bEng = b.englishName.toLowerCase().trim()
       
       // 1. Exact match on English Name
       const aExact = aEng === cleanQuery
@@ -63,13 +63,51 @@ const Autocomplete = forwardRef(({ suggestions, onSelect, guessedIds = [], place
       if (aExact && !bExact) return -1
       if (!aExact && bExact) return 1
 
-      // 2. Starts with English Name
-      const aStartsWith = aEng.startsWith(cleanQuery)
-      const bStartsWith = bEng.startsWith(cleanQuery)
-      if (aStartsWith && !bStartsWith) return -1
-      if (!aStartsWith && bStartsWith) return 1
+      // 2. Exact word match (e.g. user typed "aru" and it matches the word "aru" in "rikuhachima aru" exactly)
+      const hasExactWord = (name) => {
+        const clean = name.replace(/\(.*?\)/g, '').trim()
+        const words = clean.split(/\s+/)
+        return words.includes(cleanQuery)
+      }
+      const aWordExact = hasExactWord(aEng)
+      const bWordExact = hasExactWord(bEng)
+      if (aWordExact && !bWordExact) return -1
+      if (!aWordExact && bWordExact) return 1
 
-      // 3. Contains English Name (or Dev Name, or PathName)
+      // Helper to get given name (last word after removing parentheses)
+      const getGivenName = (name) => {
+        const clean = name.replace(/\(.*?\)/g, '').trim()
+        const words = clean.split(/\s+/)
+        return words[words.length - 1] || ''
+      }
+
+      const aGiven = getGivenName(aEng)
+      const bGiven = getGivenName(bEng)
+
+      // 3. Starts with Given Name (First name)
+      const aGivenStarts = aGiven.startsWith(cleanQuery)
+      const bGivenStarts = bGiven.startsWith(cleanQuery)
+      if (aGivenStarts && !bGivenStarts) return -1
+      if (!aGivenStarts && bGivenStarts) return 1
+
+      // 4. Starts with Full Name (or Family Name)
+      const aFullStarts = aEng.startsWith(cleanQuery)
+      const bFullStarts = bEng.startsWith(cleanQuery)
+      if (aFullStarts && !bFullStarts) return -1
+      if (!aFullStarts && bFullStarts) return 1
+
+      // 5. Starts with any word in the name
+      const anyWordStarts = (name) => {
+        const clean = name.replace(/\(.*?\)/g, '').trim()
+        const words = clean.split(/\s+/)
+        return words.some(w => w.startsWith(cleanQuery))
+      }
+      const aWordStarts = anyWordStarts(aEng)
+      const bWordStarts = anyWordStarts(bEng)
+      if (aWordStarts && !bWordStarts) return -1
+      if (!aWordStarts && bWordStarts) return 1
+
+      // 6. Contains English Name (or Dev Name, or PathName)
       const aPath = a.pathName ? a.pathName.toLowerCase() : ''
       const bPath = b.pathName ? b.pathName.toLowerCase() : ''
       const aDev = a.devName ? a.devName.toLowerCase() : ''
@@ -80,7 +118,9 @@ const Autocomplete = forwardRef(({ suggestions, onSelect, guessedIds = [], place
       if (!aNameContains && bNameContains) return 1
 
       // Fallback to ID order
-      return a.id - b.id
+      const aId = String(a.id)
+      const bId = String(b.id)
+      return aId.localeCompare(bId, undefined, { numeric: true })
     })
 
     setFiltered(matches.slice(0, 10)) // Limit to 10 suggestions for performance

@@ -13,6 +13,7 @@ import AgeGuesser from './games/AgeGuesser.jsx'
 import EloRanker from './games/EloRanker.jsx'
 import BlueArchiveWordGame from './games/BlueArchiveWordGame.jsx'
 import LobbyGuesser from './games/LobbyGuesser.jsx'
+import BlueArchiveEmojiGame from './games/BlueArchiveEmojiGame.jsx'
 import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords, Compass, Camera } from 'lucide-react'
@@ -31,6 +32,7 @@ const tabToPath = (tab) => {
     case 'age': return '/age'
     case 'word': return '/word'
     case 'lobbyGuess': return '/lobby-guess'
+    case 'emojiQuiz': return '/emoji-quiz'
     case 'eloRanker': return '/ranker'
     case 'database': return '/database'
     case 'about': return '/about'
@@ -52,6 +54,7 @@ const pathToTab = (path) => {
     case '/age': return 'age'
     case '/word': return 'word'
     case '/lobby-guess': return 'lobbyGuess'
+    case '/emoji-quiz': return 'emojiQuiz'
     case '/ranker': return 'eloRanker'
     case '/database': return 'database'
     case '/about': return 'about'
@@ -152,7 +155,7 @@ if (activeBtn) {
     const tab = pathToTab(location.pathname)
     
     // Redirect if it's an invalid path (e.g. unknown subpath)
-    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/word', '/lobby-guess', '/ranker', '/database', '/about']
+    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/word', '/lobby-guess', '/emoji-quiz', '/ranker', '/database', '/about']
     if (!validPaths.includes(location.pathname)) {
       navigate('/', { replace: true })
       return
@@ -213,7 +216,7 @@ if (activeBtn) {
             />
             <button
               onClick={() => handleTabChange('lobby')}
-              className={`nav-link-btn ${['lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age', 'word', 'lobbyGuess'].includes(activeTab) ? 'active' : ''}`}
+              className={`nav-link-btn ${['lobby', 'student', 'halo', 'weapon', 'skill', 'gear', 'chocolate', 'voice', 'height', 'age', 'word', 'lobbyGuess', 'emojiQuiz'].includes(activeTab) ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4 nav-link-icon" />
               <span>Arcade</span>
@@ -285,7 +288,7 @@ if (activeBtn) {
                 setMobileMenuOpen(false)
                 setActiveTab('lobby')
               }}
-              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age' || activeTab === 'word') ? 'active' : ''}`}
+              className={`mobile-nav-link ${(activeTab === 'lobby' || activeTab === 'student' || activeTab === 'halo' || activeTab === 'weapon' || activeTab === 'skill' || activeTab === 'gear' || activeTab === 'chocolate' || activeTab === 'voice' || activeTab === 'height' || activeTab === 'age' || activeTab === 'word' || activeTab === 'lobbyGuess' || activeTab === 'emojiQuiz') ? 'active' : ''}`}
             >
               <Gamepad2 className="w-4 h-4" />
               <span>Arcade (ห้องเกม)</span>
@@ -663,6 +666,40 @@ if (activeBtn) {
                 </button>
               </div>
 
+              {/* Card 12: Emoji & Symbol Quiz (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('emojiQuiz')}
+                className="lobby-card"
+              >
+                <div className="lobby-card-preview" style={{ position: 'relative' }}>
+                  <div className="collage-grid">
+                    <img src="/images/student/icon/10012.webp" alt="Shiroko" className="collage-img" />
+                    <img src="/images/student/icon/10015.webp" alt="Mika" className="collage-img" />
+                    <img src="/images/student/icon/20059.webp" alt="Aru" className="collage-img" />
+                    <img src="/images/student/icon/10005.webp" alt="Hoshino" className="collage-img" />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Gamepad2 style={{ width: '48px', height: '48px', color: '#a855f7', filter: 'drop-shadow(0 0 8px rgba(168,85,247,0.8))' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">ทายคำด้วยอิโมจิ & สัญลักษณ์</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY EMOJI MODE
+                </button>
+              </div>
+
             </div>
           </div>
         )}
@@ -736,6 +773,13 @@ if (activeBtn) {
 
         {renderTab === 'lobbyGuess' && (
           <LobbyGuesser 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+          />
+        )}
+
+        {renderTab === 'emojiQuiz' && (
+          <BlueArchiveEmojiGame 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />
