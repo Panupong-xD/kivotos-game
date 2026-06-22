@@ -461,6 +461,50 @@ Response MUST be a valid JSON object with this exact schema:
     setIsMute(!isMute);
   };
 
+  const renderHeader = () => {
+    return (
+      <header className="emoji-game-header">
+        <div className="emoji-game-navbar">
+          <button onClick={onBack} className="emoji-game-btn-back" title="กลับไปที่หน้าแรก">
+            <ArrowLeft className="w-4 h-4" />
+            <span>ย้อนกลับ</span>
+          </button>
+          
+          <div className="emoji-game-navbar-actions">
+            <button onClick={toggleMute} className="emoji-game-btn-nav-icon" title={isMute ? "เปิดเสียง" : "ปิดเสียง"}>
+              {isMute ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            </button>
+            {gameStatus !== 'idle' && (
+              <button onClick={startNewRound} className="emoji-game-btn-nav-icon" title="สุ่มคำใหม่">
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="emoji-game-hero">
+          <span className="emoji-game-tag">KIVOTOS ARCADE</span>
+          <h2>Blue Archive Emoji & Symbol Quiz</h2>
+          <p>ถอดรหัสความหมายจากสัญลักษณ์และอีโมจิประจำตัวของเหล่านักเรียน</p>
+        </div>
+
+        {gameStatus !== 'idle' && (
+          <div className="emoji-game-stats-row">
+            <span className="emoji-game-stat-pill">
+              เดาแล้ว: <strong>{guesses.length}</strong> ครั้ง
+            </span>
+            <span className="emoji-game-stat-pill">
+              คำใบ้ที่เปิด: <strong>{revealedHints.length} / 2</strong>
+            </span>
+            <span className={`emoji-game-stat-pill ${isAiMode ? 'cyan' : ''}`}>
+              {isAiMode ? '🤖 AI Mode' : '💾 Offline Mode'}
+            </span>
+          </div>
+        )}
+      </header>
+    );
+  };
+
   if (loading) {
     return <LoadingScreen message="กำลังโหลดฐานข้อมูลนินจาและชมรม..." />;
   }
@@ -468,51 +512,21 @@ Response MUST be a valid JSON object with this exact schema:
   if (gameStatus === 'idle') {
     return (
       <div className="emoji-game-container">
-        <header className="emoji-game-header">
-          <div className="emoji-game-title-row">
-            <button onClick={onBack} className="emoji-game-btn-icon" title="กลับไปที่หน้าแรก">
-              <ArrowLeft />
-            </button>
-            <div className="emoji-game-title-area">
-              <h2>
-                <Sparkles className="w-5 h-5 text-purple-400" />
-                Blue Archive Emoji & Symbol Quiz
-              </h2>
-              <p>ถอดรหัสความหมายจากคอมโบอีโมจิและเครื่องหมายเฉพาะตัวของเหล่านักเรียน</p>
-            </div>
+        {renderHeader()}
+        <div className="emoji-game-puzzle-card landing">
+          <div className="emoji-game-landing-icon-wrapper">
+            <Sparkles className="emoji-game-landing-icon" />
           </div>
-        </header>
-
-        <div className="emoji-game-puzzle-card" style={{ padding: '40px 24px', gap: '24px' }}>
-          <div style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '50%',
-            background: 'rgba(168, 85, 247, 0.1)',
-            border: '2px dashed var(--emoji-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '8px'
-          }}>
-            <Sparkles style={{ width: '32px', height: '32px', color: 'var(--emoji-primary)' }} />
-          </div>
-
-          <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#fff', fontWeight: 800 }}>
-            ยินดีต้อนรับสู่ห้องปริศนาสัญลักษณ์ Kivotos
-          </h3>
-
-          <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.6', maxWidth: '440px', textAlign: 'center' }}>
-            พร้อมที่จะทายชื่อนักเรียนแล้วหรือยัง? 
-            ระบบจะสร้างคำใบ้อิโมจิผ่าน AI
+          <h3>ห้องปริศนาสัญลักษณ์ Kivotos</h3>
+          <p>
+            วิเคราะห์และทายชื่อนักเรียนจากสัญลักษณ์ประจำตัว เช่น Halo, ชมรม, อาวุธ และประวัติตามเนื้อเรื่องผ่านคำใบ้ที่ออกแบบโดย AI
           </p>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '320px', marginTop: '12px' }}>
-            <button onClick={startNewRound} className="emoji-game-btn-primary" style={{ padding: '12px', fontSize: '0.9rem', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="emoji-game-landing-actions">
+            <button onClick={startNewRound} className="emoji-game-btn-primary">
               <Sparkles className="w-4 h-4" />
               เริ่มสุ่มคำใบ้และเล่นเกม
             </button>
-            <button onClick={onBack} className="emoji-game-btn-secondary" style={{ padding: '10px', fontSize: '0.85rem', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <button onClick={onBack} className="emoji-game-btn-secondary">
               กลับไปหน้าล็อบบี้
             </button>
           </div>
@@ -523,63 +537,26 @@ Response MUST be a valid JSON object with this exact schema:
 
   return (
     <div className="emoji-game-container">
-      {/* Header Panel */}
-      <header className="emoji-game-header">
-        <div className="emoji-game-title-row">
-          <button onClick={onBack} className="emoji-game-btn-icon" title="กลับไปที่หน้าแรก">
-            <ArrowLeft />
-          </button>
-          
-          <div className="emoji-game-title-area">
-            <h2>
-              <Sparkles className="w-5 h-5 text-purple-400" />
-              Blue Archive Emoji & Symbol Quiz
-            </h2>
-            <p>ถอดรหัสความหมายจากคอมโบอีโมจิและเครื่องหมายเฉพาะตัวของเหล่านักเรียน</p>
-          </div>
-
-          <div className="emoji-game-header-actions">
-            <button onClick={toggleMute} className="emoji-game-btn-icon" title={isMute ? "เปิดเสียง" : "ปิดเสียง"}>
-              {isMute ? <VolumeX /> : <Volume2 />}
-            </button>
-            <button onClick={startNewRound} className="emoji-game-btn-icon" title="สุ่มคำใหม่">
-              <RotateCcw />
-            </button>
-          </div>
-        </div>
-
-        {/* Game Stats */}
-        <div className="emoji-game-info-row">
-          <span className="emoji-game-pill">
-            เดาแล้ว: {guesses.length} ครั้ง
-          </span>
-          <span className="emoji-game-pill">
-            คำใบ้ที่เปิด: {revealedHints.length} / 2
-          </span>
-          <span className={`emoji-game-pill ${isAiMode ? 'cyan' : ''}`}>
-            {isAiMode ? '🤖 AI Mode' : '💾 Offline Mode'}
-          </span>
-        </div>
-      </header>
+      {renderHeader()}
 
       {/* Main Board */}
       {isGenerating ? (
-        <div className="emoji-game-puzzle-card">
-          <div className="loading-spinner-container">
-            <div className="cyber-spinner"></div>
-            <p style={{ marginTop: '16px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              กำลังสุ่มวิเคราะห์ประวัติและจัดเตรียมชุดอิโมจิโดย AI...
-            </p>
+        <div className="emoji-game-puzzle-card loading">
+          <div className="apple-spinner-wrapper">
+            <div className="apple-spinner"></div>
           </div>
+          <p className="emoji-game-loading-text">
+            กำลังวิเคราะห์ประวัติและจัดเตรียมชุดอีโมจิโดย AI...
+          </p>
         </div>
       ) : (
         <div className={`emoji-game-puzzle-card ${gameStatus === 'won' ? 'won' : ''}`}>
           <div className="emoji-game-puzzle-display">
             {puzzleData?.puzzle}
           </div>
-          <div style={{ color: 'rgba(255, 255, 255, 0.45)', fontSize: '0.78rem' }}>
-            ทายตัวละครจาก emoji
-          </div>
+          <span className="emoji-game-puzzle-subtitle">
+            ถอดรหัสคอมโบสัญลักษณ์เพื่อทายชื่อตัวละคร
+          </span>
         </div>
       )}
 
@@ -593,14 +570,13 @@ Response MUST be a valid JSON object with this exact schema:
                 suggestions={students}
                 onSelect={handleGuess}
                 guessedIds={guesses.map(g => g.id)}
-                placeholder="พิมพ์ค้นหาและเลือกชื่อนักเรียนเพื่อเดา..."
+                placeholder="พิมพ์ค้นหาชื่อนักเรียนเพื่อเดา..."
               />
             </div>
             
             <button 
               onClick={handleRevealAnswer}
-              className="emoji-game-btn-secondary"
-              style={{ padding: '0 16px', minWidth: '100px', height: '42px', borderRadius: '12px' }}
+              className="emoji-game-btn-secondary reveal-btn"
             >
               <Eye className="w-4 h-4" />
               ยอมแพ้
@@ -612,30 +588,18 @@ Response MUST be a valid JSON object with this exact schema:
       {/* Feedback Toast */}
       {feedback && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '12px 16px',
-            borderRadius: '12px',
-            fontSize: '0.88rem',
-            fontWeight: 600,
-            background: feedback.type === 'success' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-            border: feedback.type === 'success' ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
-            color: feedback.type === 'success' ? '#34d399' : '#f87171',
-            justifyContent: 'center'
-          }}
+          className={`emoji-game-feedback ${feedback.type}`}
         >
           {feedback.type === 'success' ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
-          {feedback.text}
+          <span>{feedback.text}</span>
         </motion.div>
       )}
 
       {/* Victory / Revealed Details */}
       {(gameStatus === 'won' || gameStatus === 'revealed') && targetStudent && puzzleData && (
-        <div className="emoji-game-victory-box">
+        <div className={`emoji-game-victory-box ${gameStatus === 'won' ? 'won' : 'revealed'}`}>
           <h3 className="emoji-game-victory-title">
             {gameStatus === 'won' ? '🎉 ยินดีด้วยคุณตอบถูกแล้ว!' : '🔍 เฉลยปริศนา'}
           </h3>
@@ -651,17 +615,18 @@ Response MUST be a valid JSON object with this exact schema:
               }}
             />
             <div className="emoji-game-char-details">
-              <span className="emoji-game-char-name">{targetStudent.englishName} ({targetStudent.name})</span>
+              <span className="emoji-game-char-name">{targetStudent.englishName}</span>
+              <span className="emoji-game-char-katakana">{targetStudent.name}</span>
               <span className="emoji-game-char-school">{targetStudent.school} / {targetStudent.clubTh || targetStudent.club}</span>
-              <span className="emoji-game-char-desc">{targetStudent.description}</span>
+              <p className="emoji-game-char-desc">{targetStudent.description}</p>
             </div>
           </div>
 
-          <div style={{ textAlign: 'left', width: '100%' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--emoji-secondary)', display: 'block', marginBottom: '4px' }}>
+          <div className="emoji-game-explanation-section">
+            <span className="emoji-game-explanation-title">
               💡 คำอธิบายความหมายสัญลักษณ์:
             </span>
-            <p style={{ margin: 0, fontSize: '0.82rem', color: '#cbd5e1', lineHeight: '1.5' }}>
+            <p className="emoji-game-explanation-text">
               {puzzleData.explanation}
             </p>
           </div>
@@ -678,18 +643,17 @@ Response MUST be a valid JSON object with this exact schema:
       {/* Hints System */}
       {!isGenerating && (
         <div className="emoji-game-hints-container">
-          <span className="emoji-game-history-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Lightbulb className="w-4 h-4 text-purple-400" />
-            ระบบคำใบ้ตามลำดับ
-          </span>
+          <div className="emoji-game-hints-header-row">
+            <Lightbulb className="w-4 h-4 text-amber-400" />
+            <span className="emoji-game-section-title">ระบบคำใบ้ตามลำดับ</span>
+          </div>
 
           {/* Hint 1 */}
           <div className="emoji-game-hint-box">
             <div className="emoji-game-hint-header">
-              <span className="emoji-game-hint-title">คำใบ้ที่ 1: ข้อมูลทั่วไป</span>
+              <span className="emoji-game-hint-badge">คำใบ้ที่ 1 • ข้อมูลทั่วไป</span>
               {!revealedHints.includes('hint_1') && gameStatus === 'playing' && (
                 <button onClick={() => revealHint('hint_1')} className="emoji-game-hint-btn">
-                  <Lightbulb className="w-3 h-3" />
                   แสดงคำใบ้
                 </button>
               )}
@@ -697,7 +661,7 @@ Response MUST be a valid JSON object with this exact schema:
             {revealedHints.includes('hint_1') ? (
               <p className="emoji-game-hint-text">{puzzleData?.hint_1}</p>
             ) : (
-              <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.25)', fontStyle: 'italic' }}>
+              <p className="emoji-game-hint-placeholder">
                 โรงเรียน, ชมรม, ชั้นปี หรือข้อมูลทั่วไปเบื้องต้น
               </p>
             )}
@@ -706,10 +670,9 @@ Response MUST be a valid JSON object with this exact schema:
           {/* Hint 2 */}
           <div className="emoji-game-hint-box">
             <div className="emoji-game-hint-header">
-              <span className="emoji-game-hint-title">คำใบ้ที่ 2: วลีเด็ด / มีมเด่น</span>
+              <span className="emoji-game-hint-badge">คำใบ้ที่ 2 • วลีเด็ด / มีมเด่น</span>
               {!revealedHints.includes('hint_2') && gameStatus === 'playing' && (
                 <button onClick={() => revealHint('hint_2')} className="emoji-game-hint-btn">
-                  <Lightbulb className="w-3 h-3" />
                   แสดงคำใบ้
                 </button>
               )}
@@ -717,7 +680,7 @@ Response MUST be a valid JSON object with this exact schema:
             {revealedHints.includes('hint_2') ? (
               <p className="emoji-game-hint-text">{puzzleData?.hint_2}</p>
             ) : (
-              <p style={{ margin: 0, fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.25)', fontStyle: 'italic' }}>
+              <p className="emoji-game-hint-placeholder">
                 มุกตลกประจำเป็นของคาแรกเตอร์, คำพูดติดปาก หรือเรื่องเด่นในกลุ่มชุมชนผู้เล่น
               </p>
             )}
@@ -729,7 +692,7 @@ Response MUST be a valid JSON object with this exact schema:
       {!isGenerating && guesses.length > 0 && (
         <div className="emoji-game-history">
           <span className="emoji-game-history-title">ประวัติการทายในรอบนี้ ({guesses.length})</span>
-          <div style={{ maxHeight: '180px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
+          <div style={{ maxHeight: '200px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
             {guesses.map((guess, idx) => (
               <div key={idx} className="emoji-game-history-card">
                 <img 
@@ -741,8 +704,8 @@ Response MUST be a valid JSON object with this exact schema:
                     e.target.src = '/images/schoolicon/ETC.png';
                   }}
                 />
-                <span style={{ fontWeight: 650, flex: 1 }}>{guess.englishName} ({guess.name})</span>
-                <span style={{ fontSize: '0.72rem', color: '#94a3b8', marginRight: '8px' }}>{guess.school}</span>
+                <span style={{ fontWeight: 600, flex: 1 }}>{guess.englishName} ({guess.name})</span>
+                <span style={{ fontSize: '0.72rem', color: '#8e8e93', marginRight: '8px' }}>{guess.school}</span>
                 {guess.isCorrect ? (
                   <Check className="w-4 h-4 text-emerald-400" />
                 ) : (
