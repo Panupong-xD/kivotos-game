@@ -200,11 +200,40 @@ export default function BlueArchiveEmojiGame({ soundEnabled = true, onBack }) {
           // Match with playable student data
           let studentMatch = studentsEntries.find(s => s.Name === char.NameJp || s.Name === char.Name);
           if (!studentMatch && char.NameEn) {
-            const engNameClean = char.NameEn.toLowerCase().replace(/[^a-z]/g, '');
-            studentMatch = studentsEntries.find(s => {
-              const sEngClean = s.DevName ? s.DevName.toLowerCase().replace(/[^a-z]/g, '') : '';
-              return sEngClean.includes(engNameClean) || engNameClean.includes(sEngClean);
+            const storyEn = char.NameEn.toLowerCase();
+            const storyWords = storyEn.split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, ''));
+            
+            // Filter all potential matches
+            const potentialMatches = studentsEntries.filter(s => {
+              const sPath = s.PathName ? s.PathName.toLowerCase() : '';
+              const sDev = s.DevName ? s.DevName.toLowerCase() : '';
+              
+              // Handle Hifumi/Hihumi spelling mismatch specifically
+              if (storyWords.includes('hifumi') && (sPath === 'hifumi' || sDev === 'hihumi')) {
+                return true;
+              }
+              
+              // Exact word match
+              if (sPath && storyWords.includes(sPath)) return true;
+              if (sDev && storyWords.includes(sDev)) return true;
+              
+              // Full name match (normalized)
+              const normStory = storyEn.replace(/[^a-z0-9]/g, '');
+              const normPath = sPath.replace(/[^a-z0-9]/g, '');
+              const normDev = sDev.replace(/[^a-z0-9]/g, '');
+              if (normStory === normPath || normStory === normDev) return true;
+              
+              return false;
             });
+            
+            if (potentialMatches.length > 0) {
+              potentialMatches.sort((a, b) => {
+                const aLen = a.PathName ? a.PathName.length : 999;
+                const bLen = b.PathName ? b.PathName.length : 999;
+                return aLen - bLen;
+              });
+              studentMatch = potentialMatches[0];
+            }
           }
 
           let iconPath = char.IconLocalPath || '';
@@ -213,7 +242,8 @@ export default function BlueArchiveEmojiGame({ soundEnabled = true, onBack }) {
           }
 
           list.push({
-            id: studentMatch?.Id || `story_${charName.replace(/\s+/g, '_')}`,
+            id: charName, // Use the unique story character key as ID to guarantee no key collisions
+            studentId: studentMatch?.Id || null,
             name: char.NameJp || char.Name || charName,
             devName: char.NameEn || charName,
             englishName: char.NameEn || charName,
@@ -395,6 +425,7 @@ Response MUST be a valid JSON object with this exact schema:
       englishName: guessedStudent.englishName,
       school: guessedStudent.school,
       icon: guessedStudent.icon,
+      studentId: guessedStudent.studentId,
       isCorrect
     };
 
@@ -472,8 +503,8 @@ Response MUST be a valid JSON object with this exact schema:
           </h3>
 
           <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.6', maxWidth: '440px', textAlign: 'center' }}>
-            คุณพร้อมที่จะทายชื่อนักเรียนคิโวทอสจากสัญลักษณ์ Halo, ของชอบ, และมีมติดตัวของพวกเธอหรือยัง? 
-            ระบบจะสร้างคอมโบอิโมจิผ่าน AI หรือคลังคำถามของระบบออฟไลน์เพื่อให้คุณประลองปัญญา
+            พร้อมที่จะทายชื่อนักเรียนแล้วหรือยัง? 
+            ระบบจะสร้างคำใบ้อิโมจิผ่าน AI
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '320px', marginTop: '12px' }}>
@@ -611,7 +642,7 @@ Response MUST be a valid JSON object with this exact schema:
           
           <div className="emoji-game-character-card">
             <img 
-              src={targetStudent.icon || `/images/student/icon/${targetStudent.id}.webp`}
+              src={targetStudent.icon || (targetStudent.studentId ? `/images/student/icon/${targetStudent.studentId}.webp` : '')}
               alt={targetStudent.englishName} 
               className="emoji-game-char-portrait"
               onError={(e) => {
@@ -702,7 +733,7 @@ Response MUST be a valid JSON object with this exact schema:
             {guesses.map((guess, idx) => (
               <div key={idx} className="emoji-game-history-card">
                 <img 
-                  src={guess.icon || `/images/student/icon/${guess.id}.webp`}
+                  src={guess.icon || (guess.studentId ? `/images/student/icon/${guess.studentId}.webp` : '')}
                   alt={guess.englishName} 
                   style={{ width: '28px', height: '28px', borderRadius: '6px', objectFit: 'cover' }}
                   onError={(e) => {

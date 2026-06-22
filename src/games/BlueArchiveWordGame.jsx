@@ -574,11 +574,40 @@ export default function BlueArchiveWordGame({ soundEnabled, onBack }) {
           // Find matching playable student in studentsData if available, to get additional info
           let studentMatch = studentsEntries.find(s => s.Name === char.NameJp || s.Name === char.Name);
           if (!studentMatch && char.NameEn) {
-            const engNameClean = char.NameEn.toLowerCase().replace(/[^a-z]/g, '');
-            studentMatch = studentsEntries.find(s => {
-              const sEngClean = s.DevName ? s.DevName.toLowerCase().replace(/[^a-z]/g, '') : '';
-              return sEngClean.includes(engNameClean) || engNameClean.includes(sEngClean);
+            const storyEn = char.NameEn.toLowerCase();
+            const storyWords = storyEn.split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, ''));
+            
+            // Filter all potential matches
+            const potentialMatches = studentsEntries.filter(s => {
+              const sPath = s.PathName ? s.PathName.toLowerCase() : '';
+              const sDev = s.DevName ? s.DevName.toLowerCase() : '';
+              
+              // Handle Hifumi/Hihumi spelling mismatch specifically
+              if (storyWords.includes('hifumi') && (sPath === 'hifumi' || sDev === 'hihumi')) {
+                return true;
+              }
+              
+              // Exact word match
+              if (sPath && storyWords.includes(sPath)) return true;
+              if (sDev && storyWords.includes(sDev)) return true;
+              
+              // Full name match (normalized)
+              const normStory = storyEn.replace(/[^a-z0-9]/g, '');
+              const normPath = sPath.replace(/[^a-z0-9]/g, '');
+              const normDev = sDev.replace(/[^a-z0-9]/g, '');
+              if (normStory === normPath || normStory === normDev) return true;
+              
+              return false;
             });
+            
+            if (potentialMatches.length > 0) {
+              potentialMatches.sort((a, b) => {
+                const aLen = a.PathName ? a.PathName.length : 999;
+                const bLen = b.PathName ? b.PathName.length : 999;
+                return aLen - bLen;
+              });
+              studentMatch = potentialMatches[0];
+            }
           }
 
           let iconPath = char.IconLocalPath || '';
@@ -587,7 +616,8 @@ export default function BlueArchiveWordGame({ soundEnabled, onBack }) {
           }
 
           list.push({
-            id: studentMatch?.Id || `story_${charName.replace(/\s+/g, '_')}`,
+            id: charName, // Use the unique story character key as ID to guarantee no key collisions
+            studentId: studentMatch?.Id || null,
             name: char.NameJp || char.Name || charName,
             devName: char.NameEn || charName,
             pathName: char.NameEn || charName,
