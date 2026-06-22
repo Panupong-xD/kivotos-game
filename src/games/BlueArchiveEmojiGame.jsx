@@ -519,7 +519,7 @@ Response MUST be a valid JSON object with this exact schema:
           </div>
           <h3>ห้องปริศนาสัญลักษณ์ Kivotos</h3>
           <p>
-            วิเคราะห์และทายชื่อนักเรียนจากสัญลักษณ์ประจำตัว เช่น Halo, ชมรม, อาวุธ และประวัติตามเนื้อเรื่องผ่านคำใบ้ที่ออกแบบโดย AI
+            วิเคราะห์และทายชื่อนักเรียนจากสัญลักษณ์ประจำตัวและประวัติตามเนื้อเรื่องผ่านคำใบ้จาก AI
           </p>
           <div className="emoji-game-landing-actions">
             <button onClick={startNewRound} className="emoji-game-btn-primary">

@@ -691,7 +691,7 @@ if (activeBtn) {
                 </div>
                 
                 <div className="lobby-card-info">
-                  <h3 className="lobby-card-title">ทายคำด้วยอิโมจิ</h3>
+                  <h3 className="lobby-card-title">ทายนักเรียนด้วยอิโมจิ</h3>
                   <span className="lobby-card-tag ready">READY</span>
                 </div>
                 
