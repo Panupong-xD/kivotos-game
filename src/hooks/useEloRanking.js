@@ -36,7 +36,10 @@ const EXCLUDED_CHARACTERS = [
   'Owner of Suzume',
   'Phrenapates',
   'The Iridescence',
-  'Underground Dweller'
+  'Underground Dweller',
+  'Misaka Mikoto',
+  'Shokuhou Misaki',
+  'Saten Ruiko'
 ]
 
 export default function useEloRanking() {
