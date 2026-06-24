@@ -11,6 +11,34 @@ const LOCAL_STORAGE_KEYS = {
   HISTORY: 'kivotos_binary_history'
 }
 
+const EXCLUDED_CHARACTERS = [
+  'Barbara',
+  'Beatrice',
+  'Binah',
+  'Black Suit',
+  'Chesed',
+  'Decagrammaton',
+  'Descartes',
+  'Don Aranchino',
+  'Golconde & Decalcomanie',
+  'Hod',
+  'Horus of Dawn',
+  'Kaiser PMC Director',
+  'Kaiser PMC General',
+  'Kaiser PMC President',
+  'Kaitengers',
+  'Kether',
+  'Maestro',
+  'Master Shiba',
+  'Mr. Orwell',
+  'Netzach',
+  'Nyanten-maru',
+  'Owner of Suzume',
+  'Phrenapates',
+  'The Iridescence',
+  'Underground Dweller'
+]
+
 export default function useEloRanking() {
   const [state, setState] = useState({
     characters: [],
@@ -61,8 +89,9 @@ export default function useEloRanking() {
           const isCharOrNpc = char.TemplateType === 'Character' || char.TemplateType === 'NPC' || !char.TemplateType
           const hasName = char.Name && char.NameEn
           const hasAssets = char.IconLocalPath && char.PortraitLocalPath
+          const isExcluded = EXCLUDED_CHARACTERS.includes(key)
 
-          if (isCharOrNpc && hasName && hasAssets) {
+          if (isCharOrNpc && hasName && hasAssets && !isExcluded) {
             let iconPath = char.IconLocalPath.replace(/^\.\//, '/')
             let portraitPath = char.PortraitLocalPath.replace(/^\.\//, '/')
             fullDataset.push({
@@ -111,14 +140,20 @@ export default function useEloRanking() {
                isCorrupted = true
              } else if (loadedLow < 0 || loadedLow > loadedSorted.length || loadedHigh < -1 || loadedHigh >= loadedSorted.length) {
                isCorrupted = true
-             } else {
-               const charKeys = new Set(loadedChars.map(c => c.key))
-               for (const s of loadedSorted) {
-                 if (!s || !s.key || !charKeys.has(s.key)) {
-                   isCorrupted = true
-                   break
-                 }
-               }
+              } else {
+                const charKeys = new Set(loadedChars.map(c => c.key))
+                for (const s of loadedSorted) {
+                  if (!s || !s.key || !charKeys.has(s.key)) {
+                    isCorrupted = true
+                    break
+                  }
+                }
+
+                // Reset if loaded data contains any excluded characters
+                const hasExcluded = loadedChars.some(c => c && EXCLUDED_CHARACTERS.includes(c.key))
+                if (hasExcluded) {
+                  isCorrupted = true
+                }
                
                // Validate loadedHistoryList schema
                if (!isCorrupted) {
@@ -475,8 +510,9 @@ export default function useEloRanking() {
         const isCharOrNpc = char.TemplateType === 'Character' || char.TemplateType === 'NPC' || !char.TemplateType
         const hasName = char.Name && char.NameEn
         const hasAssets = char.IconLocalPath && char.PortraitLocalPath
+        const isExcluded = EXCLUDED_CHARACTERS.includes(key)
 
-        if (isCharOrNpc && hasName && hasAssets) {
+        if (isCharOrNpc && hasName && hasAssets && !isExcluded) {
           let iconPath = char.IconLocalPath.replace(/^\.\//, '/')
           let portraitPath = char.PortraitLocalPath.replace(/^\.\//, '/')
           initialList.push({
@@ -541,7 +577,7 @@ export default function useEloRanking() {
         iconPath: item.iconPath,
         portraitPath: item.portraitPath
       }
-    }).filter(c => c.key && c.nameEn && c.iconPath)
+    }).filter(c => c.key && c.nameEn && c.iconPath && !EXCLUDED_CHARACTERS.includes(c.key))
 
     if (validated.length === 0) return false
 

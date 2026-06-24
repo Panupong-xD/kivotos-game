@@ -4255,51 +4255,83 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  width: 260px;
+  width: 280px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Prompt", sans-serif;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .about-roster-search {
     width: 100%;
+    margin-top: 4px;
   }
 }
 
 .about-search-icon-inside {
   position: absolute;
   left: 12px;
-  width: 14px;
-  height: 14px;
-  color: var(--text-secondary);
+  width: 15px;
+  height: 15px;
+  color: rgba(255, 255, 255, 0.4);
   pointer-events: none;
+  transition: color 0.2s ease;
 }
 
 .about-roster-search input {
   width: 100%;
-  padding: 8px 12px 8px 34px;
-  border-radius: 8px;
-  background: rgba(12, 12, 14, 0.6);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  font-size: 0.82rem;
-  font-family: var(--font-main);
-  transition: all 0.2s ease;
+  padding: 9px 36px 9px 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #F5F5F7;
+  font-size: 0.85rem;
+  letter-spacing: -0.01em;
+  font-family: inherit;
+  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.about-roster-search input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 400;
+}
+
+.about-roster-search input:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .about-roster-search input:focus {
   outline: none;
-  border-color: var(--border-active);
-  background: rgba(12, 12, 14, 0.8);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(76, 154, 224, 0.5);
+  box-shadow: 0 0 0 3px rgba(76, 154, 224, 0.15);
+}
+
+.about-roster-search:focus-within .about-search-icon-inside {
+  color: rgba(76, 154, 224, 0.8);
 }
 
 .about-search-clear-btn {
   position: absolute;
   right: 10px;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.about-search-clear-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
 }
 
 .about-roster-content {

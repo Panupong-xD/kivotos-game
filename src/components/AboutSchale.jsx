@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Info, Sparkles, User, Calendar, BookOpen, Scaling, Users, ExternalLink, Globe, X } from 'lucide-react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
+import { Info, Sparkles, User, Calendar, BookOpen, Scaling, Users, ExternalLink, Globe, X, Search } from 'lucide-react'
 import LoadingScreen from './LoadingScreen.jsx'
 
 // Helper to sort groups by priority
@@ -22,12 +22,38 @@ export default function AboutSchale() {
   const [selectedCharacter, setSelectedCharacter] = useState(null)
 
   const [visibleCount, setVisibleCount] = useState(30)
+  const [searchQuery, setSearchQuery] = useState('')
   const sentinelRef = useRef(null)
 
-  // Reset visibleCount when group changes
+  // Reset visibleCount and searchQuery when group changes
   useEffect(() => {
     setVisibleCount(30)
+    setSearchQuery('')
   }, [selectedGroup])
+
+  // Compute total count of characters that match the search query in the active group
+  const filteredTotalCount = useMemo(() => {
+    const activeGroup = characterGroups[selectedGroup]
+    if (!activeGroup) return 0
+    if (!searchQuery.trim()) return activeGroup.totalCount
+
+    const query = searchQuery.trim().toLowerCase()
+    let count = 0
+    activeGroup.subgroups.forEach(subgroup => {
+      subgroup.characters.forEach(char => {
+        const matchesQuery = 
+          char.nameEn.toLowerCase().includes(query) ||
+          char.name.toLowerCase().includes(query) ||
+          (char.nameJp && char.nameJp.toLowerCase().includes(query)) ||
+          (char.club && char.club.toLowerCase().includes(query)) ||
+          (char.clubTh && char.clubTh.toLowerCase().includes(query)) ||
+          (char.school && char.school.toLowerCase().includes(query)) ||
+          (char.schoolTh && char.schoolTh.toLowerCase().includes(query));
+        if (matchesQuery) count++;
+      })
+    })
+    return count
+  }, [characterGroups, selectedGroup, searchQuery])
 
   // Setup infinite scroll observer
   useEffect(() => {
@@ -35,9 +61,7 @@ export default function AboutSchale() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const activeGroup = characterGroups[selectedGroup]
-        const totalCount = activeGroup ? activeGroup.totalCount : 0
-        if (entries[0].isIntersecting && totalCount > visibleCount) {
+        if (entries[0].isIntersecting && filteredTotalCount > visibleCount) {
           setVisibleCount((prev) => prev + 30)
         }
       },
@@ -51,7 +75,7 @@ export default function AboutSchale() {
     return () => {
       observer.disconnect()
     }
-  }, [loading, selectedGroup, visibleCount, characterGroups])
+  }, [loading, filteredTotalCount, visibleCount])
 
 
   useEffect(() => {
@@ -441,8 +465,30 @@ export default function AboutSchale() {
                 </div>
                 <div className="about-roster-title-box">
                   <h3>{activeGroup.nameTh}</h3>
-                  <p>สังกัด {selectedGroup} (พบตัวละครลงทะเบียนทั้งหมด {activeGroup.totalCount} ราย)</p>
+                  <p>
+                    สังกัด {selectedGroup} {searchQuery.trim() ? `(พบ ${filteredTotalCount} จาก ${activeGroup.totalCount} ราย)` : `(พบตัวละครลงทะเบียนทั้งหมด ${activeGroup.totalCount} ราย)`}
+                  </p>
                 </div>
+              </div>
+              
+              {/* Minimal Luxury Apple-style Search Bar */}
+              <div className="about-roster-search">
+                <Search className="about-search-icon-inside" />
+                <input
+                  type="text"
+                  placeholder="ค้นหาตัวละคร, โรงเรียน, ชมรม..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button
+                    className="about-search-clear-btn"
+                    onClick={() => setSearchQuery('')}
+                    title="ล้างคำค้นหา"
+                  >
+                    <X style={{ width: '12px', height: '12px' }} />
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -460,12 +506,24 @@ export default function AboutSchale() {
 
             let totalRendered = 0;
             const subgroupsToRender = [];
+            const query = searchQuery.trim().toLowerCase();
 
             for (const subgroup of activeGroup.subgroups) {
               const charsForThisSubgroup = [];
               for (const char of subgroup.characters) {
-                if (totalRendered < visibleCount) {
-                  charsForThisSubgroup.push(char);
+                const matchesQuery = !query || 
+                  char.nameEn.toLowerCase().includes(query) ||
+                  char.name.toLowerCase().includes(query) ||
+                  (char.nameJp && char.nameJp.toLowerCase().includes(query)) ||
+                  (char.club && char.club.toLowerCase().includes(query)) ||
+                  (char.clubTh && char.clubTh.toLowerCase().includes(query)) ||
+                  (char.school && char.school.toLowerCase().includes(query)) ||
+                  (char.schoolTh && char.schoolTh.toLowerCase().includes(query));
+
+                if (matchesQuery) {
+                  if (totalRendered < visibleCount) {
+                    charsForThisSubgroup.push(char);
+                  }
                   totalRendered++;
                 }
               }
@@ -475,6 +533,15 @@ export default function AboutSchale() {
                   characters: charsForThisSubgroup
                 });
               }
+            }
+
+            if (subgroupsToRender.length === 0) {
+              return (
+                <div className="about-empty-roster">
+                  <Users style={{ width: '48px', height: '48px', opacity: 0.3, marginBottom: '12px' }} />
+                  <p>ไม่พบผลลัพธ์จากการค้นหา "{searchQuery}"</p>
+                </div>
+              )
             }
 
             return (
