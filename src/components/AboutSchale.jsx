@@ -625,6 +625,7 @@ export default function AboutSchale() {
                       e.target.style.width = '140px';
                       e.target.style.height = '140px';
                       e.target.style.objectFit = 'contain';
+                      e.target.style.objectPosition = 'center';
                       e.target.style.borderRadius = '50%';
                       e.target.style.border = '4px solid #D4A853';
                       e.target.style.background = '#0C0C0E';

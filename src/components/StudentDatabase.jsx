@@ -630,6 +630,7 @@ export default function StudentDatabase() {
                       e.target.style.width = '140px';
                       e.target.style.height = '140px';
                       e.target.style.objectFit = 'contain';
+                      e.target.style.objectPosition = 'center';
                       e.target.style.borderRadius = '50%';
                       e.target.style.border = '4px solid #4C9AE0';
                       e.target.style.background = '#0C0C0E';
