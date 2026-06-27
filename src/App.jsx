@@ -16,6 +16,7 @@ import LobbyGuesser from './games/LobbyGuesser.jsx'
 import BlueArchiveEmojiGame from './games/BlueArchiveEmojiGame.jsx'
 import StudentDatabase from './components/StudentDatabase.jsx'
 import AboutSchale from './components/AboutSchale.jsx'
+import BlueArchiveChess from './games/BlueArchiveChess.jsx'
 import { Gamepad2, Award, BookOpen, Volume2, VolumeX, ArrowLeft, Lock, Menu, X, Users, Ruler, ArrowUpDown, Calendar, Swords, Compass, Camera } from 'lucide-react'
 
 const tabToPath = (tab) => {
@@ -36,6 +37,7 @@ const tabToPath = (tab) => {
     case 'eloRanker': return '/ranker'
     case 'database': return '/database'
     case 'about': return '/about'
+    case 'chess': return '/chess'
     default: return '/'
   }
 }
@@ -58,6 +60,7 @@ const pathToTab = (path) => {
     case '/ranker': return 'eloRanker'
     case '/database': return 'database'
     case '/about': return 'about'
+    case '/chess': return 'chess'
     default: return 'lobby'
   }
 }
@@ -155,7 +158,7 @@ if (activeBtn) {
     const tab = pathToTab(location.pathname)
     
     // Redirect if it's an invalid path (e.g. unknown subpath)
-    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/word', '/lobby-guess', '/emoji-quiz', '/ranker', '/database', '/about']
+    const validPaths = ['/', '/student', '/halo', '/weapon', '/skill', '/gear', '/chocolate', '/voice', '/height', '/age', '/word', '/lobby-guess', '/emoji-quiz', '/ranker', '/database', '/about', '/chess']
     if (!validPaths.includes(location.pathname)) {
       navigate('/', { replace: true })
       return
@@ -700,6 +703,40 @@ if (activeBtn) {
                 </button>
               </div>
 
+              {/* Card 13: Blue Archive Chess (PLAYABLE) [NEW] */}
+              <div 
+                onClick={() => setActiveTab('chess')}
+                className="lobby-card"
+              >
+                <div className="lobby-card-preview" style={{ position: 'relative' }}>
+                  <div className="collage-grid">
+                    <img src="/images/student/icon/10059.webp" alt="Mika" className="collage-img" />
+                    <img src="/images/student/icon/10004.webp" alt="Hina" className="collage-img" />
+                    <img src="/images/student/icon/13010.webp" alt="Yuuka" className="collage-img" />
+                    <img src="/images/student/icon/10010.webp" alt="Shiroko" className="collage-img" />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Swords style={{ width: '48px', height: '48px', color: '#06b6d4', filter: 'drop-shadow(0 0 8px rgba(6,182,212,0.8))' }} />
+                  </div>
+                </div>
+                
+                <div className="lobby-card-info">
+                  <h3 className="lobby-card-title">Blue Archive Chess</h3>
+                  <span className="lobby-card-tag ready">READY</span>
+                </div>
+                
+                <button className="lobby-card-btn ready">
+                  PLAY CHESS MODE
+                </button>
+              </div>
+
             </div>
           </div>
         )}
@@ -787,6 +824,13 @@ if (activeBtn) {
 
         {renderTab === 'eloRanker' && (
           <EloRanker 
+            soundEnabled={soundEnabled} 
+            onBack={() => setActiveTab('lobby')} 
+          />
+        )}
+
+        {renderTab === 'chess' && (
+          <BlueArchiveChess 
             soundEnabled={soundEnabled} 
             onBack={() => setActiveTab('lobby')} 
           />

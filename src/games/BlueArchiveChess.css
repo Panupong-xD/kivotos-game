@@ -1,0 +1,1438 @@
+/* ==========================================================================
+   BLUE ARCHIVE CHESS - APPLE-STYLE MINIMAL LUXURY UI
+   ========================================================================== */
+
+.chess-game-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Prompt", "Outfit", sans-serif;
+  color: #f5f5f7;
+  background: linear-gradient(135deg, #0c0c0e 0%, #141416 50%, #1c1c1e 100%);
+  min-height: 100vh;
+  animation: appleFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: padding 0.3s ease, gap 0.3s ease;
+}
+
+@keyframes appleFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Frosted Luxury Glass Panel */
+.chess-panel {
+  background: rgba(28, 28, 30, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Header & Navigation */
+.chess-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 20px;
+}
+
+.chess-title-area h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.5px;
+}
+
+.chess-title-area p {
+  font-size: 0.85rem;
+  color: #86868b;
+  margin: 4px 0 0 0;
+  font-weight: 400;
+}
+
+.chess-back-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #f5f5f7;
+  padding: 8px 16px;
+  border-radius: 9999px; /* Pill shape */
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.chess-back-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateX(-1px);
+}
+
+/* Game Selection / Lobby Screen */
+.chess-lobby-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .chess-lobby-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lobby-option-card {
+  background: rgba(28, 28, 30, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  padding: 32px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.lobby-option-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.lobby-option-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lobby-option-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;
+}
+
+.lobby-option-card p {
+  font-size: 0.85rem;
+  color: #86868b;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.lobby-option-btn {
+  background: #ffffff;
+  color: #12131a;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 9999px; /* Pill */
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lobby-option-card:hover .lobby-option-btn {
+  background: #e5e5ea;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+/* Online Setup Container */
+.online-setup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 24px;
+}
+
+.online-setup-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.online-setup-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 16px;
+  border-radius: 9999px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  text-align: center;
+}
+
+.online-setup-input:focus {
+  outline: none;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+.setup-primary-btn {
+  background: #0071e3;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.setup-primary-btn:hover:not(:disabled) {
+  background: #147ce5;
+}
+
+.setup-primary-btn:disabled {
+  background: rgba(255, 255, 255, 0.04);
+  color: #48484a;
+  cursor: not-allowed;
+}
+
+/* Character Customizer */
+.customizer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.customizer-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.team-customizer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .team-customizer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.team-card {
+  background: rgba(28, 28, 30, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.team-card.white-team {
+  border-top: 3px solid #0071e3;
+}
+
+.team-card.black-team {
+  border-top: 3px solid #ff2d55;
+}
+
+.team-card-header {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.white-team-text { color: #f5f5f7; }
+.black-team-text { color: #86868b; }
+
+.piece-assign-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.piece-assign-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.assign-role-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #86868b;
+  text-transform: uppercase;
+}
+
+.assign-student-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.assign-student-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background: #1c1c1e;
+}
+
+.assign-student-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #f5f5f7;
+}
+
+.assign-change-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f5f5f7;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.assign-change-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Student Selector Dropdown Modal */
+.student-selector-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(15px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.student-selector-box {
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 680px;
+  height: 520px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.student-selector-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.student-selector-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.student-selector-close {
+  background: none;
+  border: none;
+  color: #86868b;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.student-selector-close:hover {
+  color: #ffffff;
+}
+
+/* Modal Body split pane */
+.student-selector-body {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Left Pane */
+.student-selector-left {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.student-search-container {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.student-search-container .search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #86868b;
+  pointer-events: none;
+}
+
+.student-search-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 12px 8px 34px;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.student-search-input:focus {
+  outline: none;
+  border-color: #0071e3;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.student-list-scroll {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.special-selector-divider {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #86868b;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* Compact Student Item */
+.student-select-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1.5px solid transparent;
+}
+
+.student-select-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.student-select-item.is-active {
+  background: rgba(0, 113, 227, 0.08);
+  border-color: rgba(0, 113, 227, 0.4);
+}
+
+.student-select-item img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1c1c1e;
+}
+
+.student-select-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-select-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.student-select-school {
+  font-size: 0.72rem;
+  color: #86868b;
+}
+
+/* Right Pane: Detail View */
+.student-selector-right {
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.student-detail-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.student-detail-pane.empty-pane {
+  align-items: center;
+  justify-content: center;
+  color: #86868b;
+}
+
+.student-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.student-detail-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: #1c1c1e;
+}
+
+.student-detail-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-detail-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.student-detail-school {
+  font-size: 0.75rem;
+  color: #86868b;
+}
+
+/* Detail EX Skill Card */
+.student-detail-skill-box {
+  background: rgba(28, 28, 30, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.student-detail-skill-box.empty-skill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.student-detail-skill-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.skill-badge-text {
+  color: #ff9500;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.skill-cost-badge {
+  background: rgba(0, 113, 227, 0.12);
+  border: 1px solid rgba(0, 113, 227, 0.2);
+  color: #0a84ff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.student-detail-skill-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.student-detail-skill-desc {
+  font-size: 0.76rem;
+  color: #c5c5c7;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.confirm-student-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: auto;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: appleFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Responsive Stacking for Selector */
+@media (max-width: 640px) {
+  .student-selector-box {
+    max-width: 90%;
+    height: auto;
+    max-height: 85vh;
+  }
+  .student-selector-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1.2fr 1fr;
+    overflow-y: auto;
+  }
+  .student-selector-left {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    max-height: 250px;
+  }
+  .student-selector-right {
+    max-height: 250px;
+  }
+  .student-detail-skill-box {
+    margin-bottom: 12px;
+  }
+}
+
+
+/* Play Actions Footer */
+.customizer-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.start-game-btn {
+  background: #ffffff;
+  color: #12131a;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 12px 40px;
+  border-radius: 9999px; /* Pill */
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.start-game-btn:hover {
+  transform: translateY(-1px);
+  background: #f5f5f7;
+}
+
+/* Chess Game Layout (Active Stage) */
+.chess-arena {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+}
+
+@media (max-width: 950px) {
+  .chess-arena {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chess-left-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Chessboard Styling (Slate Obsidian Minimal) */
+.chess-board-outer {
+  background: #1c1c1e;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chess-board-outer.white-turn-glow {
+  border-color: rgba(0, 113, 227, 0.6);
+  box-shadow: 0 16px 45px rgba(0, 113, 227, 0.18), 0 0 0 1px rgba(0, 113, 227, 0.2);
+}
+
+.chess-board-outer.black-turn-glow {
+  border-color: rgba(255, 149, 0, 0.6);
+  box-shadow: 0 16px 45px rgba(255, 149, 0, 0.18), 0 0 0 1px rgba(255, 149, 0, 0.2);
+}
+
+.chess-board {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(54px, 76px));
+  grid-template-rows: repeat(8, minmax(54px, 76px));
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Board Cells */
+.chess-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  aspect-ratio: 1;
+}
+
+.chess-cell.tile-light {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.chess-cell.tile-dark {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.chess-cell:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Cell Highlight Overlays */
+.chess-cell.is-selected {
+  box-shadow: inset 0 0 0 2px #ff9500;
+  background-color: rgba(255, 149, 0, 0.05) !important;
+}
+
+.chess-cell.is-move-dest::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #0071e3;
+  pointer-events: none;
+}
+
+.chess-cell.is-move-dest.has-piece::after {
+  display: none;
+}
+
+.chess-cell.is-move-dest.has-piece {
+  box-shadow: inset 0 0 0 2px #0071e3;
+  background-color: rgba(0, 113, 227, 0.08) !important;
+}
+
+.chess-cell.is-skill-dest {
+  box-shadow: inset 0 0 0 2px #ff453a;
+  background-color: rgba(255, 69, 58, 0.08) !important;
+}
+
+.chess-cell.is-skill-dest::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ff453a;
+  pointer-events: none;
+}
+
+.chess-cell.is-skill-dest.has-piece::after {
+  display: none;
+}
+
+/* Chess Piece Visuals */
+.chess-piece-container {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+  z-index: 10;
+}
+
+.chess-piece-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #1c1c1e;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
+}
+
+.chess-piece-container.white-side .chess-piece-avatar {
+  border-color: #0a84ff;
+  box-shadow: 0 0 10px rgba(10, 132, 255, 0.4), inset 0 0 8px rgba(10, 132, 255, 0.2);
+}
+
+.chess-piece-container.black-side .chess-piece-avatar {
+  border-color: #ff9500;
+  box-shadow: 0 0 10px rgba(255, 149, 0, 0.4), inset 0 0 8px rgba(255, 149, 0, 0.2);
+}
+
+/* Role Badge */
+.piece-role-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  pointer-events: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.chess-piece-container.white-side .piece-role-badge {
+  background: #1c1c1e;
+  color: #0a84ff;
+  border-color: #0a84ff;
+}
+
+.chess-piece-container.black-side .piece-role-badge {
+  background: #201305;
+  color: #ff9500;
+  border-color: #ff9500;
+}
+
+/* Shield Status Effect (Subtle transparent aura) */
+.chess-piece-container.is-shielded::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid #64d2ff;
+  background: rgba(100, 210, 255, 0.05);
+  pointer-events: none;
+  z-index: 5;
+  animation: appleShieldPulse 2s infinite ease-in-out;
+}
+
+@keyframes appleShieldPulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.6; }
+}
+
+/* Frozen Status Effect */
+.chess-piece-container.is-frozen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(10, 132, 255, 0.2);
+  border: 1.5px solid #0a84ff;
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Shield / Stun badges */
+.piece-status-badge {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+  font-size: 0.6rem;
+}
+
+.piece-status-badge.shield-badge {
+  background: #64d2ff;
+  color: #000;
+}
+
+.piece-status-badge.freeze-badge {
+  background: #0a84ff;
+  color: #fff;
+}
+
+/* HUD Panel */
+.turn-display {
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.turn-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.turn-dot.white-dot {
+  background-color: #0a84ff;
+}
+
+.turn-dot.black-dot {
+  background-color: #ff9500;
+}
+
+/* Cost Meter */
+.cost-meter-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(28, 28, 30, 0.4);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cost-meter-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #86868b;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cost-value-text {
+  color: #0a84ff;
+  font-weight: 600;
+}
+
+.cost-value-text.black-text {
+  color: #ff9500;
+}
+
+.cost-bar-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2.5px;
+  height: 6px;
+}
+
+.cost-bar-segment {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 1px;
+  transition: background-color 0.2s ease;
+}
+
+.cost-bar-segment.filled-white {
+  background-color: #0a84ff;
+}
+
+.cost-bar-segment.filled-black {
+  background-color: #ff9500;
+}
+
+/* Selected Piece Info Card */
+.selected-piece-card {
+  background: rgba(28, 28, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.selected-piece-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.selected-piece-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.selected-piece-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-piece-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.selected-piece-role {
+  font-size: 0.7rem;
+  color: #86868b;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.selected-piece-desc {
+  font-size: 0.78rem;
+  color: #c5c5c7;
+  line-height: 1.4;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+/* EX Skill Action Area */
+.ex-skill-action-box {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ex-skill-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ex-skill-badge {
+  color: #ff9500;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.ex-skill-cost-badge {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: #f5f5f7;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.ex-skill-desc {
+  font-size: 0.75rem;
+  color: #86868b;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.use-skill-btn {
+  background: #ffffff;
+  color: #12131a;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 9999px; /* Pill */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.82rem;
+}
+
+.use-skill-btn:hover:not(:disabled) {
+  background: #e5e5ea;
+}
+
+.use-skill-btn:disabled {
+  background: rgba(255, 255, 255, 0.04);
+  color: #48484a;
+  cursor: not-allowed;
+}
+
+/* Deceased / Captured Panel */
+.captured-panel-card {
+  background: rgba(28, 28, 30, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.captured-panel-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #86868b;
+  text-transform: uppercase;
+}
+
+.captured-team-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.captured-team-sub {
+  font-size: 0.75rem;
+  color: #636366;
+}
+
+.captured-list-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 28px;
+  background: rgba(0,0,0,0.1);
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.captured-item-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.05);
+  filter: grayscale(1) opacity(0.5);
+  cursor: pointer;
+}
+
+.captured-item-icon.revivable {
+  filter: none;
+  border-color: #0071e3;
+}
+
+.captured-item-icon.revivable.selected-for-revival {
+  border-color: #ff9500;
+  transform: scale(1.05);
+}
+
+/* Online room badge */
+.online-room-badge {
+  background: rgba(28, 28, 30, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+}
+
+.room-id-tag {
+  background: rgba(255,255,255,0.06);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-family: monospace;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.copy-hint {
+  font-size: 0.65rem;
+  color: #636366;
+  margin-top: 1px;
+}
+
+.online-players-status {
+  font-size: 0.75rem;
+  color: #86868b;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status-indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-indicator-dot.online {
+  background: #34c759;
+}
+
+.status-indicator-dot.offline {
+  background: #ff3b30;
+}
+
+/* Sidebar Controllers layout */
+.sidebar-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.chess-reset-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #c5c5c7;
+  padding: 10px 16px;
+  border-radius: 9999px; /* Pill */
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.chess-reset-btn:hover {
+  background: rgba(10, 132, 255, 0.15);
+  border-color: rgba(10, 132, 255, 0.4);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Win Modal (Apple Clean Accent) */
+.win-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.win-modal-box {
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 36px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.win-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: #ffffff;
+}
+
+.win-subtitle {
+  font-size: 0.85rem;
+  color: #86868b;
+  margin-bottom: 24px;
+  line-height: 1.45;
+}
+
+.win-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Online Connection Center Layout */
+.online-setup-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.online-setup-spinner {
+  animation: spin 2s linear infinite;
+  color: #0071e3;
+}
+
+.online-setup-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.online-setup-divider-line {
+  width: 100%;
+  max-width: 440px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 24px;
+  text-align: center;
+}
+
+.online-setup-subtitle {
+  font-weight: 600;
+  color: #e5e5ea;
+  margin-bottom: 8px;
+}
+
+.online-setup-desc {
+  font-size: 0.85rem;
+  color: #86868b;
+}
+
+.online-setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.online-setup-create-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.95rem;
+}
+
+.online-setup-or-text {
+  text-align: center;
+  color: #86868b;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Focus Mode Styling */
+.chess-game-container.focus-mode-active {
+  padding: 16px 20px;
+  gap: 12px;
+  max-width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.chess-game-container.focus-mode-active .chess-header {
+  display: none !important;
+}
+
+.chess-game-container.focus-mode-active .chess-arena {
+  margin-top: 0;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+}
+
+.chess-game-container.focus-mode-active .chess-left-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Global App elements hidden/adjusted during focus mode */
+body.global-focus-mode {
+  overflow: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+body.global-focus-mode .navbar-container {
+  display: none !important;
+}
+
+body.global-focus-mode .site-footer {
+  display: none !important;
+}
+
+body.global-focus-mode main {
+  max-width: 100% !important;
+  margin-top: 0 !important;
+  padding: 0 16px !important;
+}
+
+/* Make chessboard extremely large in focus mode */
+body.global-focus-mode .chess-board {
+  grid-template-columns: repeat(8, minmax(54px, 80px));
+  grid-template-rows: repeat(8, minmax(54px, 80px));
+}
+
+/* Unified Apple Sidebar Panel */
+.chess-sidebar-panel {
+  background: rgba(28, 28, 30, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(40px) !important;
+  -webkit-backdrop-filter: blur(40px) !important;
+  border-radius: 24px !important;
+  padding: 24px !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* Sidebar Borderless Sections */
+.sidebar-section {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding-bottom: 18px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.sidebar-section:last-child {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+.sidebar-section.empty-selection-text {
+  border-bottom: none !important;
+  color: #636366;
+}
+
