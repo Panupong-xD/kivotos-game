@@ -466,6 +466,7 @@
                 "Effects": [
                     {
                         "Type": "Damage",
+                        "Group": 0,
                         "Block": 0,
                         "Hits": [
                             10000
@@ -483,8 +484,40 @@
                             47558,
                             53151
                         ]
+                    },
+                    {
+                        "Type": "Damage",
+                        "Group": 1,
+                        "Block": 0,
+                        "Hits": [
+                            10000
+                        ],
+                        "DescParamId": 2,
+                        "Scale": [
+                            41965,
+                            44065,
+                            46158,
+                            54551,
+                            56651,
+                            58751,
+                            67137,
+                            69237,
+                            71337,
+                            79730
+                        ]
                     }
-                ]
+                ],
+                "GroupLabel": {
+                    "0": {
+                        "Icon": "buff/Special_CH0156_GearPublic.webp",
+                        "LabelTranslated": "setting_off",
+                        "Disabled": true
+                    },
+                    "1": {
+                        "Icon": "buff/Special_CH0156_GearPublic.webp",
+                        "LabelTranslated": "setting_on"
+                    }
+                }
             }
         ],
         "Name": "虎丸",

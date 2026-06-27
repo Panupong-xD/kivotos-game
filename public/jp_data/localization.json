@@ -474,6 +474,7 @@
         "856": "キヴォトス・未確認ミステリー～邪を払うツチノコ大調査～",
         "857": "特殊作戦：ロア追跡編",
         "858": "特殊作戦：ロア追跡編",
+        "859": "嵐過天晴",
         "60000": "シャーレの総決算",
         "70001": "特殊調査セフィロトの樹",
         "80000": "バレンタインの約束"
@@ -734,7 +735,10 @@
         "Special_CH0172_Ex": "「索敵」",
         "Special_CH0174_Ex": "標識",
         "Special_CH0076_Ex": "「キーホルダー」",
-        "Special_CH0247_ExtraPassive": "「許さない」"
+        "Special_CH0247_ExtraPassive": "「許さない」",
+        "Special_CH0355_01_03_ExtraPassive": "「つぼみ」",
+        "Special_Ayane_Original_GearPublic": "「救援物資」",
+        "Special_CH0156_GearPublic": "「榴弾装填」"
     },
     "BuffNameLong": {
         "Buff_AidAttitude": "救護の心構え",
@@ -903,7 +907,10 @@
         "Special_CH0172_Ex": "「索敵」",
         "Special_CH0174_Ex": "標識",
         "Special_CH0076_Ex": "「キーホルダー」",
-        "Special_CH0247_ExtraPassive": "「許さない」"
+        "Special_CH0247_ExtraPassive": "「許さない」",
+        "Special_CH0355_01_03_ExtraPassive": "「つぼみ」",
+        "Special_Ayane_Original_GearPublic": "「救援物資」",
+        "Special_CH0156_GearPublic": "「榴弾装填」"
     },
     "BuffTooltip": {
         "Buff_AidAttitude": "一定間隔でHPを持続的に回復する。\n解除後にミネのノーマルスキルを発動する。",
@@ -1072,7 +1079,10 @@
         "Special_CH0172_Ex": "ニコのEXスキルによって付与される。味方全体の所持数に応じてニコのサブスキルを強化する。",
         "Special_CH0174_Ex": "オトギのEXスキルによって付与される。オトギはこの対象を優先的に攻撃する。",
         "Special_CH0076_Ex": "3個獲得時にエリカのノーマルスキルを発動する。",
-        "Special_CH0247_ExtraPassive": "ハルカ（ドレス）の会心ダメージ率を増加する。"
+        "Special_CH0247_ExtraPassive": "ハルカ（ドレス）の会心ダメージ率を増加する。",
+        "Special_CH0355_01_03_ExtraPassive": "Granted by Shun (Swimsuit)'s EX Skill and grows every 3s afterwards. Increases Damage Dealt when activating the EX Skill based on the growth stage.",
+        "Special_Ayane_Original_GearPublic": "Granted by Ayane's Basic+ Skill. Restores HP when HP drops to 45% or under.",
+        "Special_CH0156_GearPublic": "Granted by Iroha's Basic+ Skill. Increases the damage dealt by Toramaru's Basic Skill."
     },
     "ServerName": {
         "0": "日本",

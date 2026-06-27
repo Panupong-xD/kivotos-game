@@ -8376,7 +8376,9 @@
             "BP",
             "BX",
             "Ec",
-            "eB"
+            "eB",
+            "IS",
+            "Is"
         ],
         "ShiftingCraftQuality": 20,
         "CraftQuality": 20,
@@ -8646,7 +8648,9 @@
             "Hg",
             "HH",
             "hk",
-            "hL"
+            "hL",
+            "IT",
+            "It"
         ],
         "ShiftingCraftQuality": 20,
         "CraftQuality": 20,
@@ -9030,7 +9034,9 @@
             "ht",
             "hU",
             "IH",
-            "Ih"
+            "Ih",
+            "IT",
+            "It"
         ],
         "CraftQuality": 50,
         "ExpValue": 60,
@@ -9344,7 +9350,9 @@
             "gp",
             "gQ",
             "hy",
-            "hZ"
+            "hZ",
+            "IS",
+            "Is"
         ],
         "CraftQuality": 50,
         "ExpValue": 60,
@@ -14168,7 +14176,7 @@
             "J"
         ],
         "Craftable": [
-            false,
+            true,
             false,
             false
         ],
@@ -14275,7 +14283,7 @@
         ],
         "Shop": [
             true,
-            false,
+            true,
             false
         ],
         "Icon": "item_icon_secretstone_ch0334",
@@ -14307,7 +14315,7 @@
         ],
         "Shop": [
             true,
-            false,
+            true,
             false
         ],
         "Icon": "item_icon_secretstone_ch0335",
@@ -14318,7 +14326,7 @@
         "Id": 10136,
         "IsReleased": [
             true,
-            false,
+            true,
             false
         ],
         "Category": "SecretStone",
@@ -14537,6 +14545,70 @@
         "Icon": "item_icon_secretstone_ch0303",
         "Name": "ナグサ（水着）の神名文字",
         "Desc": "ナグサ（水着）の神秘が詰まった神名文字。"
+    },
+    "10143": {
+        "Id": 10143,
+        "IsReleased": [
+            true,
+            false,
+            false
+        ],
+        "Category": "SecretStone",
+        "Rarity": "N",
+        "Quality": 9,
+        "Tags": [
+            "J"
+        ],
+        "Craftable": [
+            false,
+            false,
+            false
+        ],
+        "StageDrop": [
+            false,
+            false,
+            false
+        ],
+        "Shop": [
+            false,
+            false,
+            false
+        ],
+        "Icon": "item_icon_secretstone_ch0355",
+        "Name": "シュン（水着）の神名文字",
+        "Desc": "シュン（水着）の神秘が詰まった神名文字。"
+    },
+    "10145": {
+        "Id": 10145,
+        "IsReleased": [
+            true,
+            false,
+            false
+        ],
+        "Category": "SecretStone",
+        "Rarity": "N",
+        "Quality": 9,
+        "Tags": [
+            "J"
+        ],
+        "Craftable": [
+            false,
+            false,
+            false
+        ],
+        "StageDrop": [
+            false,
+            false,
+            false
+        ],
+        "Shop": [
+            false,
+            false,
+            false
+        ],
+        "Icon": "item_icon_secretstone_ch0356",
+        "Name": "キサキ（水着）の神名文字",
+        "Desc": "キサキ（水着）の神秘が詰まった神名文字。"
     },
     "13000": {
         "Id": 13000,
@@ -15522,7 +15594,7 @@
             false
         ],
         "Shop": [
-            false,
+            true,
             false,
             false
         ],
@@ -17039,7 +17111,7 @@
         "IsReleased": [
             true,
             true,
-            false
+            true
         ],
         "Category": "SecretStone",
         "Rarity": "N",
@@ -17368,7 +17440,7 @@
             "J"
         ],
         "Craftable": [
-            false,
+            true,
             false,
             false
         ],
@@ -17454,7 +17526,7 @@
         "Id": 20055,
         "IsReleased": [
             true,
-            false,
+            true,
             false
         ],
         "Category": "SecretStone",
@@ -38581,6 +38653,66 @@
                     1000
                 ]
             ]
+        },
+        "EventBonusRerun": {
+            "Jp": [
+                [
+                    10117,
+                    2500
+                ],
+                [
+                    10118,
+                    2500
+                ],
+                [
+                    16017,
+                    1500
+                ],
+                [
+                    10006,
+                    1500
+                ],
+                [
+                    10077,
+                    1500
+                ],
+                [
+                    10004,
+                    1500
+                ],
+                [
+                    20008,
+                    1500
+                ],
+                [
+                    20033,
+                    1500
+                ],
+                [
+                    20016,
+                    1500
+                ],
+                [
+                    20040,
+                    1500
+                ],
+                [
+                    16014,
+                    1500
+                ],
+                [
+                    10005,
+                    1000
+                ],
+                [
+                    10010,
+                    1000
+                ],
+                [
+                    13004,
+                    1000
+                ]
+            ]
         }
     },
     "80601": {
@@ -38614,6 +38746,70 @@
         "Desc": "貨物列車の路線が記された図。「通常の場合」、この路線図どおり動く。",
         "EventId": 846,
         "EventBonus": {
+            "Jp": [
+                [
+                    10117,
+                    3000
+                ],
+                [
+                    16017,
+                    1500
+                ],
+                [
+                    10006,
+                    1500
+                ],
+                [
+                    10023,
+                    1500
+                ],
+                [
+                    10078,
+                    1500
+                ],
+                [
+                    10004,
+                    1500
+                ],
+                [
+                    26000,
+                    1500
+                ],
+                [
+                    20008,
+                    1500
+                ],
+                [
+                    20012,
+                    1500
+                ],
+                [
+                    20040,
+                    1500
+                ],
+                [
+                    10107,
+                    1500
+                ],
+                [
+                    10010,
+                    1000
+                ],
+                [
+                    13008,
+                    1000
+                ],
+                [
+                    13004,
+                    1000
+                ],
+                [
+                    23005,
+                    1000
+                ]
+            ]
+        },
+        "EventBonusRerun": {
             "Jp": [
                 [
                     10117,
@@ -38767,6 +38963,66 @@
                     1000
                 ]
             ]
+        },
+        "EventBonusRerun": {
+            "Jp": [
+                [
+                    10118,
+                    3000
+                ],
+                [
+                    16017,
+                    1500
+                ],
+                [
+                    10023,
+                    1500
+                ],
+                [
+                    10077,
+                    1500
+                ],
+                [
+                    10078,
+                    1500
+                ],
+                [
+                    26000,
+                    1500
+                ],
+                [
+                    20012,
+                    1500
+                ],
+                [
+                    20033,
+                    1500
+                ],
+                [
+                    20016,
+                    1500
+                ],
+                [
+                    10107,
+                    1500
+                ],
+                [
+                    16014,
+                    1500
+                ],
+                [
+                    10005,
+                    1000
+                ],
+                [
+                    13008,
+                    1000
+                ],
+                [
+                    23005,
+                    1000
+                ]
+            ]
         }
     },
     "80603": {
@@ -38799,7 +39055,8 @@
         "Name": "パイプレンチ",
         "Desc": "修理用のパイプレンチ。だいたいの機械はこれで叩けば直る……と……か？",
         "EventId": 846,
-        "EventBonus": {}
+        "EventBonus": {},
+        "EventBonusRerun": {}
     },
     "80630": {
         "Id": 80630,
@@ -43442,6 +43699,343 @@
                 ]
             ]
         }
+    },
+    "80840": {
+        "Id": 80840,
+        "IsReleased": [
+            true,
+            false,
+            false
+        ],
+        "Category": "Coin",
+        "Rarity": "N",
+        "Quality": 1,
+        "Tags": [],
+        "Craftable": [
+            false,
+            false,
+            false
+        ],
+        "StageDrop": [
+            false,
+            false,
+            false
+        ],
+        "Shop": [
+            false,
+            false,
+            false
+        ],
+        "Icon": "item_icon_event_token_0_s62",
+        "Name": "フォトカードコレクション",
+        "Desc": "写真を持っていくと、記念のフォトカードコレクションを作ってくれるようだ。1等からハズレまで、コンプリートしてみよう。",
+        "EventId": 859,
+        "EventBonus": {
+            "Jp": [
+                [
+                    10145,
+                    2500
+                ],
+                [
+                    10143,
+                    2500
+                ],
+                [
+                    10069,
+                    1500
+                ],
+                [
+                    10070,
+                    1500
+                ],
+                [
+                    20039,
+                    1500
+                ],
+                [
+                    10011,
+                    1500
+                ],
+                [
+                    10025,
+                    1500
+                ],
+                [
+                    20006,
+                    1500
+                ],
+                [
+                    20038,
+                    1500
+                ],
+                [
+                    10037,
+                    1500
+                ],
+                [
+                    16005,
+                    1500
+                ],
+                [
+                    26007,
+                    1500
+                ],
+                [
+                    16006,
+                    1500
+                ],
+                [
+                    16007,
+                    1000
+                ],
+                [
+                    10103,
+                    1000
+                ],
+                [
+                    20016,
+                    1000
+                ],
+                [
+                    26008,
+                    1000
+                ]
+            ]
+        }
+    },
+    "80841": {
+        "Id": 80841,
+        "IsReleased": [
+            true,
+            false,
+            false
+        ],
+        "Category": "Coin",
+        "Rarity": "N",
+        "Quality": 2,
+        "Tags": [],
+        "Craftable": [
+            false,
+            false,
+            false
+        ],
+        "StageDrop": [
+            false,
+            false,
+            false
+        ],
+        "Shop": [
+            false,
+            false,
+            false
+        ],
+        "Icon": "item_icon_event_token_1_s62",
+        "Name": "査察計画書",
+        "Desc": "行政手続きには書類が不可欠。たとえ、査察を装ったバカンスだとしても……。",
+        "EventId": 859,
+        "EventBonus": {
+            "Jp": [
+                [
+                    10145,
+                    2500
+                ],
+                [
+                    10069,
+                    1500
+                ],
+                [
+                    10050,
+                    1500
+                ],
+                [
+                    20039,
+                    1500
+                ],
+                [
+                    10011,
+                    1500
+                ],
+                [
+                    20002,
+                    1500
+                ],
+                [
+                    10104,
+                    1500
+                ],
+                [
+                    10017,
+                    1500
+                ],
+                [
+                    10103,
+                    1500
+                ],
+                [
+                    20033,
+                    1500
+                ],
+                [
+                    20016,
+                    1500
+                ],
+                [
+                    26010,
+                    1500
+                ],
+                [
+                    20009,
+                    1000
+                ],
+                [
+                    10037,
+                    1000
+                ],
+                [
+                    16014,
+                    1000
+                ],
+                [
+                    26007,
+                    1000
+                ],
+                [
+                    16006,
+                    1000
+                ]
+            ]
+        }
+    },
+    "80842": {
+        "Id": 80842,
+        "IsReleased": [
+            true,
+            false,
+            false
+        ],
+        "Category": "Coin",
+        "Rarity": "N",
+        "Quality": 3,
+        "Tags": [],
+        "Craftable": [
+            false,
+            false,
+            false
+        ],
+        "StageDrop": [
+            false,
+            false,
+            false
+        ],
+        "Shop": [
+            false,
+            false,
+            false
+        ],
+        "Icon": "item_icon_event_token_2_s62",
+        "Name": "施設入場券",
+        "Desc": "観光施設を利用するための入場券。団体割引もあってお得。",
+        "EventId": 859,
+        "EventBonus": {
+            "Jp": [
+                [
+                    10143,
+                    2500
+                ],
+                [
+                    10070,
+                    1500
+                ],
+                [
+                    10050,
+                    1500
+                ],
+                [
+                    10025,
+                    1500
+                ],
+                [
+                    20002,
+                    1500
+                ],
+                [
+                    20006,
+                    1500
+                ],
+                [
+                    10104,
+                    1500
+                ],
+                [
+                    20009,
+                    1500
+                ],
+                [
+                    16007,
+                    1500
+                ],
+                [
+                    16014,
+                    1500
+                ],
+                [
+                    26008,
+                    1500
+                ],
+                [
+                    10017,
+                    1000
+                ],
+                [
+                    20038,
+                    1000
+                ],
+                [
+                    20033,
+                    1000
+                ],
+                [
+                    16005,
+                    1000
+                ],
+                [
+                    26010,
+                    1000
+                ]
+            ]
+        }
+    },
+    "80843": {
+        "Id": 80843,
+        "IsReleased": [
+            true,
+            false,
+            false
+        ],
+        "Category": "Coin",
+        "Rarity": "N",
+        "Quality": 4,
+        "Tags": [],
+        "Craftable": [
+            false,
+            false,
+            false
+        ],
+        "StageDrop": [
+            false,
+            false,
+            false
+        ],
+        "Shop": [
+            false,
+            false,
+            false
+        ],
+        "Icon": "item_icon_event_token_3_s62",
+        "Name": "特産品のお菓子",
+        "Desc": "特産品のお菓子。みんなで一緒に食べると美味しい。",
+        "EventId": 859,
+        "EventBonus": {}
     },
     "100000": {
         "Id": 100000,
@@ -66924,6 +67518,12 @@
                 "Id": 210386,
                 "AmountMin": 1,
                 "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210387,
+                "AmountMin": 1,
+                "AmountMax": 1
             }
         ],
         "ItemsGlobal": [
@@ -68232,6 +68832,30 @@
             {
                 "Type": "Furniture",
                 "Id": 210372,
+                "AmountMin": 1,
+                "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210373,
+                "AmountMin": 1,
+                "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210374,
+                "AmountMin": 1,
+                "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210375,
+                "AmountMin": 1,
+                "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210376,
                 "AmountMin": 1,
                 "AmountMax": 1
             }
@@ -69830,6 +70454,12 @@
                 "Id": 210386,
                 "AmountMin": 1,
                 "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210387,
+                "AmountMin": 1,
+                "AmountMax": 1
             }
         ],
         "ItemsGlobal": [
@@ -70346,6 +70976,30 @@
             {
                 "Type": "Furniture",
                 "Id": 210372,
+                "AmountMin": 1,
+                "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210373,
+                "AmountMin": 1,
+                "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210374,
+                "AmountMin": 1,
+                "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210375,
+                "AmountMin": 1,
+                "AmountMax": 1
+            },
+            {
+                "Type": "Furniture",
+                "Id": 210376,
                 "AmountMin": 1,
                 "AmountMax": 1
             }

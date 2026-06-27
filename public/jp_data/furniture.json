@@ -32368,7 +32368,7 @@
         "Desc": "自動で開閉する出入口。隠れることもできそうだ。",
         "Interaction": [
             true,
-            false,
+            true,
             false
         ],
         "Templates": [
@@ -43250,7 +43250,7 @@
         "Icon": "my_event082_opencar",
         "Craftable": [
             true,
-            false,
+            true,
             false
         ],
         "ComfortBonus": 350,
@@ -43289,7 +43289,7 @@
         "Icon": "my_event082_swingchair",
         "Craftable": [
             true,
-            false,
+            true,
             false
         ],
         "ComfortBonus": 350,
@@ -43328,7 +43328,7 @@
         "Icon": "my_event082_beachswing",
         "Craftable": [
             true,
-            false,
+            true,
             false
         ],
         "ComfortBonus": 350,
@@ -43367,7 +43367,7 @@
         "Icon": "my_event082_breakingwatermelon",
         "Craftable": [
             true,
-            false,
+            true,
             false
         ],
         "ComfortBonus": 350,
@@ -43794,7 +43794,7 @@
         "Rarity": "SSR",
         "Icon": "my_event086_salesdesk",
         "Craftable": [
-            false,
+            true,
             false,
             false
         ],
@@ -43808,6 +43808,7 @@
             "Dn",
             "A",
             "dT",
+            "cx",
             "hj",
             "hk"
         ],
@@ -44128,7 +44129,7 @@
         "Id": 210396,
         "IsReleased": [
             true,
-            false,
+            true,
             false
         ],
         "Rarity": "SSR",
@@ -44165,7 +44166,7 @@
         "Id": 210397,
         "IsReleased": [
             true,
-            false,
+            true,
             false
         ],
         "Rarity": "SSR",
@@ -44195,7 +44196,7 @@
         "Desc": "食卓としても、会議スペースとしても使える万能テーブル。",
         "Interaction": [
             true,
-            false,
+            true,
             false
         ]
     },
@@ -44462,6 +44463,82 @@
         "SetGroupId": 0,
         "Name": "氷河を秘めし冷蔵庫",
         "Desc": "冷たい飲み物がたっぷり入った冷蔵庫。開けた後は必ずドアを閉めるように。",
+        "Interaction": [
+            true,
+            false,
+            false
+        ]
+    },
+    "211307": {
+        "Id": 211307,
+        "IsReleased": [
+            true,
+            false,
+            false
+        ],
+        "Rarity": "SSR",
+        "Icon": "my_event093_dioramapool",
+        "Craftable": [
+            false,
+            false,
+            false
+        ],
+        "ComfortBonus": 500,
+        "Category": "Furnitures",
+        "Size": [
+            4,
+            9
+        ],
+        "Tags": [
+            "Dn",
+            "A",
+            "dT",
+            "IS"
+        ],
+        "ShiftingCraftQuality": 200,
+        "CraftQuality": 100,
+        "SubCategory": "Prop",
+        "SetGroupId": 0,
+        "Name": "モデルプール",
+        "Desc": "一度見たら忘れられない絶景を再現したプール。いつでも休暇を楽しめる。",
+        "Interaction": [
+            true,
+            false,
+            false
+        ]
+    },
+    "211308": {
+        "Id": 211308,
+        "IsReleased": [
+            true,
+            false,
+            false
+        ],
+        "Rarity": "SSR",
+        "Icon": "my_event093_fancypond",
+        "Craftable": [
+            false,
+            false,
+            false
+        ],
+        "ComfortBonus": 500,
+        "Category": "Furnitures",
+        "Size": [
+            6,
+            9
+        ],
+        "Tags": [
+            "Dn",
+            "A",
+            "dT",
+            "IT"
+        ],
+        "ShiftingCraftQuality": 200,
+        "CraftQuality": 100,
+        "SubCategory": "Prop",
+        "SetGroupId": 0,
+        "Name": "趣のある橋と池",
+        "Desc": "古風な橋がポイントの人工池。たまに、小さな友達に出会えるかもしれない。",
         "Interaction": [
             true,
             false,
